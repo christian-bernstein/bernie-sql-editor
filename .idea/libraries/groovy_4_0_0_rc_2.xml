@@ -1,0 +1,68 @@
+<component name="libraryTable">
+  <library name="groovy-4.0.0-rc-2" type="groovy-sdk">
+    <properties version="4.0.0-rc-2" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-astbuilder-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-jsr223-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-dateutil-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-datetime-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-ant-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-cli-commons-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-groovydoc-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-docgenerator-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-cli-picocli-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-jmx-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-json-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-macro-library-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-nio-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-servlet-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-contracts-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-toml-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-testng-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-ginq-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-macro-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-typecheckers-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-templates-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-test-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-xml-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-test-junit5-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-groovysh-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-swing-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-sql-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-console-4.0.0-rc-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-4.0.0-rc-2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-astbuilder-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-cli-commons-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-cli-picocli-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-datetime-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-dateutil-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-ant-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-contracts-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-console-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-docgenerator-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-jsr223-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-macro-library-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-ginq-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-jmx-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-nio-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-groovydoc-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-macro-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-servlet-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-groovysh-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-json-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-sql-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-testng-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-test-junit5-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-templates-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-toml-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-typecheckers-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-test-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-swing-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-xml-4.0.0-rc-2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bernie-sql-editor-ton/lib/groovy-4.0.0-rc-2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
