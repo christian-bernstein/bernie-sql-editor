@@ -16,7 +16,9 @@
 package de.christianbernstein.bernie.shared.union;
 
 import lombok.Getter;
+import lombok.NonNull;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -34,13 +36,24 @@ public class DefaultEventManager implements IEventManager {
 
     @Override
     public <T extends Event> IEventManager registerFunctionEventListener(String channel, EventPriority priority, Class<? extends Event> event, IEventListenerFunction<T> function) {
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet: registerFunctionEventListener()");
     }
 
     @Override
     public IEventManager registerListener(Object listener) {
+        this._registerListener(listener.getClass(), listener);
+        return this;
+    }
+
+    @Override
+    public IEventManager registerListener(Class<?> listener) {
+        this._registerListener(listener, null);
+        return this;
+    }
+
+    private void _registerListener(@NonNull Class<?> listener, @Nullable Object instance) {
         // Get all methods of the class and check if the methods are listeners
-        for (final Method method : listener.getClass().getDeclaredMethods()) {
+        for (final Method method : listener.getDeclaredMethods()) {
             if (!(method.isAnnotationPresent(EventListener.class)
                     && method.getParameterCount() == 1
                     && Event.class.isAssignableFrom(method.getParameters()[0].getType()))) {
@@ -51,7 +64,8 @@ public class DefaultEventManager implements IEventManager {
                     listenerAnnotation,
                     listenerAnnotation.priority(),
                     (Class<? extends Event>) method.getParameters()[0].getType(),
-                    listener, method
+                    instance,
+                    method
             );
             // If the channel doesn't exist yet, create it
             if (!this.registeredListeners.containsKey(listenerAnnotation.channel())) {
@@ -60,7 +74,6 @@ public class DefaultEventManager implements IEventManager {
             // Add the listener to the channel
             this.registeredListeners.get(listenerAnnotation.channel()).add(registered);
         }
-        return this;
     }
 
     @Override

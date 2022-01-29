@@ -19,6 +19,7 @@ import de.christianbernstein.bernie.shared.db.H2Repository;
 import de.christianbernstein.bernie.shared.event.EventAPI;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
+import de.christianbernstein.bernie.shared.union.IEventManager;
 import lombok.NonNull;
 
 import java.io.Serializable;
@@ -32,7 +33,7 @@ public interface ITonBase<Impl extends ITon> {
 
     Impl shutdown();
 
-    EventAPI.IEventController<Impl> eventController();
+    IEventManager eventManager();
 
     TonConfiguration configuration();
 

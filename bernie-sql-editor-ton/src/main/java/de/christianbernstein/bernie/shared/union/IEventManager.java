@@ -28,6 +28,8 @@ public interface IEventManager {
 
     IEventManager registerListener(Object listener);
 
+    IEventManager registerListener(Class<?> listener);
+
     IEventManager unregisterAll();
 
     Map<String, List<IRegisteredEventListener>> getRegisteredListeners();

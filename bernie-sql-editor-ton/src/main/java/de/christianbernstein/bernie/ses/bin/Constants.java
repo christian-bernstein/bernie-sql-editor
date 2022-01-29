@@ -38,6 +38,8 @@ public class Constants {
 
     public final String autoEcexJRAPhase = "auto-exec";
 
+    public final String registerEventClassJRAPhase = "register-event-class-phase";
+
     public final String flowJRAPhase = "flow";
 
     public final String constructJRAPhase = "construct-phase";

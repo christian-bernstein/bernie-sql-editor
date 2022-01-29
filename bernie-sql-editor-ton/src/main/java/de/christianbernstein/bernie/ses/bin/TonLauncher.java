@@ -50,74 +50,14 @@ public class TonLauncher {
         new Ton().$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
                 .mode(TonMode.MOCK)
                 .workingDirectory("./ton/")
-                .jraPhaseOrder(new String[][]{{Constants.constructJRAPhase}, {Constants.useTonJRAPhase}, {Constants.moduleJRAPhase}, {Constants.flowJRAPhase}, {Constants.autoEcexJRAPhase}})
+                .jraPhaseOrder(new String[][]{
+                        {Constants.constructJRAPhase},
+                        {Constants.useTonJRAPhase},
+                        {Constants.registerEventClassJRAPhase},
+                        {Constants.moduleJRAPhase},
+                        {Constants.flowJRAPhase},
+                        {Constants.autoEcexJRAPhase}})
                 .build()
         );
-    }
-
-    @AutoExec
-    private static void console() {
-        final GloriaAPI.IGloria gloria = new GloriaAPI.Gloria("ton-zentral-io");
-
-        gloria.registerMethodsInClass(TonLauncher.class, true);
-        Supplier<String> lineRetriever;
-
-        if (System.console() != null) {
-            lineRetriever = () -> System.console().readLine();
-        } else {
-            lineRetriever = () -> {
-                final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                try {
-                    return br.readLine();
-                } catch(final IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            };
-        }
-
-        while (gloria.getSessionManager().getStaticSession().getSessionData().getOr("keep-online", true)) {
-            String line = lineRetriever.get();
-            if (line != null && !line.isBlank()) {
-                gloria.submit(line.trim());
-            }
-        }
-    }
-
-    @Command(literal = "debug", aliases = {"d", "test"}, type = Command.Type.JUNCTION)
-    private void debug() {}
-
-    @Command(path = "debug", literal = "monitor", aliases = "m")
-    private void monitor(@APIStatement Statement statement, @APISession ISession session, @Flow String command) {
-        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", String.format("Command '%s' took %sms",
-                command,
-                Utils.durationMonitoredExecution(() -> statement.getApi().submit(command, statement.getSender(), GloriaAPI.IGloria.DEFAULT_INBOUND_HANDLER_IDENTIFIER)).toMillis()
-        ));
-    }
-
-    @Command(path = "debug", literal = "shutdown")
-    private void shutdown() {
-        ton.orElseThrow().shutdown();
-    }
-
-    @Command(path = "debug", literal = "getProjects", aliases = "gP")
-    private void getProjects(@APIStatement Statement statement, @APISession ISession session) {
-        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", String.format("Projects: '%s'", ton
-                .orElseThrow()
-                .projectModule()
-                .getProjectsFromOwner(ton.orElseThrow().userModule().root().getID())
-                .stream()
-                .map(ProjectData::toString)
-                .collect(Collectors.joining(", "))
-        ));
-    }
-
-    @Command(path = "debug", literal = "createProject", aliases = "cP")
-    private void createProject(@NonNull String title, boolean stator) {
-        ton.orElseThrow().projectModule().createProject(ProjectCreationData.builder()
-                .creatorUserID(ton.orElseThrow().userModule().root().getID())
-                .title(title)
-                .stator(stator)
-                .build());
     }
 }

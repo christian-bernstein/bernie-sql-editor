@@ -25,6 +25,8 @@ import de.christianbernstein.bernie.shared.misc.Utils;
 import de.christianbernstein.bernie.shared.module.Engine;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
+import de.christianbernstein.bernie.shared.union.DefaultEventManager;
+import de.christianbernstein.bernie.shared.union.IEventManager;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -50,7 +52,7 @@ public class Ton implements ITon {
 
     private TonConfiguration configuration;
 
-    private EventAPI.IEventController<ITon> eventController;
+    private IEventManager eventManager;
 
     @Override
     public ITon start(@NonNull final TonConfiguration configuration) {
@@ -58,7 +60,7 @@ public class Ton implements ITon {
             this.configuration = configuration;
             this.tonState = TonState.LAUNCHING;
             this.engine = new Engine<ITon>(configuration.getTonEngineID(), this).enableDependencyChecking();
-            this.eventController = new EventAPI.DefaultEventController<>();
+            this.eventManager = new DefaultEventManager();
             this.initJRA();
             this.tonState = TonState.ONLINE;
         }).toSeconds();
