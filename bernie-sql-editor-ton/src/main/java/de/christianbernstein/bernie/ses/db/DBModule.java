@@ -43,6 +43,7 @@ import java.sql.ResultSet;
 import java.sql.SQLWarning;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * @author Christian Bernstein
@@ -88,56 +89,53 @@ public class DBModule implements IDBModule {
         final IDBModule module = DBModule.ton.orElseThrow().dbModule();
         final IDatabaseAccessPoint db = module.loadDatabase(data.getDbID(), DatabaseAccessPointLoadConfig.builder().build());
         switch (data.getType()) {
-            case PULL -> {
-                db.session(session -> session.doWork(connection -> {
-                    final String raw = data.getRaw();
-                    final String databaseID = data.getDbID();
-                    final ResultSet query = connection.prepareStatement(raw).executeQuery();
-                    final List<Document> set = DBUtilities.resultSetToList(query);
+            case PULL -> db.session(session -> session.doWork(connection -> {
+                final String raw = data.getRaw();
+                final String databaseID = data.getDbID();
 
-                    // todo NullPointerException
-                    System.err.println("data.getDbID(): " + data.getDbID());
-                    final List<DBListenerID> listeningConnections = module.sqlCommandStreamConnectionLookup().get(data.getDbID());
+                // todo time this function and send the duration back to the client
+                final ResultSet query = connection.prepareStatement(raw).executeQuery();
 
-                    final Client client = Client.builder().type(ClientType.USER).id("implement..").username("implement..").build();
-                    final String errormessage = "implement..";
-                    final List<Column> columns = new ArrayList<>();
-                    final List<Row> rows = new ArrayList<>();
-                    final boolean success = true;
+                final List<Document> set = DBUtilities.resultSetToList(query);
+                final List<DBListenerID> listeningConnections = module.sqlCommandStreamConnectionLookup().get(data.getDbID());
+                final Client client = Client.builder().type(ClientType.USER).id("implement..").username("implement..").build();
+                final String errormessage = "implement..";
+                final List<Column> columns = new ArrayList<>();
+                final List<Row> rows = new ArrayList<>();
+                final boolean success = true;
 
-                    set.forEach(document -> System.err.println("~ " + document.toSlimString()));
+                set.forEach(document -> System.err.println("~ " + document.toSlimString()));
 
-                    listeningConnections.forEach(id -> {
-                        switch (id.type()) {
-                            case SOCKET -> {
-                                DBModule.ton.orElseThrow().netModule().getSocketServer().getSessionManager().getSessions().forEach(ssl -> {
-                                    System.err.println("checking ssl: " + ssl.getId());
-                                    final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(ssl);
-                                    if (sli != null) {
-                                        if (sli.getSessionID().equals(id.id())) {
-                                            System.err.println("pushing to ssl:" + ssl);
-                                            ssl.push(SQLCommandQueryResponsePacketData.builder()
-                                                    .databaseID(databaseID)
-                                                    .columns(columns)
-                                                    .rows(rows)
-                                                    .errormessage(errormessage)
-                                                    .sql(raw)
-                                                    .success(success)
-                                                    .client(client)
-                                                    .build());
-                                        }
-                                    } else {
-                                        System.err.printf("SLI of SSL '%s' is null %n", ssl.getId());
+                listeningConnections.forEach(id -> {
+                    switch (id.type()) {
+                        case SOCKET -> {
+                            DBModule.ton.orElseThrow().netModule().getSocketServer().getSessionManager().getSessions().forEach(ssl -> {
+                                System.err.println("checking ssl: " + ssl.getId());
+                                final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(ssl);
+                                if (sli != null) {
+                                    if (sli.getSessionID().equals(id.id())) {
+                                        System.err.println("pushing to ssl:" + ssl);
+                                        ssl.push(SQLCommandQueryResponsePacketData.builder()
+                                                .databaseID(databaseID)
+                                                .columns(columns)
+                                                .rows(rows)
+                                                .errormessage(errormessage)
+                                                .sql(raw)
+                                                .success(success)
+                                                .client(client)
+                                                .build());
                                     }
-                                });
-                            }
-                            case VIRTUAL -> {
-                                // todo add method to handle virtual connections
-                            }
+                                } else {
+                                    System.err.printf("SLI of SSL '%s' is null %n", ssl.getId());
+                                }
+                            });
                         }
-                    });
-                }));
-            }
+                        case VIRTUAL -> {
+                            // todo add method to handle virtual connections
+                        }
+                    }
+                });
+            }));
             case PUSH -> {
                 System.out.println("push");
                 db.session(session -> session.doWork(connection -> {
