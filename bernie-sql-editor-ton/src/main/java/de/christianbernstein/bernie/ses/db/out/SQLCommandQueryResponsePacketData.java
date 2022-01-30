@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * todo add processing duration
  * todo add affected rows count
  *
  * @author Christian Bernstein

@@ -18,6 +18,7 @@ package de.christianbernstein.bernie.ses.db;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.shared.misc.IFluently;
+import de.christianbernstein.bernie.shared.module.Dependency;
 import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
 import de.christianbernstein.bernie.shared.module.ModuleDefinition;
 import de.christianbernstein.bernie.shared.module.Module;
@@ -35,6 +36,7 @@ public interface IDBModule extends IBaseModuleClass<ITon>, IFluently<IDBModule> 
     @ModuleDefinition(into = Constants.tonEngineID)
     Module<ITon> dbModule = Module.<ITon>builder()
             .name("db_module")
+            .dependency(Dependency.builder().module("net_module").build())
             .build()
             .$(module -> module.getShardManager().install(DBModule.class));
 

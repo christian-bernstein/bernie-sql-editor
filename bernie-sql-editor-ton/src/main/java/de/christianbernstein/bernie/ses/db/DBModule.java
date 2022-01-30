@@ -27,8 +27,11 @@ import de.christianbernstein.bernie.ses.db.out.SQLCommandQueryResponsePacketData
 import de.christianbernstein.bernie.ses.net.SocketLaneIdentifyingAttachment;
 import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
 import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
+import de.christianbernstein.bernie.shared.discovery.websocket.SocketIdentifyingAttachment;
+import de.christianbernstein.bernie.shared.discovery.websocket.server.SocketPreShutdownEvent;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.SocketServerLane;
 import de.christianbernstein.bernie.shared.document.Document;
+import de.christianbernstein.bernie.shared.event.EventAPI;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.module.Module;
 import de.christianbernstein.bernie.shared.union.EventListener;
@@ -37,13 +40,12 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.java_websocket.WebSocket;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
-import java.sql.SQLWarning;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 /**
  * @author Christian Bernstein
@@ -70,8 +72,8 @@ public class DBModule implements IDBModule {
             final DBListenerID id = new DBListenerID(sessionID, DBListenerType.SOCKET);
             if (module.sqlCommandStreamConnectionLookup.containsKey(projectID)) {
                 final List<DBListenerID> connections = module.sqlCommandStreamConnectionLookup.get(projectID);
-                // todo fix -> steam.filter if no one found: add
-                if (!connections.contains(sessionID)) {
+
+                if (connections.stream().noneMatch(bdID -> bdID.id().equals(sessionID))) {
                     connections.add(id);
                 }
             } else {
@@ -104,7 +106,19 @@ public class DBModule implements IDBModule {
                 final List<Row> rows = new ArrayList<>();
                 final boolean success = true;
 
-                set.forEach(document -> System.err.println("~ " + document.toSlimString()));
+                // todo make more versatile solution -> if result empty -> no columns
+                final Document row = set.get(0);
+                if (row != null) {
+                    row.toMap().keySet().forEach(col -> columns.add(new Column(col)));
+                }
+
+                set.forEach(document -> {
+                    document.toMap();
+                    final Row row1 = new Row();
+                    row1.putAll(document.toMap());
+                    rows.add(row1);
+                });
+
 
                 listeningConnections.forEach(id -> {
                     switch (id.type()) {
@@ -192,6 +206,7 @@ public class DBModule implements IDBModule {
         IDBModule.super.boot(api, module, manager);
         DBModule.instance = Optional.of(this);
         DBModule.ton = Optional.of(api);
+        this.registerSocketCloseEventHandler();
     }
 
     @Override
@@ -255,5 +270,17 @@ public class DBModule implements IDBModule {
     @Override
     public @NonNull IDBModule me() {
         return this;
+    }
+
+    private void registerSocketCloseEventHandler() {
+        ton.orElseThrow().netModule().getSocketServer().getEventController().registerHandler(new EventAPI.Handler<>(SocketPreShutdownEvent.class, (socketPreShutdownEvent, iDocument) -> {
+            final SocketServerLane lane = socketPreShutdownEvent.session();
+            final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(lane);
+            if (sli != null && sli.getSessionID() != null) {
+                this.sqlCommandStreamConnectionLookup.forEach((databaseID, listeners) -> listeners.removeIf(id ->
+                        id.type().equals(DBListenerType.SOCKET) && id.id().equals(sli.getSessionID())
+                ));
+            }
+        }));
     }
 }
