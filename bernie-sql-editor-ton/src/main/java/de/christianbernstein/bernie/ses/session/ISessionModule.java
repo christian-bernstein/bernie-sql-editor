@@ -13,43 +13,32 @@
  *
  */
 
-package de.christianbernstein.bernie.ses.db;
+package de.christianbernstein.bernie.ses.session;
 
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
+import de.christianbernstein.bernie.ses.auth.Credentials;
 import de.christianbernstein.bernie.shared.misc.IFluently;
 import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
 import de.christianbernstein.bernie.shared.module.ModuleDefinition;
 import de.christianbernstein.bernie.shared.module.Module;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import lombok.NonNull;
 
-import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Christian Bernstein
  */
-public interface IDBModule extends IBaseModuleClass<ITon>, IFluently<IDBModule> {
+public interface ISessionModule extends IBaseModuleClass<ITon>, IFluently<ISessionModule> {
 
     @ModuleDefinition(into = Constants.tonEngineID)
-    Module<ITon> dbModule = Module.<ITon>builder()
-            .name("db_module")
+    Module<ITon> sessionModule = Module.<ITon>builder()
+            .name("session_module")
             .build()
-            .$(module -> module.getShardManager().install(DBModule.class));
+            .$(module -> module.getShardManager().install(SessionModule.class));
 
-    IDatabaseAccessPoint loadDatabase(String dbID, DatabaseAccessPointLoadConfig config);
+    Session getOrCreateSession(@NonNull Credentials credentials);
 
-    Map<String, List<DBListenerID>> sqlCommandStreamConnectionLookup();
-
-    boolean unloadDatabase(String dbID);
-
-    List<IDatabaseAccessPoint> activeDatabases();
-
-    String copyDatabase(String dbID);
-
-    Configuration getRootConfiguration();
-
-    SessionFactory getRootSessionFactory();
+    Session getOrCreateSession(UUID sessionID);
 
 }

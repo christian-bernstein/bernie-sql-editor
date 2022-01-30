@@ -15,6 +15,7 @@
 
 package de.christianbernstein.bernie.ses.db;
 
+import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import lombok.Data;
 import lombok.Getter;
 import org.hibernate.Session;
@@ -64,9 +65,16 @@ public class DatabaseAccessPoint implements IDatabaseAccessPoint {
                 session.flush();
                 transaction.commit();
             } catch (final Exception e) {
+                ConsoleLogger.def().log(ConsoleLogger.LogType.ERROR, "DBAccessPoint", String.format(
+                        "Error while processing sql command. Message: '%s', Type: '%s'",
+                        e.getMessage(),
+                        e.getClass().getName()
+                ));
                 e.printStackTrace();
+                // e.printStackTrace();
                 if (transaction != null) {
-                    transaction.rollback();
+                    // todo reactivate feature
+                    // transaction.rollback();
                 }
             }
         }

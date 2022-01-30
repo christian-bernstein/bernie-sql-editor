@@ -16,9 +16,11 @@
 package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.ses.net.SocketLaneIdentifyingAttachment;
+import de.christianbernstein.bernie.shared.discovery.websocket.SocketIdentifyingAttachment;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.SocketServerLane;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.java_websocket.WebSocket;
 
 /**
  * @author Christian Bernstein
@@ -28,5 +30,13 @@ public final class Shortcut {
 
     public SocketLaneIdentifyingAttachment useSLI(@NonNull SocketServerLane lane) {
         return lane.getAttachments().get(SocketLaneIdentifyingAttachment.ATTACHMENT_NAME);
+    }
+
+    public String useLaneID(@NonNull SocketServerLane lane) {
+        return lane.getId();
+    }
+
+    public SocketIdentifyingAttachment useSI(@NonNull WebSocket socket) {
+        return socket.getAttachment();
     }
 }

@@ -180,6 +180,7 @@ public class AuthModule implements IAuthModule {
     }
 
     private static void setSocketLaneIdentifier(@NonNull SocketServerLane lane, @NonNull UUID sessionID) {
+        System.err.println("Auth module: Setting SLI: " + sessionID);
         lane.getAttachments().putObjectIfAbsent(SocketLaneIdentifyingAttachment.ATTACHMENT_NAME, new SocketLaneIdentifyingAttachment(sessionID));
     }
 

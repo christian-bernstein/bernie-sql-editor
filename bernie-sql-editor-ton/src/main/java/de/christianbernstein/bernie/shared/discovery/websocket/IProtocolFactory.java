@@ -13,23 +13,16 @@
  *
  */
 
-package de.christianbernstein.bernie.ses.net;
+package de.christianbernstein.bernie.shared.discovery.websocket;
 
-import lombok.Data;
-
-import java.util.UUID;
+import lombok.NonNull;
 
 /**
- * Holds the sessionID of the lane.
- * It is set after a successful authentication.
- *
  * @author Christian Bernstein
  */
-@Data
-public class SocketLaneIdentifyingAttachment {
+@FunctionalInterface
+public interface IProtocolFactory {
 
-    public static final String ATTACHMENT_NAME = "sli";
-
-    private final UUID sessionID;
+    @NonNull Protocol get(@NonNull final ProtocolController controller);
 
 }

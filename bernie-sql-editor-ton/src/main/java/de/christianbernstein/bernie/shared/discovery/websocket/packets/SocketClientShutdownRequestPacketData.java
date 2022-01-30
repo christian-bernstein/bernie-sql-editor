@@ -13,23 +13,19 @@
  *
  */
 
-package de.christianbernstein.bernie.ses.net;
+package de.christianbernstein.bernie.shared.discovery.websocket.packets;
 
+import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
+import de.christianbernstein.bernie.shared.discovery.websocket.PacketMeta;
 import lombok.Data;
-
-import java.util.UUID;
+import lombok.EqualsAndHashCode;
 
 /**
- * Holds the sessionID of the lane.
- * It is set after a successful authentication.
- *
  * @author Christian Bernstein
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class SocketLaneIdentifyingAttachment {
-
-    public static final String ATTACHMENT_NAME = "sli";
-
-    private final UUID sessionID;
+@PacketMeta(dataID = "SocketClientShutdownRequestPacketData", protocol = "core")
+public class SocketClientShutdownRequestPacketData extends PacketData {
 
 }

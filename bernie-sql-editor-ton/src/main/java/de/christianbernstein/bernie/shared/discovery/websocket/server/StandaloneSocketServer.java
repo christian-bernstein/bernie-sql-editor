@@ -97,7 +97,6 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
             // todo use shorthand func
             this.getEventController().registerHandler(new EventAPI.Handler<>(SocketPostEstablishedEvent.class, (event, document) -> {
                 final Protocol protocol = event.getReference().configuration.baseProtocol();
-                System.err.println("Register base protocol: " + protocol.toString());
                 event.session().getProtocolController().registerBase(protocol);
             }));
         }
@@ -118,6 +117,9 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
         @NonNull final String id = this.configuration.websocketIDGenerator().apply(this, webSocket);
         final SocketIdentifyingAttachment attachment = new SocketIdentifyingAttachment(id);
         webSocket.setAttachment(attachment);
+
+        System.err.println("Setting SocketIdentifyingAttachment: " + attachment);
+
         this.sockets.add(webSocket);
         final SocketServerLane session = this.configuration.socketSessionGenerator().apply(webSocket);
         this.socketSessionManager.addSession(session, socketSession -> {
@@ -133,6 +135,9 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
         final SocketIdentifyingAttachment attachment = webSocket.getAttachment();
         final SocketServerLane session = this.socketSessionManager.getSession(attachment.sessionToken());
         if (session != null) {
+
+            // todo create hook
+
             this.getEventController().fire(new SocketPreShutdownEvent(this, session));
             this.proteus.external().onStop(new OnStopSocketContext(webSocket, session, this));
             this.sockets.remove(webSocket);

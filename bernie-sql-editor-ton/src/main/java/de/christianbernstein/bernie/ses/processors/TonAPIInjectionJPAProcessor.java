@@ -21,6 +21,8 @@ import de.christianbernstein.bernie.ses.UseTon;
 import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
 import lombok.experimental.UtilityClass;
 
+import java.lang.reflect.Modifier;
+
 /**
  * @author Christian Bernstein
  */
@@ -36,6 +38,9 @@ public class TonAPIInjectionJPAProcessor {
             if (ITon.class.isAssignableFrom(field.getType())) {
                 field.setAccessible(true);
                 try {
+                    if (!Modifier.isStatic(field.getModifiers())) {
+                        new UnsupportedOperationException("Cannot set ton instance, because field isn't static (Exc is never thrown -> code gets executed.. this is only a hint and has to be refactored by future Chris)").printStackTrace();
+                    }
                     field.set(instance, ton);
                 } catch (final IllegalAccessException e) {
                     e.printStackTrace();

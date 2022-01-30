@@ -15,72 +15,141 @@
 
 package de.christianbernstein.bernie.ses.db;
 
+import de.christianbernstein.bernie.ses.Client;
+import de.christianbernstein.bernie.ses.ClientType;
+import de.christianbernstein.bernie.ses.RegisterEventClass;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
+import de.christianbernstein.bernie.ses.bin.Shortcut;
 import de.christianbernstein.bernie.ses.db.in.SessionCommandPacketData;
+import de.christianbernstein.bernie.ses.db.in.SqlCommandStreamRequestPacketData;
+import de.christianbernstein.bernie.ses.db.out.SQLCommandQueryResponsePacketData;
+import de.christianbernstein.bernie.ses.net.SocketLaneIdentifyingAttachment;
 import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
 import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
+import de.christianbernstein.bernie.shared.discovery.websocket.server.SocketServerLane;
+import de.christianbernstein.bernie.shared.document.Document;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.module.Module;
+import de.christianbernstein.bernie.shared.union.EventListener;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
+import java.sql.SQLWarning;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Christian Bernstein
  */
-@SuppressWarnings("all")
+@Accessors(fluent = true)
+@RegisterEventClass
 public class DBModule implements IDBModule {
 
     private static Optional<DBModule> instance = Optional.empty();
 
-    private static Optional<ITon> ton = Optional.empty();
+    /**
+     * Add the client to the sqlCommandStreamConnectionLookup-map
+     * todo handle any disconnecting clients -> remove them from the lookup
+     */
+    @Discoverer(packetID = "SqlCommandStreamRequestPacketData", datatype = SqlCommandStreamRequestPacketData.class, protocols = Constants.centralProtocolName)
+    private static final IPacketHandlerBase<SqlCommandStreamRequestPacketData> sqlCommandStreamRequestHandler = (data, endpoint, socket, packet, server) -> {
+        // todo remove debug
+        System.err.println("SqlCommandStreamRequestPacketData received!!");
 
-    private static Map<String, List<String>> sessionConnectionLookup = new HashMap<>();
-
-    @Discoverer(packetID = "SessionCommandPacketData", datatype = SessionCommandPacketData.class, protocols = Constants.centralProtocolName)
-    private static final IPacketHandlerBase<SessionCommandPacketData> commandHandler = (data, endpoint, socket, packet, server) -> {
-        System.out.println("handle SessionCommandPacketData");
-        DBModule.instance.ifPresentOrElse(module -> {
-            System.out.println("Got module!");
-            final IDatabaseAccessPoint db = module.loadDatabase(data.getDbID(), DatabaseAccessPointLoadConfig.builder().build());
-            switch (data.getType()) {
-                case PULL -> {
-                    System.out.println("pull");
-                    db.session(session -> session.doWork(connection -> {
-                        System.out.println("Do work with connection");
-                        final String raw = data.getRaw();
-                        System.out.printf("Raw sql command: '%s'%n", raw);
-                        final ResultSet query = connection.prepareStatement(raw).executeQuery();
-                        System.err.println("pull list:");
-                        DBUtilities.resultSetToList(query).forEach(document -> {
-                            System.err.println("-> " + document.toSlimString());
-                        });
-
-
-
-                    }));
-                    break;
+        final String projectID = data.getProjectID();
+        final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
+        final UUID sessionID = sli.getSessionID();
+        instance.ifPresent(module -> {
+            final DBListenerID id = new DBListenerID(sessionID, DBListenerType.SOCKET);
+            if (module.sqlCommandStreamConnectionLookup.containsKey(projectID)) {
+                final List<DBListenerID> connections = module.sqlCommandStreamConnectionLookup.get(projectID);
+                // todo fix -> steam.filter if no one found: add
+                if (!connections.contains(sessionID)) {
+                    connections.add(id);
                 }
-                case PUSH -> {
-                    System.out.println("push");
-                    db.session(session -> session.doWork(connection -> {
-                        final String raw = data.getRaw();
-                        final int update = connection.prepareStatement(raw).executeUpdate();
-                        System.err.println("update: " + update);
-                    }));
-                    break;
-                }
+            } else {
+                final List<DBListenerID> connections = new ArrayList<>();
+                connections.add(id);
+                module.sqlCommandStreamConnectionLookup.put(projectID, connections);
             }
-        }, () -> {
-            System.err.println("No module present");
         });
     };
+
+    // todo investigate bug -> sli might not work properly
+    //
+    @Discoverer(packetID = "SessionCommandPacketData", datatype = SessionCommandPacketData.class, protocols = Constants.centralProtocolName)
+    private static final IPacketHandlerBase<SessionCommandPacketData> commandHandler = (data, endpoint, socket, packet, server) -> {
+        final IDBModule module = DBModule.ton.orElseThrow().dbModule();
+        final IDatabaseAccessPoint db = module.loadDatabase(data.getDbID(), DatabaseAccessPointLoadConfig.builder().build());
+        switch (data.getType()) {
+            case PULL -> {
+                db.session(session -> session.doWork(connection -> {
+                    final String raw = data.getRaw();
+                    final String databaseID = data.getDbID();
+                    final ResultSet query = connection.prepareStatement(raw).executeQuery();
+                    final List<Document> set = DBUtilities.resultSetToList(query);
+
+                    // todo NullPointerException
+                    System.err.println("data.getDbID(): " + data.getDbID());
+                    final List<DBListenerID> listeningConnections = module.sqlCommandStreamConnectionLookup().get(data.getDbID());
+
+                    final Client client = Client.builder().type(ClientType.USER).id("implement..").username("implement..").build();
+                    final String errormessage = "implement..";
+                    final List<Column> columns = new ArrayList<>();
+                    final List<Row> rows = new ArrayList<>();
+                    final boolean success = true;
+
+                    set.forEach(document -> System.err.println("~ " + document.toSlimString()));
+
+                    listeningConnections.forEach(id -> {
+                        switch (id.type()) {
+                            case SOCKET -> {
+                                DBModule.ton.orElseThrow().netModule().getSocketServer().getSessionManager().getSessions().forEach(ssl -> {
+                                    System.err.println("checking ssl: " + ssl.getId());
+                                    final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(ssl);
+                                    if (sli != null) {
+                                        if (sli.getSessionID().equals(id.id())) {
+                                            System.err.println("pushing to ssl:" + ssl);
+                                            ssl.push(SQLCommandQueryResponsePacketData.builder()
+                                                    .databaseID(databaseID)
+                                                    .columns(columns)
+                                                    .rows(rows)
+                                                    .errormessage(errormessage)
+                                                    .sql(raw)
+                                                    .success(success)
+                                                    .client(client)
+                                                    .build());
+                                        }
+                                    } else {
+                                        System.err.printf("SLI of SSL '%s' is null %n", ssl.getId());
+                                    }
+                                });
+                            }
+                            case VIRTUAL -> {
+                                // todo add method to handle virtual connections
+                            }
+                        }
+                    });
+                }));
+            }
+            case PUSH -> {
+                System.out.println("push");
+                db.session(session -> session.doWork(connection -> {
+                    final String raw = data.getRaw();
+                    final int update = connection.prepareStatement(raw).executeUpdate();
+                    System.err.println("update: " + update);
+                }));
+            }
+        }
+    };
+
+    private static Optional<ITon> ton = Optional.empty();
 
     private final List<IDatabaseAccessPoint> activeDatabases = new ArrayList<>();
 
@@ -88,7 +157,37 @@ public class DBModule implements IDBModule {
 
     private final DBConfig config = DBConfig.builder().build();
 
+    /**
+     * todo replace UUID with better datatype -> {
+     *      id, type: VIRTUAL | DEVICE
+     *  }
+     * <p>
+     * todo make english great again c.c
+     * Contains a list of databases (NOT sessions) and their related connections,
+     * who listen on sql commands happening to the databases.
+     */
+    @Getter
+    private final Map<String, List<DBListenerID>> sqlCommandStreamConnectionLookup = new HashMap<>();
+
     private SessionFactory rootSessionFactory;
+
+    /**
+     * todo implement loose socket closing detection
+     * this method will only be called if a certain amount of keep-alive packets failed
+     * As described here https://stackoverflow.com/questions/10240694/java-socket-api-how-to-tell-if-a-connection-has-been-closed#:~:text=isConnected()%20tells%20you%20whether,you%20have%2C%20it%20returns%20false
+     * TCP doesn't now the state of its connection -> there is no way to determine whether a client has disconnected or not
+     * <p>
+     * Quote:
+     * " On the contrary: it was deliberate. Previous protocol suites such as SNA had a 'dial tone'.
+     * TCP was designed to survive a nuclear war, and, more trivially, router downs and ups: hence the complete
+     * absence of anything like a dial tone, connection status, etc.;
+     * and it is also why TCP keepalive is described in the RFCs as a controversial feature, and why it is always off by default.
+     * TCP is still with us. SNA? IPX? ISO? Not. They got it right. "
+     * by https://stackoverflow.com/users/207421/user207421
+     */
+    @EventListener
+    private static void onSessionClose() {
+    }
 
     @Override
     public void boot(ITon api, @NotNull Module<ITon> module, IEngine<ITon> manager) {
@@ -100,7 +199,7 @@ public class DBModule implements IDBModule {
     @Override
     public void uninstall(ITon api, @NotNull Module<ITon> module, IEngine<ITon> manager) {
         IDBModule.super.uninstall(api, module, manager);
-        this.ton = null;
+        this.ton = Optional.empty();
     }
 
     @Override
@@ -108,6 +207,8 @@ public class DBModule implements IDBModule {
         final Optional<IDatabaseAccessPoint> opt = this.activeDatabases.stream().filter(db -> db.getID().equals(dbID)).findFirst();
         final AtomicReference<IDatabaseAccessPoint> ref = new AtomicReference<>();
         opt.ifPresentOrElse(ref::set, () -> {
+            // todo fire event
+            // The database isn't loaded yet, load it
             final Configuration hibernateConfig = new Configuration()
                     .setProperty("hibernate.connection.driver_class", config.getDriver())
                     .setProperty("hibernate.connection.url", "jdbc:h2:" + this.config.baseDirectory() + dbID)

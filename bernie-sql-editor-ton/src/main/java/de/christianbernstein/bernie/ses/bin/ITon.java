@@ -16,6 +16,8 @@ package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.ses.auth.AuthModule;
 import de.christianbernstein.bernie.ses.auth.IAuthModule;
+import de.christianbernstein.bernie.ses.db.DBModule;
+import de.christianbernstein.bernie.ses.db.IDBModule;
 import de.christianbernstein.bernie.ses.flow.FlowModule;
 import de.christianbernstein.bernie.ses.flow.IFlowModule;
 import de.christianbernstein.bernie.ses.net.INetModule;
@@ -66,6 +68,11 @@ public interface ITon extends ITonBase<ITon>, IFluently<ITon> {
      @NonNull
      default IProjectModule projectModule() {
           return this.require(ProjectModule.class, "project_module");
+     }
+
+     @NonNull
+     default IDBModule dbModule() {
+          return this.require(DBModule.class, "db_module");
      }
 }
 

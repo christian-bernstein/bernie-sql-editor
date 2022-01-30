@@ -25,14 +25,13 @@ import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicPara
 /**
  * @author Christian Bernstein
  */
-@UtilityClass
 public class Console {
 
     @UseTon
-    private ITon ton;
+    private static ITon ton;
 
     @AutoExec
-    private void console() {
+    private static void console() {
         final GloriaAPI.IGloria gloria = new GloriaAPI.Gloria("ton-zentral-io");
 
         // todo create annotation for adding the console classes
