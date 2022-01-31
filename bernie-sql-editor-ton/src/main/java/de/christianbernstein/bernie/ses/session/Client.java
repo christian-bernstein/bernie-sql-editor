@@ -1,4 +1,4 @@
-package de.christianbernstein.bernie.ses;
+package de.christianbernstein.bernie.ses.session;
 
 import lombok.Builder;
 import lombok.Data;

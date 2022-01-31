@@ -1,6 +1,6 @@
 package de.christianbernstein.bernie.ses.db.out;
 
-import de.christianbernstein.bernie.ses.Client;
+import de.christianbernstein.bernie.ses.session.Client;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
 import de.christianbernstein.bernie.shared.discovery.websocket.PacketMeta;

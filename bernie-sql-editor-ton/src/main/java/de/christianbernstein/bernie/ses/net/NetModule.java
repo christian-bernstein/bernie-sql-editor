@@ -17,12 +17,11 @@ package de.christianbernstein.bernie.ses.net;
 
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
+import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
 import de.christianbernstein.bernie.shared.discovery.websocket.SocketShutdownReason;
 import de.christianbernstein.bernie.shared.discovery.websocket.packets.SocketSwitchProtocolDataPacket;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.ServerConfiguration;
-import de.christianbernstein.bernie.shared.discovery.websocket.server.SocketPreShutdownEvent;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.StandaloneSocketServer;
-import de.christianbernstein.bernie.shared.event.EventAPI;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.module.Module;
 import lombok.NonNull;

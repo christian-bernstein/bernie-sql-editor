@@ -15,8 +15,8 @@
 
 package de.christianbernstein.bernie.ses.db;
 
-import de.christianbernstein.bernie.ses.Client;
-import de.christianbernstein.bernie.ses.ClientType;
+import de.christianbernstein.bernie.ses.session.Client;
+import de.christianbernstein.bernie.ses.session.ClientType;
 import de.christianbernstein.bernie.ses.RegisterEventClass;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
@@ -27,7 +27,6 @@ import de.christianbernstein.bernie.ses.db.out.SQLCommandQueryResponsePacketData
 import de.christianbernstein.bernie.ses.net.SocketLaneIdentifyingAttachment;
 import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
 import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
-import de.christianbernstein.bernie.shared.discovery.websocket.SocketIdentifyingAttachment;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.SocketPreShutdownEvent;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.SocketServerLane;
 import de.christianbernstein.bernie.shared.document.Document;
@@ -40,7 +39,6 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.java_websocket.WebSocket;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;

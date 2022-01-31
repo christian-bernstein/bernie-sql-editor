@@ -18,6 +18,7 @@ package de.christianbernstein.bernie.ses.net;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.auth.AuthModule;
 import de.christianbernstein.bernie.ses.db.DBModule;
+import de.christianbernstein.bernie.ses.discoverer.BaseDiscoverers;
 import de.christianbernstein.bernie.ses.flow.FlowModule;
 import de.christianbernstein.bernie.ses.project.ProjectModule;
 import de.christianbernstein.bernie.ses.session.SessionModule;
@@ -70,6 +71,7 @@ public class Protocols {
                     .protocolID("base")
                     .isBaseProtocol(true)
                     .build()
+                    .loadFromClass(BaseDiscoverers.class)
                     // todo register base protocol stuff
                     )
             .build();
