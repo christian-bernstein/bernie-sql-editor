@@ -11,7 +11,6 @@ import de.christianbernstein.bernie.shared.gloria.GloriaAPI.Statement;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.misc.Utils;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,12 +18,14 @@ import java.io.InputStreamReader;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.*;
-import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicParameterAnnotations.*;
+import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.Command;
+import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicParameterAnnotations.APISession;
+import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicParameterAnnotations.APIStatement;
 
 /**
  * @author Christian Bernstein
  */
+@SuppressWarnings("unused")
 public class Console {
 
     @UseTon
@@ -90,11 +91,12 @@ public class Console {
     }
 
     @Command(path = "debug", literal = "createProject", aliases = "cP")
-    private void createProject(@NonNull String title, boolean stator) {
+    private void createProject(@NonNull String title, boolean stator, @Flow String description) {
         ton.projectModule().createProject(ProjectCreationData.builder()
                 .creatorUserID(ton.userModule().root().getID())
                 .title(title)
                 .stator(stator)
+                .description(description)
                 .build());
     }
 }

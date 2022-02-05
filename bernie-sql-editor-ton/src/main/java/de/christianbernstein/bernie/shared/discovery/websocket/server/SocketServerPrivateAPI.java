@@ -26,6 +26,7 @@ import de.christianbernstein.bernie.shared.tailwind.GateDefinition;
 import de.christianbernstein.bernie.shared.tailwind.PrivateAPI;
 import lombok.NonNull;
 
+import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 public class SocketServerPrivateAPI extends PrivateAPI {
@@ -103,9 +104,10 @@ public class SocketServerPrivateAPI extends PrivateAPI {
     private void handlePacket(@NonNull final Protocol protocol, @NonNull final OnMessageSocketContext context, @NonNull final String packetDataID, @NonNull final JsonElement jsonData, @NonNull final String message) {
         final SessionProtocolData attachment = protocol.attachment();
         final Class<? extends PacketData> dataPatternClass = attachment.packetRegistry().get(packetDataID);
+        PacketData data = null;
+        Packet<?> packet = this.serialAdapter.deserialize(message, Packet.class);
         if (dataPatternClass != null) {
-            final PacketData data = this.serialAdapter.deserialize(jsonData.toString(), dataPatternClass);
-            final Packet<?> packet = this.serialAdapter.deserialize(message, Packet.class);
+            data = this.serialAdapter.deserialize(jsonData.toString(), dataPatternClass);
             boolean proceed = true;
             for (@NonNull final IPacketInterceptor interceptor : context.session().getInterceptors()) {
                 if (!interceptor.intercept(packet, data, context.session())) {
@@ -123,7 +125,13 @@ public class SocketServerPrivateAPI extends PrivateAPI {
             }
         } else {
             // dataPatternClass is null
-            System.err.printf("DataPatternClass is null, but shouldn't be: '%s'%n", packetDataID);
+            // System.err.printf("DataPatternClass is null, but shouldn't be: '%s'%n", packetDataID);
+
+            ConsoleLogger.def().log(
+                    ConsoleLogger.LogType.ERROR,
+                    "Socket Server Private-API",
+                    String.format("DataPatternClass is null: '%s' from requested proto '%s' in actual proto '%s'", packetDataID, packet.getProtocol(), Objects.requireNonNull(context.session().getProtocolController().getActiveProtocol()).id())
+            );
         }
     }
 }

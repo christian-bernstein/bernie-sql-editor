@@ -117,9 +117,6 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
         @NonNull final String id = this.configuration.websocketIDGenerator().apply(this, webSocket);
         final SocketIdentifyingAttachment attachment = new SocketIdentifyingAttachment(id);
         webSocket.setAttachment(attachment);
-
-        System.err.println("Setting SocketIdentifyingAttachment: " + attachment);
-
         this.sockets.add(webSocket);
         final SocketServerLane session = this.configuration.socketSessionGenerator().apply(webSocket);
         this.socketSessionManager.addSession(session, socketSession -> {

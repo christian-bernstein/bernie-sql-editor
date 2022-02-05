@@ -15,26 +15,7 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
-import de.christianbernstein.bernie.ses.AutoExec;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.Command;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ISession;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicParameterAnnotations.APISession;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicParameterAnnotations.APIStatement;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Flow;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.Statement;
-import de.christianbernstein.bernie.ses.project.ProjectCreationData;
-import de.christianbernstein.bernie.ses.project.ProjectData;
-import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
-import de.christianbernstein.bernie.shared.misc.Utils;
-import lombok.NonNull;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * This is the bootstrap class for the embedded ton server.

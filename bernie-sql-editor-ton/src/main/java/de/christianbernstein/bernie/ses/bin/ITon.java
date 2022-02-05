@@ -75,4 +75,3 @@ public interface ITon extends ITonBase<ITon>, IFluently<ITon> {
           return this.require(DBModule.class, "db_module");
      }
 }
-

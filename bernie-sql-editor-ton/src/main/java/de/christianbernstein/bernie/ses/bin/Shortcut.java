@@ -15,7 +15,9 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
+import de.christianbernstein.bernie.ses.UseTon;
 import de.christianbernstein.bernie.ses.net.SocketLaneIdentifyingAttachment;
+import de.christianbernstein.bernie.ses.session.Session;
 import de.christianbernstein.bernie.shared.discovery.websocket.SocketIdentifyingAttachment;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.SocketServerLane;
 import lombok.NonNull;
@@ -28,8 +30,16 @@ import org.java_websocket.WebSocket;
 @UtilityClass
 public final class Shortcut {
 
+    @UseTon
+    private ITon ton;
+
     public SocketLaneIdentifyingAttachment useSLI(@NonNull SocketServerLane lane) {
         return lane.getAttachments().get(SocketLaneIdentifyingAttachment.ATTACHMENT_NAME);
+    }
+
+    public Session useUserSession(@NonNull SocketServerLane lane) {
+        final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(lane);
+        return ton.sessionModule().getOrCreateSession(sli.getSessionID());
     }
 
     public String useLaneID(@NonNull SocketServerLane lane) {

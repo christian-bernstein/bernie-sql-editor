@@ -19,9 +19,12 @@ import de.christianbernstein.bernie.shared.document.Document;
 import de.christianbernstein.bernie.shared.document.IDocument;
 import de.christianbernstein.bernie.shared.event.EventAPI;
 import de.christianbernstein.bernie.shared.misc.BoolAccumulator;
+import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
+import de.christianbernstein.bernie.shared.misc.Utils;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -296,10 +299,18 @@ public class Engine<T> implements IEngine<T> {
                     .build();
             if (accumulator.get()) {
                 // Module can be loaded
-                module.fireInternalContext(BasicModuleContextType.ENGAGE.getBaseType(), this.getApi(), module, this);
-                module.getBootloader().fire(this.getApi(), module, this);
-                module.setLifecycle(Lifecycle.ENGAGED);
-                System.err.printf("Module engaged '%s'\n", moduleID);
+                final Duration loadTiming = Utils.durationMonitoredExecution(() -> {
+                    module.fireInternalContext(BasicModuleContextType.ENGAGE.getBaseType(), this.getApi(), module, this);
+                    module.getBootloader().fire(this.getApi(), module, this);
+                    module.setLifecycle(Lifecycle.ENGAGED);
+                });
+
+                ConsoleLogger.def().log(
+                        ConsoleLogger.LogType.INFO,
+                        "Module Engine",
+                        String.format("Module engaged '%s' in %sms", moduleID, loadTiming.toMillis())
+                );
+
                 this.updateCyclic(Engine.MAX_CYCLIC_UPDATES);
             } else {
                 // Module cannot be loaded
