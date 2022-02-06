@@ -40,7 +40,7 @@ public interface IProjectModule extends IBaseModuleClass<ITon> {
 
     List<ProjectData> getProjectsFromOwner(@NonNull UUID ownerUserID);
 
-    void createProject(@NonNull ProjectCreationData data);
+    void createProject(@NonNull ProjectCreationData data) throws ProjectAlreadyExistException;
 
     boolean containsProject(@NonNull UUID id);
 

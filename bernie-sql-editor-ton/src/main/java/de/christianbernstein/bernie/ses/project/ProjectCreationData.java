@@ -41,8 +41,8 @@ public class ProjectCreationData {
     private boolean stator;
 
     @Builder.Default
-    private String dbInitiator = Constants.defaultDbInitiatorID;
+    private String dbFactoryID = Constants.defaultDbFactoryID;
 
     @Builder.Default
-    private Map<String, Object> dbInitiatorParams = new HashMap<>();
+    private Map<String, Object> dbFactoryParams = new HashMap<>();
 }

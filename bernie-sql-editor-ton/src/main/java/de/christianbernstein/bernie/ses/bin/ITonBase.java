@@ -54,4 +54,8 @@ public interface ITonBase<Impl extends ITon> {
      */
     IDocument<Document> arguments();
 
+    Impl ifInMode(TonMode mode, Runnable action);
+
+    Impl ifDebug(Runnable action);
+
 }

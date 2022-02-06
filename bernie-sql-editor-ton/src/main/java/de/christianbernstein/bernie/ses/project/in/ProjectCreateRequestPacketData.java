@@ -3,9 +3,12 @@ package de.christianbernstein.bernie.ses.project.in;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
 import de.christianbernstein.bernie.shared.discovery.websocket.PacketMeta;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 /**
  * @author Christian Bernstein
@@ -21,5 +24,9 @@ public class ProjectCreateRequestPacketData extends PacketData {
     private String description;
 
     private boolean stator;
+
+    private String dbFactoryID;
+
+    private Map<String, Object> dbFactoryParams;
 
 }

@@ -6,12 +6,16 @@ import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.ses.bin.Shortcut;
 import de.christianbernstein.bernie.ses.net.SocketLaneIdentifyingAttachment;
 import de.christianbernstein.bernie.ses.project.IProjectModule;
+import de.christianbernstein.bernie.ses.project.ProjectAlreadyExistException;
+import de.christianbernstein.bernie.ses.project.ProjectCreationData;
 import de.christianbernstein.bernie.ses.project.ProjectData;
 import de.christianbernstein.bernie.ses.project.in.CheckProjectExistenceRequestPacketData;
 import de.christianbernstein.bernie.ses.project.in.ListProjectPacketData;
 import de.christianbernstein.bernie.ses.project.in.ProjectCreateRequestPacketData;
 import de.christianbernstein.bernie.ses.project.out.CheckProjectExistenceResponsePacketData;
 import de.christianbernstein.bernie.ses.project.out.ListProjectResponsePacketData;
+import de.christianbernstein.bernie.ses.project.out.ProjectCreateResponsePacketData;
+import de.christianbernstein.bernie.ses.project.out.ProjectCreationErrorPacketData;
 import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
 import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
 import lombok.experimental.UtilityClass;
@@ -45,8 +49,33 @@ public class ProjectModuleDiscoverers {
         endpoint.respond(new CheckProjectExistenceResponsePacketData(match), packet.getId());
     };
 
+    /**
+     * todo add project password and security level -> private access, intermediate access (group administrators can see)
+     * todo add permission checking
+     * todo if stator -> start the database
+     */
     @Discoverer(packetID = "ProjectCreateRequestPacketData", datatype = ProjectCreateRequestPacketData.class, protocols = Constants.centralProtocolName)
-    private final IPacketHandlerBase<CheckProjectExistenceRequestPacketData> createProjectHandler = (data, endpoint, socket, packet, server) -> {
+    private final IPacketHandlerBase<ProjectCreateRequestPacketData> createProjectHandler = (data, endpoint, socket, packet, server) -> {
+        final IProjectModule projectModule = ton.projectModule();
+        final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
+        final UUID ownerUUID = ton.getUserFromSessionID(sli.getSessionID()).getID();
+        final String description = data.getDescription();
+        final boolean stator = data.isStator();
 
+        try {
+            projectModule.createProject(ProjectCreationData.builder()
+                    .title(data.getTitle())
+                    .description(description)
+                    .creatorUserID(ownerUUID)
+                    .dbFactoryID(data.getDbFactoryID())
+                    .dbFactoryParams(data.getDbFactoryParams())
+                    .stator(stator)
+                    .build());
+
+            packet.respond(new ProjectCreateResponsePacketData(), endpoint);
+        } catch (final ProjectAlreadyExistException e) {
+            ton.ifDebug(e::printStackTrace);
+            packet.respond(new ProjectCreationErrorPacketData("ProjectAlreadyExistException", e.getMessage(), e), endpoint);
+        }
     };
 }

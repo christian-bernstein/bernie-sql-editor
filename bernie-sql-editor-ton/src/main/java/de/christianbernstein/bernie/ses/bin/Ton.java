@@ -112,6 +112,19 @@ public class Ton implements ITon {
     }
 
     @Override
+    public ITon ifInMode(TonMode mode, Runnable action) {
+        if (this.configuration().getMode() == mode) {
+            action.run();
+        }
+        return this;
+    }
+
+    @Override
+    public ITon ifDebug(Runnable action) {
+        return this.ifInMode(TonMode.DEBUG, action);
+    }
+
+    @Override
     public IUser getUserFromSessionID(@NonNull UUID sessionID) {
         final Session session = this.sessionModule().getOrCreateSession(sessionID);
         return this.userModule().getUser(session.getCredentials().getUsername());

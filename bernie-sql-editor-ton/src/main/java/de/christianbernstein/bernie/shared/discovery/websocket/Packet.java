@@ -16,9 +16,13 @@
 package de.christianbernstein.bernie.shared.discovery.websocket;
 
 import com.google.gson.annotations.Expose;
+import de.christianbernstein.bernie.shared.discovery.ITransportLane;
+import de.christianbernstein.bernie.shared.discovery.websocket.server.SocketServerLane;
+import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
 import java.util.Date;
 
@@ -31,6 +35,7 @@ public class Packet<T extends PacketData> {
 
     private Date timestamp;
 
+    // The type of data
     private String packetID;
 
     // the id of the packet, can be used to handle return packets
@@ -44,5 +49,13 @@ public class Packet<T extends PacketData> {
     public T getData() {
         System.err.println("data can't be deserialized, this method returns null. Use 'data'-variable instead.");
         return this.data;
+    }
+
+    public <In extends PacketData> void respond(@NonNull In message, @NonNull final SocketServerLane lane) {
+        if (this.type != PacketType.REQUEST) {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.ERROR, "packet", "tried to respond to non-request packet");
+            return;
+        }
+        lane.push(message, this.id, PacketType.RESPONSE);
     }
 }

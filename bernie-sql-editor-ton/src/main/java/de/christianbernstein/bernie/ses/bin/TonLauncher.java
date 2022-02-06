@@ -31,7 +31,7 @@ public class TonLauncher {
 
     public static void main(String[] args) {
         new Ton(Document.fromArgumentsArray(args)).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
-                .mode(TonMode.MOCK)
+                .mode(TonMode.DEBUG)
                 .workingDirectory("./ton/")
                 .build()
         );

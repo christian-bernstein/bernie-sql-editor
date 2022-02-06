@@ -2,6 +2,7 @@ package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.ses.annotations.AutoExec;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
+import de.christianbernstein.bernie.ses.project.ProjectAlreadyExistException;
 import de.christianbernstein.bernie.ses.project.ProjectCreationData;
 import de.christianbernstein.bernie.ses.project.ProjectData;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI;
@@ -92,11 +93,15 @@ public class Console {
 
     @Command(path = "debug", literal = "createProject", aliases = "cP")
     private void createProject(@NonNull String title, boolean stator, @Flow String description) {
-        ton.projectModule().createProject(ProjectCreationData.builder()
-                .creatorUserID(ton.userModule().root().getID())
-                .title(title)
-                .stator(stator)
-                .description(description)
-                .build());
+        try {
+            ton.projectModule().createProject(ProjectCreationData.builder()
+                    .creatorUserID(ton.userModule().root().getID())
+                    .title(title)
+                    .stator(stator)
+                    .description(description)
+                    .build());
+        } catch (ProjectAlreadyExistException e) {
+            e.printStackTrace();
+        }
     }
 }

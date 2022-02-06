@@ -74,10 +74,11 @@ public class ProjectModule implements IProjectModule {
     }
 
     @Override
-    public void createProject(@NonNull ProjectCreationData data) {
+    public void createProject(@NonNull ProjectCreationData data) throws ProjectAlreadyExistException {
         this.projectRepository.get().save(ProjectData.builder()
                 .title(data.getTitle())
                 .creatorUserID(data.getCreatorUserID())
+                .description(data.getDescription())
                 .stator(data.isStator())
                 .edits(0)
                 .id(UUID.randomUUID())
