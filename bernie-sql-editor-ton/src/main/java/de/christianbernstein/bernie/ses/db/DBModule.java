@@ -17,7 +17,7 @@ package de.christianbernstein.bernie.ses.db;
 
 import de.christianbernstein.bernie.ses.session.Client;
 import de.christianbernstein.bernie.ses.session.ClientType;
-import de.christianbernstein.bernie.ses.RegisterEventClass;
+import de.christianbernstein.bernie.ses.annotations.RegisterEventClass;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.ses.bin.Shortcut;

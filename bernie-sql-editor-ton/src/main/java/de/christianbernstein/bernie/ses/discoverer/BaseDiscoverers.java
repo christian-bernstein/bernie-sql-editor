@@ -1,6 +1,6 @@
 package de.christianbernstein.bernie.ses.discoverer;
 
-import de.christianbernstein.bernie.ses.UseTon;
+import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.ses.net.in.RequestServerFootprintPacketData;
 import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;

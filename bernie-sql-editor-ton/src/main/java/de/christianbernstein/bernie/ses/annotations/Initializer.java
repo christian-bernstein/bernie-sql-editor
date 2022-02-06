@@ -1,4 +1,4 @@
-package de.christianbernstein.bernie.ses;
+package de.christianbernstein.bernie.ses.annotations;
 
 import java.lang.annotation.*;
 

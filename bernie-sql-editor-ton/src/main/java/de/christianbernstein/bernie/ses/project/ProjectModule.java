@@ -42,15 +42,16 @@ public class ProjectModule implements IProjectModule {
 
     private static Optional<ProjectModule> instance = Optional.empty();
 
-    @Discoverer(packetID = "ListProjectPacketData", datatype = ListProjectPacketData.class, protocols = Constants.centralProtocolName)
-    private static final IPacketHandlerBase<ListProjectPacketData> listProjectHandler = (data, endpoint, socket, packet, server) -> {
-        instance.ifPresentOrElse(module -> {
-            final List<ProjectData> projects = module.getProjectsFromOwner(Shortcut.useSLI(endpoint).getSessionID());
-            endpoint.respond(new ListProjectResponsePacketData(projects), packet.getId());
-        }, () -> {
-            System.err.println("project module instance is empty");
-        });
-    };
+    // todo move to discoverer class
+    // @Discoverer(packetID = "ListProjectPacketData", datatype = ListProjectPacketData.class, protocols = Constants.centralProtocolName)
+    // private static final IPacketHandlerBase<ListProjectPacketData> listProjectHandler = (data, endpoint, socket, packet, server) -> {
+    //     instance.ifPresentOrElse(module -> {
+    //         final List<ProjectData> projects = module.getProjectsFromOwner(Shortcut.useSLI(endpoint).getSessionID());
+    //         endpoint.respond(new ListProjectResponsePacketData(projects), packet.getId());
+    //     }, () -> {
+    //         System.err.println("project module instance is empty");
+    //     });
+    // };
 
     private static Optional<ITon> ton = Optional.empty();
 
@@ -65,7 +66,7 @@ public class ProjectModule implements IProjectModule {
     }
 
     /**
-     * todo select the projects by native query, not just get all.
+     * todo select the projects by native query, not just get all. !IMPORTANT BUG FIX!!!
      */
     @Override
     public List<ProjectData> getProjectsFromOwner(@NonNull UUID ownerUserID) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Christian Bernstein
+ * Copyright (C) 2022 Christian Bernstein
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,15 +13,16 @@
  *
  */
 
-package de.christianbernstein.bernie.ses;
+package de.christianbernstein.bernie.ses.annotations;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * @author Christian Bernstein
  */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface UseTon {
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AutoExec {
 }

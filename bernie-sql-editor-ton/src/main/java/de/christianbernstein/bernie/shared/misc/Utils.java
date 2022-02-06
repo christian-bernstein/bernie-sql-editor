@@ -335,7 +335,7 @@ public class Utils {
     }
 
     @NotNull
-    public static String border(@NonNull String text, @NotNull char[] font, @NotNull int[] margins) {
+    public static String border(@NonNull String text, char[] font, int[] margins) {
         final String[] lines = Arrays.stream(text.split("\n")).map(String::trim).toArray(String[]::new);
         final int maxLineLen = Arrays.stream(lines).mapToInt(String::length).max().orElse(0);
         final StringBuilder sb = new StringBuilder();

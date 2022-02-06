@@ -25,11 +25,12 @@ public class TonConfiguration {
 
     @Builder.Default
     private final String[][] jraPhaseOrder = new String[][]{
-            // todo is this the right order?
             {Constants.constructJRAPhase},
             {Constants.useTonJRAPhase},
+            {Constants.registerEventClassJRAPhase},
             {Constants.moduleJRAPhase},
-            {Constants.flowJRAPhase}
+            {Constants.flowJRAPhase},
+            {Constants.autoEcexJRAPhase}
     };
 
     @Builder.Default

@@ -2,8 +2,9 @@
 ___
 
 Create an event handler class using `static` context
+
 ```java
-import de.christianbernstein.bernie.ses.RegisterEventClass;
+import de.christianbernstein.bernie.ses.annotations.RegisterEventClass;
 import de.christianbernstein.bernie.shared.union.Event;
 import de.christianbernstein.bernie.shared.union.EventListener;
 
@@ -24,8 +25,8 @@ Working with locally stored variables can create problems, if the construct-phas
 the class is instantiated more than once.
 
 ```java
-import de.christianbernstein.bernie.ses.Construct;
-import de.christianbernstein.bernie.ses.RegisterEventClass;
+import de.christianbernstein.bernie.ses.annotations.Construct;
+import de.christianbernstein.bernie.ses.annotations.RegisterEventClass;
 import de.christianbernstein.bernie.shared.misc.Instance;
 import de.christianbernstein.bernie.shared.union.Event;
 import de.christianbernstein.bernie.shared.union.EventListener;

@@ -15,7 +15,7 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
-import de.christianbernstein.bernie.ses.UseTon;
+import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.net.SocketLaneIdentifyingAttachment;
 import de.christianbernstein.bernie.ses.session.Session;
 import de.christianbernstein.bernie.shared.discovery.websocket.SocketIdentifyingAttachment;

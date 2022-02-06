@@ -1,10 +1,9 @@
 package de.christianbernstein.bernie.ses.processors;
 
-import de.christianbernstein.bernie.ses.Construct;
-import de.christianbernstein.bernie.ses.Initializer;
+import de.christianbernstein.bernie.ses.annotations.Construct;
+import de.christianbernstein.bernie.ses.annotations.Initializer;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.shared.misc.Instance;
-import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
 import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI.Processors.IAnnotationAtClassProcessor;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;

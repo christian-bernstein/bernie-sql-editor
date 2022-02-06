@@ -15,6 +15,8 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
+import de.christianbernstein.bernie.shared.document.Document;
+
 import java.util.Optional;
 
 /**
@@ -28,16 +30,9 @@ public class TonLauncher {
     private static Optional<ITon> ton = Optional.empty();
 
     public static void main(String[] args) {
-        new Ton().$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
+        new Ton(Document.fromArgumentsArray(args)).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
                 .mode(TonMode.MOCK)
                 .workingDirectory("./ton/")
-                .jraPhaseOrder(new String[][]{
-                        {Constants.constructJRAPhase},
-                        {Constants.useTonJRAPhase},
-                        {Constants.registerEventClassJRAPhase},
-                        {Constants.moduleJRAPhase},
-                        {Constants.flowJRAPhase},
-                        {Constants.autoEcexJRAPhase}})
                 .build()
         );
     }

@@ -17,7 +17,7 @@ package de.christianbernstein.bernie.ses.processors;
 
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.ses.UseTon;
+import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.shared.module.ModuleDefinition;
 import de.christianbernstein.bernie.shared.module.Module;
 import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;

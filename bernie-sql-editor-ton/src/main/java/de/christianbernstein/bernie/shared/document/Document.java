@@ -93,6 +93,10 @@ public class Document implements IDocument<Document> {
 
     @SuppressWarnings("unused")
     public static Document fromArguments(String... args) {
+        return Document.fromArgumentsArray(args);
+    }
+
+    public static Document fromArgumentsArray(String[] args) {
         final Document document = new Document();
         for (String arg : args) {
             arg = arg.replaceFirst("(-)*", "");
@@ -105,8 +109,6 @@ public class Document implements IDocument<Document> {
         }
         return document;
     }
-
-
 
     @Override
     public @NonNull Document putObject(String key, Object value) {

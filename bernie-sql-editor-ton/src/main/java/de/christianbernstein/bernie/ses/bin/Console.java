@@ -1,7 +1,7 @@
 package de.christianbernstein.bernie.ses.bin;
 
-import de.christianbernstein.bernie.ses.AutoExec;
-import de.christianbernstein.bernie.ses.UseTon;
+import de.christianbernstein.bernie.ses.annotations.AutoExec;
+import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.project.ProjectCreationData;
 import de.christianbernstein.bernie.ses.project.ProjectData;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI;

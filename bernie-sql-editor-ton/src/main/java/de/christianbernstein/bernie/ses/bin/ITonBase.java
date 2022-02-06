@@ -16,6 +16,8 @@
 package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.shared.db.H2Repository;
+import de.christianbernstein.bernie.shared.document.Document;
+import de.christianbernstein.bernie.shared.document.IDocument;
 import de.christianbernstein.bernie.shared.event.EventAPI;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
@@ -46,5 +48,10 @@ public interface ITonBase<Impl extends ITon> {
     <ModuleClass> ModuleClass require(@NonNull Class<ModuleClass> baseClass, @NonNull String module);
 
     <T, ID extends Serializable> Centralized<H2Repository<T, ID>> db(@NonNull Class<T> type);
+
+    /**
+     * main arguments will be passed to this variable
+     */
+    IDocument<Document> arguments();
 
 }

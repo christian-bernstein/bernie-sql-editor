@@ -15,9 +15,9 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
+import de.christianbernstein.bernie.ses.bin.*;
 import de.christianbernstein.bernie.ses.session.Session;
 import de.christianbernstein.bernie.ses.user.IUser;
-import de.christianbernstein.bernie.shared.event.EventAPI;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.db.H2Repository;
 import de.christianbernstein.bernie.shared.document.Document;
@@ -30,11 +30,12 @@ import de.christianbernstein.bernie.shared.union.IEventManager;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -43,6 +44,8 @@ import java.util.UUID;
 @Getter
 @Accessors(fluent = true)
 public class Ton implements ITon {
+
+    private final Document arguments;
 
     private IEngine<ITon> engine;
 
@@ -53,6 +56,14 @@ public class Ton implements ITon {
     private TonConfiguration configuration;
 
     private IEventManager eventManager;
+
+    public Ton() {
+        this.arguments = Document.empty();
+    }
+
+    public Ton(@Nullable final Document arguments) {
+        this.arguments = Objects.requireNonNullElse(arguments, Document.empty());
+    }
 
     @Override
     public ITon start(@NonNull final TonConfiguration configuration) {
@@ -91,6 +102,10 @@ public class Ton implements ITon {
                 .getInstance();
     }
 
+    /**
+     * todo save variable to local map
+     * Provides access to internal databases.
+     */
     @Override
     public <T, ID extends Serializable> Centralized<H2Repository<T, ID>> db(@NonNull Class<T> type) {
         return Centralized.constify(new H2Repository<>(type, this.configuration().getInternalDatabaseConfiguration()));
@@ -108,10 +123,7 @@ public class Ton implements ITon {
     }
 
     private void initJRA() {
-        this.jra = JavaReflectiveAnnotationAPI.JRA.builder()
-                .path(Constants.rootPackage)
-                .classSupplier(JavaReflectiveAnnotationAPI.Defaults.orgReflectionsClassSupplier)
-                .build();
+        this.jra = JavaReflectiveAnnotationAPI.JRA.builder().path(Constants.rootPackage).classSupplier(JavaReflectiveAnnotationAPI.Defaults.orgReflectionsClassSupplier).build();
         // Load and cache the classes from the classpath
         jra.init();
         // Execute the phases in given order
