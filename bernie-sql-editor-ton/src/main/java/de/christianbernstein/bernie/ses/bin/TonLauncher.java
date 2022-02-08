@@ -16,8 +16,11 @@
 package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.shared.document.Document;
+import org.apache.logging.log4j.spi.LoggerContext;
 
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is the bootstrap class for the embedded ton server.
@@ -30,6 +33,11 @@ public class TonLauncher {
     private static Optional<ITon> ton = Optional.empty();
 
     public static void main(String[] args) {
+
+        Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
+        Logger.getLogger("org.reflections").setLevel(Level.SEVERE);
+
+
         new Ton(Document.fromArgumentsArray(args)).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
                 .mode(TonMode.DEBUG)
                 .workingDirectory("./ton/")

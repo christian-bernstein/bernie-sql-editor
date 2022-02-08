@@ -192,3 +192,7 @@ SELECT 'found' AS search_result ELSE SELECT 'not found' AS search_result; [42000
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "INFORMATION_SCHEMA" nicht gefunden
 Table "INFORMATION_SCHEMA" not found; SQL statement:
 SELECT * FROM INFORMATION_SCHEMA [42102-200]
+2022-02-06 16:38:08 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SHOW TABLES FROM[*]"; erwartet "identifier"
+Syntax error in SQL statement "SHOW TABLES FROM[*]"; expected "identifier"; SQL statement:
+show tables from [42001-200]
