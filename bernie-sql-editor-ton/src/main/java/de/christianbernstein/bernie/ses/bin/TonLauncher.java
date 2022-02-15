@@ -33,11 +33,6 @@ public class TonLauncher {
     private static Optional<ITon> ton = Optional.empty();
 
     public static void main(String[] args) {
-
-        Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
-        Logger.getLogger("org.reflections").setLevel(Level.SEVERE);
-
-
         new Ton(Document.fromArgumentsArray(args)).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
                 .mode(TonMode.DEBUG)
                 .workingDirectory("./ton/")

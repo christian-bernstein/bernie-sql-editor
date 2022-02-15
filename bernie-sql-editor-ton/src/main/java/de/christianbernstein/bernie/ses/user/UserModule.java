@@ -48,6 +48,16 @@ public class UserModule implements IUserModule {
         this.engine = manager;
         this.repository = new H2Repository<>(UserData.class, this.configuration.getRepositoryConfiguration());
         this.createRootUser();
+
+        System.err.println(this.plainCreateAccount(UserData.builder()
+                .userEntrySetupDate(new Date())
+                .lastActive(new Date())
+                .username("Christian")
+                .firstname("Christian")
+                .lastname("Bernstein")
+                .password("root")
+                .id(UUID.randomUUID())
+                .build()));
     }
 
     @Override
@@ -56,6 +66,9 @@ public class UserModule implements IUserModule {
         this.engine = null;
     }
 
+    /**
+     * todo fix -> returns only true
+     */
     @Override
     public boolean hasAccount(UUID id) {
         final AtomicInteger len = new AtomicInteger();
@@ -65,7 +78,8 @@ public class UserModule implements IUserModule {
             if (set.next()) {
                 len.set(set.getInt("len"));
             } else {
-                throw new RuntimeException("");
+                // todo make better error description
+                throw new RuntimeException("Cannot resolve account id");
             }
         }));
         // Check consistency in table & interpret result
@@ -93,6 +107,7 @@ public class UserModule implements IUserModule {
             this.repository.save(data);
             return UserCreationResult.OK;
         } catch (final Exception e) {
+            e.printStackTrace();
             return UserCreationResult.INTERNAL_ERROR;
         }
     }
