@@ -32,6 +32,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ProjectCreationData {
 
+    @Builder.Default
+    private String id = UUID.randomUUID().toString();
+
     private UUID creatorUserID;
 
     private String title;

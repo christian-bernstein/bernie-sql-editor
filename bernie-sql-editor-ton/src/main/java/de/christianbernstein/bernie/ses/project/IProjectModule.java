@@ -44,4 +44,6 @@ public interface IProjectModule extends IBaseModuleClass<ITon> {
 
     boolean containsProject(@NonNull UUID id);
 
+    void deleteProject(@NonNull UUID id);
+
 }

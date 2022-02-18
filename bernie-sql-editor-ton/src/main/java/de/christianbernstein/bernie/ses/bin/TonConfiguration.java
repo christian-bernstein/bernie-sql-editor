@@ -35,7 +35,7 @@ public class TonConfiguration {
 
     @Builder.Default
     private final H2RepositoryConfiguration internalDatabaseConfiguration = H2RepositoryConfiguration.builder()
-            .hbm2DDLMode(HBM2DDLMode.UPDATE)
+            .hbm2DDLMode(HBM2DDLMode.CREATE)
             .databaseDir("./db/")
             .database("ton")
             .username("root")

@@ -22,11 +22,13 @@ import de.christianbernstein.bernie.ses.bin.Shortcut;
 import de.christianbernstein.bernie.ses.project.in.ListProjectPacketData;
 import de.christianbernstein.bernie.ses.project.out.ListProjectResponsePacketData;
 import de.christianbernstein.bernie.shared.db.H2Repository;
+import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.module.Module;
 import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
 import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import lombok.NonNull;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
@@ -63,6 +65,7 @@ public class ProjectModule implements IProjectModule {
         ton = Optional.of(api);
         instance = Optional.of(this);
         this.projectRepository = api.db(ProjectData.class);
+        this.createInternalDatabaseProject();
     }
 
     /**
@@ -75,13 +78,15 @@ public class ProjectModule implements IProjectModule {
 
     @Override
     public void createProject(@NonNull ProjectCreationData data) throws ProjectAlreadyExistException {
+        final String id = data.getId() == null ? UUID.randomUUID().toString() : data.getId();
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, String.format("Try to create a new project with id '%s'", id));
         this.projectRepository.get().save(ProjectData.builder()
                 .title(data.getTitle())
                 .creatorUserID(data.getCreatorUserID())
                 .description(data.getDescription())
                 .stator(data.isStator())
                 .edits(0)
-                .id(UUID.randomUUID())
+                .id(id)
                 .lastEdited(new Date())
                 .build());
     }
@@ -89,5 +94,35 @@ public class ProjectModule implements IProjectModule {
     @Override
     public boolean containsProject(@NonNull UUID id) {
         return this.projectRepository.get().get(id) != null;
+    }
+
+    @Override
+    public void deleteProject(@NonNull UUID id) {
+        try {
+            this.projectRepository.get().session(session -> session.doWork(connection -> {
+                @Language("H2")
+                final String sql = "delete from %s where id='%s'";
+                final String format = String.format(sql, this.projectRepository.get().getTableName(), id);
+                System.out.println("delete :: " + format);
+                connection.prepareStatement(format).executeUpdate();
+            }));
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // todo this is a debug method and should not be available in production
+    private void createInternalDatabaseProject() {
+        try {
+            this.createProject(ProjectCreationData.builder()
+                    .id("ton")
+                    .title("SES internal infrastructure db")
+                    .creatorUserID(ton.get().userModule().root().getID())
+                    .stator(true)
+                    .description("Automatically generated bridge between SES's internal infrastructure and the SQL-Editor panel. **This is a debug project and should never be generated in production mode.**")
+                    .build());
+        } catch (final ProjectAlreadyExistException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -105,9 +105,11 @@ public class DBModule implements IDBModule {
                 final boolean success = true;
 
                 // todo make more versatile solution -> if result empty -> no columns
-                final Document row = set.get(0);
-                if (row != null) {
-                    row.toMap().keySet().forEach(col -> columns.add(new Column(col)));
+                if (set.size() > 0) {
+                    final Document row = set.get(0);
+                    if (row != null) {
+                        row.toMap().keySet().forEach(col -> columns.add(new Column(col)));
+                    }
                 }
 
                 set.forEach(document -> {
@@ -116,7 +118,6 @@ public class DBModule implements IDBModule {
                     row1.putAll(document.toMap());
                     rows.add(row1);
                 });
-
 
                 listeningConnections.forEach(id -> {
                     switch (id.type()) {

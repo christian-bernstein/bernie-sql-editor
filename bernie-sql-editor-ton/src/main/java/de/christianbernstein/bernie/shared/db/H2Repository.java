@@ -44,7 +44,6 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
         this.initHibernateConfiguration();
     }
 
-
     public @NonNull SessionFactory getSessionFactory() {
         if (this.sessionFactory == null) {
             try {
@@ -74,9 +73,9 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
             transaction.commit();
         } catch (final Exception e) {
             e.printStackTrace();
-            if (transaction != null) {
-                transaction.rollback();
-            }
+            // if (transaction != null) {
+            //     transaction.rollback();
+            // }
         }
         return entity;
     }

@@ -1,6 +1,7 @@
 package de.christianbernstein.bernie.ses.discoverer;
 
 import de.christianbernstein.bernie.ses.annotations.UseTon;
+import de.christianbernstein.bernie.ses.bin.Console;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.ses.bin.Shortcut;
@@ -12,6 +13,7 @@ import de.christianbernstein.bernie.ses.project.ProjectData;
 import de.christianbernstein.bernie.ses.project.in.CheckProjectExistenceRequestPacketData;
 import de.christianbernstein.bernie.ses.project.in.ListProjectPacketData;
 import de.christianbernstein.bernie.ses.project.in.ProjectCreateRequestPacketData;
+import de.christianbernstein.bernie.ses.project.in.ProjectDeleteRequestPacketData;
 import de.christianbernstein.bernie.ses.project.out.CheckProjectExistenceResponsePacketData;
 import de.christianbernstein.bernie.ses.project.out.ListProjectResponsePacketData;
 import de.christianbernstein.bernie.ses.project.out.ProjectCreateResponsePacketData;
@@ -47,6 +49,16 @@ public class ProjectModuleDiscoverers {
         final List<ProjectData> projects = projectModule.getProjectsFromOwner(ownerUUID);
         final boolean match = projects.stream().anyMatch(pd -> pd.getTitle().equalsIgnoreCase(data.getTitle()));
         endpoint.respond(new CheckProjectExistenceResponsePacketData(match), packet.getId());
+    };
+
+    @Discoverer(packetID = "ProjectDeleteRequestPacketData", datatype = ProjectDeleteRequestPacketData.class, protocols = Constants.centralProtocolName)
+    private final IPacketHandlerBase<ProjectDeleteRequestPacketData> deleteProjectHandler = (data, endpoint, socket, packet, server) -> {
+
+        System.err.println("Got ProjectDeleteRequestPacketData packet");
+
+        final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
+        final IProjectModule projectModule = ton.projectModule();
+        projectModule.deleteProject(UUID.fromString(data.getId()));
     };
 
     /**
