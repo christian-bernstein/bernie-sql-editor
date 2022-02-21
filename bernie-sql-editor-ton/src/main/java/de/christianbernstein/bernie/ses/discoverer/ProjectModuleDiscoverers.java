@@ -1,7 +1,6 @@
 package de.christianbernstein.bernie.ses.discoverer;
 
 import de.christianbernstein.bernie.ses.annotations.UseTon;
-import de.christianbernstein.bernie.ses.bin.Console;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.ses.bin.Shortcut;

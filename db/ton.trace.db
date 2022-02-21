@@ -346,3 +346,7 @@ delete from ProjectData where id='83eb4760-f895-476a-ab54-e09d0b9637f3' [90004-2
 	at org.java_websocket.WebSocketImpl.decode(WebSocketImpl.java:216)
 	at org.java_websocket.server.WebSocketServer$WebSocketWorker.doDecode(WebSocketServer.java:1046)
 	at org.java_websocket.server.WebSocketServer$WebSocketWorker.run(WebSocketServer.java:1028)
+2022-02-20 00:31:13 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "PROJECT_DATA" nicht gefunden
+Table "PROJECT_DATA" not found; SQL statement:
+select * from project_data [42102-200]

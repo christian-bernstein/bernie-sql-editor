@@ -16,16 +16,10 @@
 package de.christianbernstein.bernie.ses.project;
 
 import de.christianbernstein.bernie.ses.bin.Centralized;
-import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.ses.bin.Shortcut;
-import de.christianbernstein.bernie.ses.project.in.ListProjectPacketData;
-import de.christianbernstein.bernie.ses.project.out.ListProjectResponsePacketData;
 import de.christianbernstein.bernie.shared.db.H2Repository;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.module.Module;
-import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
-import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import lombok.NonNull;
 import org.intellij.lang.annotations.Language;
