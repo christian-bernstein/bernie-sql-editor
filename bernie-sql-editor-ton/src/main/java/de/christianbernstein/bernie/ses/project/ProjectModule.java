@@ -22,6 +22,7 @@ import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.module.Module;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import lombok.NonNull;
+import org.hibernate.query.Query;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Christian Bernstein
@@ -66,8 +68,16 @@ public class ProjectModule implements IProjectModule {
      * todo select the projects by native query, not just get all. !IMPORTANT BUG FIX!!!
      */
     @Override
-    public List<ProjectData> getProjectsFromOwner(@NonNull UUID ownerUserID) {
-        return this.projectRepository.get().hq("from ProjectData");
+    public List<ProjectData> getProjectsFromOwner(@NonNull String ownerUserID) {
+        // return this.projectRepository.get().hq("from ProjectData");
+        final AtomicReference<List<ProjectData>> pd  = new AtomicReference<>();
+        this.projectRepository.get().session(session -> {
+            final Query query = session.createQuery("from ProjectData where creatorUserID = :id");
+            query.setParameter("id", ownerUserID);
+            pd.set(query.list());
+        });
+        return pd.get();
+
     }
 
     @Override

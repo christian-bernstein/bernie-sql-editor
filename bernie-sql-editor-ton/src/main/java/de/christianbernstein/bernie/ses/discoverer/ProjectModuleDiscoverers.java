@@ -36,14 +36,14 @@ public class ProjectModuleDiscoverers {
     @Discoverer(packetID = "ListProjectPacketData", datatype = ListProjectPacketData.class, protocols = Constants.centralProtocolName)
     private static final IPacketHandlerBase<ListProjectPacketData> listProjectHandler = (data, endpoint, socket, packet, server) -> {
         final IProjectModule projectModule = ton.projectModule();
-        final List<ProjectData> projects = projectModule.getProjectsFromOwner(Shortcut.useSLI(endpoint).getSessionID());
+        final List<ProjectData> projects = projectModule.getProjectsFromOwner(Shortcut.useSLI(endpoint).getSessionID().toString());
         endpoint.respond(new ListProjectResponsePacketData(projects), packet.getId());
     };
 
     @Discoverer(packetID = "CheckProjectExistenceRequestPacketData", datatype = CheckProjectExistenceRequestPacketData.class, protocols = Constants.centralProtocolName)
     private final IPacketHandlerBase<CheckProjectExistenceRequestPacketData> checkProjectExistenceHandler = (data, endpoint, socket, packet, server) -> {
         final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
-        final UUID ownerUUID = ton.getUserFromSessionID(sli.getSessionID()).getID();
+        final String ownerUUID = ton.getUserFromSessionID(sli.getSessionID()).getID();
         final IProjectModule projectModule = ton.projectModule();
         final List<ProjectData> projects = projectModule.getProjectsFromOwner(ownerUUID);
         final boolean match = projects.stream().anyMatch(pd -> pd.getTitle().equalsIgnoreCase(data.getTitle()));
@@ -69,7 +69,7 @@ public class ProjectModuleDiscoverers {
     private final IPacketHandlerBase<ProjectCreateRequestPacketData> createProjectHandler = (data, endpoint, socket, packet, server) -> {
         final IProjectModule projectModule = ton.projectModule();
         final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
-        final UUID ownerUUID = ton.getUserFromSessionID(sli.getSessionID()).getID();
+        final String ownerUUID = ton.getUserFromSessionID(sli.getSessionID()).getID();
         final String description = data.getDescription();
         final boolean stator = data.isStator();
 

@@ -40,7 +40,7 @@ public class UserData {
 
     @Id
     @Column(nullable = false, unique = true)
-    private UUID id;
+    private String id;
 
     @Column(nullable = false)
     private String username;

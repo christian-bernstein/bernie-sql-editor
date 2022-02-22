@@ -36,21 +36,21 @@ public interface IUserModule extends IBaseModuleClass<ITon>, IFluently<IUserModu
             .build()
             .$(module -> module.getShardManager().install(UserModule.class));
 
-    boolean hasAccount(final UUID id);
+    boolean hasAccount(final String id);
 
     UserCreationResult plainCreateAccount(final UserData data);
 
-    UserData getUserDataOf(final String username);
+    UserData getUserDataOfUsername(final String username);
 
-    UserData getUserDataOf(final UUID id);
+    UserData getUserDataOf(final String id);
 
-    IUser getUser(final String username);
+    IUser getUserOfUsername(final String username);
 
-    IUser getUser(final UUID id);
+    IUser getUser(final String id);
 
-    void updateUserData(final UUID id, final Function<UserData, UserData> updater);
+    void updateUserData(final String id, final Function<UserData, UserData> updater);
 
-    void plainDeleteUser(final UUID uuid);
+    void plainDeleteUser(final String uuid);
 
     IUser root();
 

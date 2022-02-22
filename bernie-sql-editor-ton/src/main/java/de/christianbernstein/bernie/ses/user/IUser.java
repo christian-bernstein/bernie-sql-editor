@@ -26,7 +26,7 @@ import java.util.function.Function;
  */
 public interface IUser {
 
-    UUID getID();
+    String getID();
 
     UserData getUserData();
 

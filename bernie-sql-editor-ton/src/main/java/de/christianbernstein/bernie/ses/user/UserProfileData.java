@@ -28,7 +28,7 @@ import java.util.UUID;
 @Builder
 public class UserProfileData {
 
-    private final UUID id;
+    private final String id;
 
     private final String username;
 

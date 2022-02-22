@@ -19,7 +19,6 @@ import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import lombok.Data;
 
-import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -30,15 +29,17 @@ public class User implements IUser {
 
     private final IEngine<ITon> engine;
 
-    private final UUID userID;
+    private final String userID;
 
     @Override
-    public UUID getID() {
+    public String getID() {
         return this.userID;
     }
 
     @Override
     public UserData getUserData() {
+        System.err.println("get user data of: " + this.userID);
+        // todo why does it use the id to get a user by its username
         return this.engine.api().userModule().getUserDataOf(this.userID);
     }
 
@@ -55,6 +56,9 @@ public class User implements IUser {
     @Override
     public UserProfileData getProfileData() {
         final UserData data = this.getUserData();
+
+        System.err.println("user profile data: " + data);
+
         return UserProfileData.builder()
                 .id(data.getId())
                 .firstname(data.getFirstname())

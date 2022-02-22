@@ -15,7 +15,6 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
-import de.christianbernstein.bernie.ses.bin.*;
 import de.christianbernstein.bernie.ses.session.Session;
 import de.christianbernstein.bernie.ses.user.IUser;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
@@ -35,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -127,7 +125,7 @@ public class Ton implements ITon {
     @Override
     public IUser getUserFromSessionID(@NonNull UUID sessionID) {
         final Session session = this.sessionModule().getOrCreateSession(sessionID);
-        return this.userModule().getUser(session.getCredentials().getUsername());
+        return this.userModule().getUserOfUsername(session.getCredentials().getUsername());
     }
 
     @Override

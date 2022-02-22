@@ -38,7 +38,7 @@ public interface IProjectModule extends IBaseModuleClass<ITon> {
             .build()
             .$(module -> module.getShardManager().install(ProjectModule.class));
 
-    List<ProjectData> getProjectsFromOwner(@NonNull UUID ownerUserID);
+    List<ProjectData> getProjectsFromOwner(@NonNull String ownerUserID);
 
     void createProject(@NonNull ProjectCreationData data) throws ProjectAlreadyExistException;
 

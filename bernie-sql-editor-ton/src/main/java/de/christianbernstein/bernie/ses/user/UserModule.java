@@ -36,7 +36,7 @@ public class UserModule implements IUserModule {
 
     private final UserModuleConfig configuration = UserModuleConfig.defaultConfiguration;
 
-    private H2Repository<UserData, UUID> repository;
+    private H2Repository<UserData, String> repository;
 
     private IEngine<ITon> engine;
 
@@ -56,7 +56,7 @@ public class UserModule implements IUserModule {
                 .firstname("Christian")
                 .lastname("Bernstein")
                 .password("root")
-                .id(UUID.randomUUID())
+                .id(UUID.randomUUID().toString())
                 .build()));
     }
 
@@ -70,13 +70,13 @@ public class UserModule implements IUserModule {
      * todo fix -> returns only true
      */
     @Override
-    public boolean hasAccount(UUID id) {
+    public boolean hasAccount(String id) {
         final AtomicInteger len = new AtomicInteger();
         // Count the amount of occurrences of id in the table
         this.repository.session(session -> session.doWork(connection -> {
             // final ResultSet set = connection.prepareStatement("select count(*) as \"len\" from %s".replace("%s", this.repository.getTableName())).executeQuery();
             @SuppressWarnings({"SqlNoDataSourceInspection", "SqlResolve"})
-            final ResultSet set = connection.prepareStatement("select count(*) as \"len\" from %s where id='%val'".replace("%s", this.repository.getTableName()).replace("%val", id.toString())).executeQuery();
+            final ResultSet set = connection.prepareStatement("select count(*) as \"len\" from %s where id='%val'".replace("%s", this.repository.getTableName()).replace("%val", id)).executeQuery();
             if (set.next()) {
                 len.set(set.getInt("len"));
             } else {
@@ -101,7 +101,7 @@ public class UserModule implements IUserModule {
             return UserCreationResult.UUID_ALREADY_TAKEN;
         }
         // Check if the username does already exist (It has to be unique)
-        if (this.getUserDataOf(data.getUsername()) != null) {
+        if (this.getUserDataOfUsername(data.getUsername()) != null) {
             return UserCreationResult.USERNAME_ALREADY_TAKEN;
         }
         // After checking for consistency, insert the user data into the repository
@@ -115,7 +115,7 @@ public class UserModule implements IUserModule {
     }
 
     @Override
-    public void plainDeleteUser(UUID uuid) {
+    public void plainDeleteUser(String uuid) {
         try {
             this.repository.session(session -> session.delete(this.getUserDataOf(uuid)));
         } catch (final Exception e) {
@@ -132,8 +132,8 @@ public class UserModule implements IUserModule {
     }
 
     @Override
-    public UserData getUserDataOf(String username) {
-        @SuppressWarnings("SqlResolve")
+    public UserData getUserDataOfUsername(String username) {
+        @SuppressWarnings({"SqlResolve", "SqlNoDataSourceInspection"})
         final List<UserData> result = this.repository.nq("select top 1 * from %s where username='" + username + "'");
         if (result.size() != 1) {
             return null;
@@ -143,25 +143,25 @@ public class UserModule implements IUserModule {
     }
 
     @Override
-    public UserData getUserDataOf(UUID id) {
+    public UserData getUserDataOf(String id) {
         return this.repository.get(id);
     }
 
     @Override
-    public IUser getUser(String username) {
-        final UserData userData = this.getUserDataOf(username);
+    public IUser getUserOfUsername(String username) {
+        final UserData userData = this.getUserDataOfUsername(username);
         return new User(this.engine, userData.getId());
     }
 
     @Override
-    public IUser getUser(UUID id) {
+    public IUser getUser(String id) {
         // todo remove get user data => not required
         final UserData userData = this.getUserDataOf(id);
         return new User(this.engine, userData.getId());
     }
 
     @Override
-    public void updateUserData(UUID id, @NotNull Function<UserData, UserData> updater) {
+    public void updateUserData(String id, @NotNull Function<UserData, UserData> updater) {
         UserData data = this.getUserDataOf(id);
         data = updater.apply(data);
         this.plainDeleteUser(id);
@@ -176,7 +176,7 @@ public class UserModule implements IUserModule {
                 .firstname(this.configuration.getRootUsername())
                 .lastname("")
                 .password(this.configuration.getRootPassword())
-                .id(UUID.randomUUID())
+                .id(UUID.randomUUID().toString())
                 .build());
     }
 

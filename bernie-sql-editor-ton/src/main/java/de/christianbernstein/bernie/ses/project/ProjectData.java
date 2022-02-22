@@ -47,7 +47,7 @@ public class ProjectData {
     @Column(name = "id", nullable = false)
     private String id;
 
-    private UUID creatorUserID;
+    private String creatorUserID;
 
     private String title;
 

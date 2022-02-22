@@ -74,7 +74,7 @@ public class AuthModule implements IAuthModule {
         if (result.get() == CredentialsCheckResultType.OK) {
             final Session session = ton.orElseThrow().sessionModule().getOrCreateSession(data.getCredentials());
             sessionID = session.getSessionID().toString();
-            profileData = AuthModule.ton.orElseThrow().userModule().getUser(session.getCredentials().getUsername()).getProfileData();
+            profileData = AuthModule.ton.orElseThrow().userModule().getUserOfUsername(session.getCredentials().getUsername()).getProfileData();
             System.err.println(profileData);
 
             AuthModule.setSocketLaneIdentifier(endpoint, session.getSessionID());
@@ -99,7 +99,7 @@ public class AuthModule implements IAuthModule {
                     // Retrieve username from session
                     final String username = session.getCredentials().getUsername();
                     // Retrieve user from username (maybe change to get user by id, not username)
-                    final IUser user = AuthModule.ton.orElseThrow().userModule().getUser(username);
+                    final IUser user = AuthModule.ton.orElseThrow().userModule().getUserOfUsername(username);
 
                     AuthModule.setSocketLaneIdentifier(endpoint, sessionID);
 
@@ -144,7 +144,7 @@ public class AuthModule implements IAuthModule {
         UserData userData;
         // Get the user via the username from the credentials in a fail-proofed way
         try {
-            userData = AuthModule.ton.orElseThrow().userModule().getUserDataOf(credentials.getUsername());
+            userData = AuthModule.ton.orElseThrow().userModule().getUserDataOfUsername(credentials.getUsername());
         } catch (final Exception e) {
             e.printStackTrace();
             return CredentialsCheckResultType.INTERNAL_ERROR;
