@@ -74,7 +74,9 @@ public class UserModule implements IUserModule {
         final AtomicInteger len = new AtomicInteger();
         // Count the amount of occurrences of id in the table
         this.repository.session(session -> session.doWork(connection -> {
-            final ResultSet set = connection.prepareStatement("select count(*) as \"len\" from %s".replace("%s", this.repository.getTableName())).executeQuery();
+            // final ResultSet set = connection.prepareStatement("select count(*) as \"len\" from %s".replace("%s", this.repository.getTableName())).executeQuery();
+            @SuppressWarnings({"SqlNoDataSourceInspection", "SqlResolve"})
+            final ResultSet set = connection.prepareStatement("select count(*) as \"len\" from %s where id='%val'".replace("%s", this.repository.getTableName()).replace("%val", id.toString())).executeQuery();
             if (set.next()) {
                 len.set(set.getInt("len"));
             } else {
