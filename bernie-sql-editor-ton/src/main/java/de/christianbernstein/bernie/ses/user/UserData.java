@@ -39,25 +39,21 @@ import java.util.UUID;
 public class UserData {
 
     @Id
-    @Column(nullable = false, unique = true)
+    @Column(name = "id", nullable = false)
     private String id;
 
-    @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false)
     private String firstname;
 
-    @Column(nullable = false)
     private String lastname;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    private String email;
+
     private Date userEntrySetupDate;
 
-    @Column(nullable = false)
     private Date lastActive;
 
 }

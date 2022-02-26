@@ -30,7 +30,7 @@ public class Constants {
 
     public final String tonEngineID = "ton";
 
-    public final String rootPackage = "de.christianbernstein.bernie.ses.ton";
+    public final String rootPackage = "de.christianbernstein.bernie";
 
     public final String useTonJRAPhase = "inject-ton-api";
 
@@ -41,6 +41,8 @@ public class Constants {
     public final String registerEventClassJRAPhase = "register-event-class-phase";
 
     public final String flowJRAPhase = "flow";
+
+    public final String cdnJRAPhase = "cdn";
 
     public final String constructJRAPhase = "construct-phase";
 

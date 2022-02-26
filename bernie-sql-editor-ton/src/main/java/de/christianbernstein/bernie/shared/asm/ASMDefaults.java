@@ -242,7 +242,6 @@ public final class ASMDefaults {
     @SuppressWarnings("All")
     private static void compileAndSaveClass(@NonNull byte[] bytes, @lombok.NonNull String fileLocation) {
         final File file = new File(fileLocation);
-        file.getParentFile().mkdirs();
         if (!file.exists()) {
             try {
                 file.createNewFile();

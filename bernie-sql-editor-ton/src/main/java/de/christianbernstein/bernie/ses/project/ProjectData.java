@@ -42,8 +42,6 @@ import java.util.UUID;
 public class ProjectData {
 
     @Id
-    // @GeneratedValue(generator = "UUID")
-    // @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", nullable = false)
     private String id;
 

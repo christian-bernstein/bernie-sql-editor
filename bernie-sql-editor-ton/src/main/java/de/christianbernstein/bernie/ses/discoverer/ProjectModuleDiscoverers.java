@@ -36,7 +36,9 @@ public class ProjectModuleDiscoverers {
     @Discoverer(packetID = "ListProjectPacketData", datatype = ListProjectPacketData.class, protocols = Constants.centralProtocolName)
     private static final IPacketHandlerBase<ListProjectPacketData> listProjectHandler = (data, endpoint, socket, packet, server) -> {
         final IProjectModule projectModule = ton.projectModule();
-        final List<ProjectData> projects = projectModule.getProjectsFromOwner(Shortcut.useSLI(endpoint).getSessionID().toString());
+        final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
+        final String ownerUUID = ton.getUserFromSessionID(sli.getSessionID()).getID();
+        final List<ProjectData> projects = projectModule.getProjectsFromOwner(ownerUUID);
         endpoint.respond(new ListProjectResponsePacketData(projects), packet.getId());
     };
 

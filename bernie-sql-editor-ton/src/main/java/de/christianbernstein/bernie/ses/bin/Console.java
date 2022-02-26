@@ -11,6 +11,7 @@ import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Flo
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.Statement;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.misc.Utils;
+import de.christianbernstein.bernie.shared.module.Module;
 import lombok.NonNull;
 
 import java.io.BufferedReader;
@@ -78,6 +79,18 @@ public class Console {
     @Command(path = "debug", literal = "shutdown")
     private void shutdown() {
         ton.shutdown();
+    }
+
+
+    @Command(path = "debug", literal = "listProjects", aliases = "lP")
+    private void listProjects() {
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", String.format("Installed modules: '%s'", ton
+                .engine()
+                .getModules()
+                .stream()
+                .map(mod -> String.format("(%s, %S)", mod.getName(), mod.getLifecycle()))
+                .collect(Collectors.joining(", "))
+        ));
     }
 
     @Command(path = "debug", literal = "getProjects", aliases = "gP")

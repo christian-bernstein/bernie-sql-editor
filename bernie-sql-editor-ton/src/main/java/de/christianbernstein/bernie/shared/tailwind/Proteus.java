@@ -180,7 +180,11 @@ public class Proteus<Public extends IPublicAPI<Public>> implements IEnhancedProt
                         .patternClass(this.publicAPIClass())
                         .packageName(null)
                         .implementationClassName(String.format(this.config().publicAPIClassNamingPattern(), this.publicAPIClass.getSimpleName()))
-                        .classFileLocation("/asm/")
+
+
+
+                        // .classFileLocation("/asm/")
+                        .classFileLocation("./asm/")
                 );
         this.publicAPIPatternClass = this.publicAPIClass();
         @SuppressWarnings("unchecked")

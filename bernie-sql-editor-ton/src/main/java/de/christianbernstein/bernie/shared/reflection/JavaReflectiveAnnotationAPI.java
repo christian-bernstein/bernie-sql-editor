@@ -15,12 +15,10 @@
 
 package de.christianbernstein.bernie.shared.reflection;
 
+import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.shared.document.Document;
 import de.christianbernstein.bernie.shared.document.IDocument;
-import de.christianbernstein.bernie.shared.misc.BoolAccumulator;
-import de.christianbernstein.bernie.shared.misc.ExpiringReference;
-import de.christianbernstein.bernie.shared.misc.Instance;
-import de.christianbernstein.bernie.shared.misc.Unsafe;
+import de.christianbernstein.bernie.shared.misc.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -227,17 +225,35 @@ public class JavaReflectiveAnnotationAPI {
             configuration.setScanners(new SubTypesScanner(false));
             final Set<Collection<URL>> urls = paths.stream().map(ClasspathHelper::forPackage).collect(Collectors.toSet());
             if (urls.isEmpty()) {
+                ConsoleLogger.def().log(ConsoleLogger.LogType.WARN, "JRA", "Class supplier 'orgReflectionsClassSupplier' has no specified paths selected, falling back to root package (''). ");
                 configuration.addUrls(ClasspathHelper.forPackage(""));
+            } else {
+                ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "JRA", "Class supplier 'orgReflectionsClassSupplier' will search through packages: " + urls);
             }
             urls.forEach(configuration::addUrls);
-            final Reflections reflections = new Reflections(configuration);
             Set<Class<?>> classes = null;
             try {
-                classes = reflections.getSubTypesOf(Object.class);
-            } catch (final Exception ignored) {
-            }
-            if (classes == null) {
-                classes = new HashSet<>();
+
+
+
+
+
+                // final Reflections reflections = new Reflections(configuration);
+                final Reflections reflections = new Reflections(Constants.rootPackage, new SubTypesScanner(false));
+
+
+
+
+
+                try {
+                    classes = reflections.getSubTypesOf(Object.class);
+                } catch (final Exception ignored) {
+                }
+                if (classes == null) {
+                    classes = new HashSet<>();
+                }
+            } catch (final Exception e) {
+                e.printStackTrace();
             }
             return classes;
         };
@@ -313,58 +329,68 @@ public class JavaReflectiveAnnotationAPI {
                 // todo create method
                 // Get a possible instance of the current class
                 Object instance = null;
-                for (Field field : aClass.getDeclaredFields()) {
-                    if (aClass.equals(field.getType()) && Modifier.isStatic(field.getModifiers()) && aClass.isAnnotationPresent(Instance.class)) {
-                        try {
-                            instance = field.get(null);
-                        } catch (final IllegalAccessException e) {
-                            e.printStackTrace();
+                try {
+                    for (Field field : aClass.getDeclaredFields()) {
+                        if (aClass.equals(field.getType()) && Modifier.isStatic(field.getModifiers()) && aClass.isAnnotationPresent(Instance.class)) {
+                            try {
+                                instance = field.get(null);
+                            } catch (final IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
+                } catch (final Exception e) {
+                    // todo handle better
+                    e.printStackTrace();
                 }
                 // Check the types, if they match the processor pattern. If they do so, find and get correct processor type;
-                for (final Field field : aClass.getDeclaredFields()) {
-                    // Check for processors
-                    if (field.isAnnotationPresent(JRP.class) && Processors.IProcessor.class.isAssignableFrom(field.getType())) {
-                        final JRP jrp = field.getAnnotation(JRP.class);
-                        try {
-                            field.setAccessible(true);
-                            if (!Modifier.isStatic(Modifier.fieldModifiers())) {
-                                continue;
-                            }
-                            // Get the phases of the processor
-                            String[] phases = jrp.phases();
+                try {
+                    for (final Field field : aClass.getDeclaredFields()) {
+                        // Check for processors
+                        if (field.isAnnotationPresent(JRP.class) && Processors.IProcessor.class.isAssignableFrom(field.getType())) {
+                            final JRP jrp = field.getAnnotation(JRP.class);
+                            try {
+                                field.setAccessible(true);
+                                if (!Modifier.isStatic(Modifier.fieldModifiers())) {
+                                    continue;
+                                }
+                                // Get the phases of the processor
+                                String[] phases = jrp.phases();
 
-                            final Object rawProcessor = field.get(instance);
-                            // Get the definitive type of processor
-                            final Class<?> rawProcessorClass = rawProcessor.getClass();
-                            if (Processors.IAnnotationAtClassProcessor.class.isAssignableFrom(rawProcessorClass)) {
-                                // It's an annotation-at-class processor
-                                this.classProcessors.add(new Processors.RegisteredProcessor<>(jrp, ((Processors.IAnnotationAtClassProcessor) rawProcessor), phases));
-                            } else if (Processors.IAnnotationAtMethodProcessor.class.isAssignableFrom(rawProcessorClass)) {
-                                // It's an annotation-at-method processor
-                                this.methodProcessors.add(new Processors.RegisteredProcessor<>(jrp, ((Processors.IAnnotationAtMethodProcessor) rawProcessor), phases));
-                            } else if (Processors.IAnnotationAtFieldProcessor.class.isAssignableFrom(rawProcessorClass)) {
-                                // It's an annotation-at-field processor
-                                this.fieldProcessors.add(new Processors.RegisteredProcessor<>(jrp, ((Processors.IAnnotationAtFieldProcessor) rawProcessor), phases));
+                                final Object rawProcessor = field.get(instance);
+                                // Get the definitive type of processor
+                                final Class<?> rawProcessorClass = rawProcessor.getClass();
+                                if (Processors.IAnnotationAtClassProcessor.class.isAssignableFrom(rawProcessorClass)) {
+                                    // It's an annotation-at-class processor
+                                    this.classProcessors.add(new Processors.RegisteredProcessor<>(jrp, ((Processors.IAnnotationAtClassProcessor) rawProcessor), phases));
+                                } else if (Processors.IAnnotationAtMethodProcessor.class.isAssignableFrom(rawProcessorClass)) {
+                                    // It's an annotation-at-method processor
+                                    this.methodProcessors.add(new Processors.RegisteredProcessor<>(jrp, ((Processors.IAnnotationAtMethodProcessor) rawProcessor), phases));
+                                } else if (Processors.IAnnotationAtFieldProcessor.class.isAssignableFrom(rawProcessorClass)) {
+                                    // It's an annotation-at-field processor
+                                    this.fieldProcessors.add(new Processors.RegisteredProcessor<>(jrp, ((Processors.IAnnotationAtFieldProcessor) rawProcessor), phases));
+                                }
+                            } catch (final IllegalAccessException e) {
+                                e.printStackTrace();
                             }
-                        } catch (final IllegalAccessException e) {
-                            e.printStackTrace();
+                        }
+                        // Check for pre-conditioners
+                        if (field.isAnnotationPresent(JRP.PreConditioner.class) && IPreconditionChecker.class.isAssignableFrom(field.getType())) {
+                            try {
+                                field.setAccessible(true);
+                                if (!Modifier.isStatic(Modifier.fieldModifiers())) {
+                                    continue;
+                                }
+                                this.preconditionCheckers.add((IPreconditionChecker) field.get(instance));
+                            } catch (final IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
-                    // Check for pre-conditioners
-                    if (field.isAnnotationPresent(JRP.PreConditioner.class) && IPreconditionChecker.class.isAssignableFrom(field.getType())) {
-                        try {
-                            field.setAccessible(true);
-                            if (!Modifier.isStatic(Modifier.fieldModifiers())) {
-                                continue;
-                            }
-                            this.preconditionCheckers.add((IPreconditionChecker) field.get(instance));
-                        } catch (final IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                } catch (final Exception e){
+                    e.printStackTrace();
                 }
+
             });
         }
 

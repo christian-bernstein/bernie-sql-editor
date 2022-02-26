@@ -41,10 +41,21 @@ import java.util.concurrent.TimeUnit;
 @Accessors(fluent = true)
 public class ServerConfiguration {
 
-    public static final ServerConfiguration defaultConfiguration = ServerConfiguration.builder().build();
+    public static final ServerConfiguration defaultConfiguration = ServerConfiguration.builder()
 
+
+
+            // todo remove dirty patch (1)
+            .address(new InetSocketAddress(25574))
+
+
+
+            .build();
+
+    // todo remove dirty patch (1)
     @Builder.Default
-    private final InetSocketAddress address = new InetSocketAddress(80);
+    // private final InetSocketAddress address = new InetSocketAddress(80);
+    private final InetSocketAddress address = new InetSocketAddress(25574);
 
     @Builder.Default
     private final ISocketIDGenerator websocketIDGenerator = (websocketEndpoint, webSocket) -> UUID.randomUUID().toString();

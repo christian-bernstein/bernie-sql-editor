@@ -30,6 +30,7 @@ public class TonConfiguration {
             {Constants.registerEventClassJRAPhase},
             {Constants.moduleJRAPhase},
             {Constants.flowJRAPhase},
+            {Constants.cdnJRAPhase},
             {Constants.autoEcexJRAPhase}
     };
 
