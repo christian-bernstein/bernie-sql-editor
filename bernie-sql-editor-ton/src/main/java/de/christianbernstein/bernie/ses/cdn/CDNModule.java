@@ -1,9 +1,11 @@
 package de.christianbernstein.bernie.ses.cdn;
 
-import de.christianbernstein.bernie.ses.cdn.models.UserPublicProfileData;
+import de.christianbernstein.bernie.ses.annotations.UseTon;
+import de.christianbernstein.bernie.ses.bin.ITon;
+import de.christianbernstein.bernie.ses.user.IUser;
 import lombok.NonNull;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +15,37 @@ import java.util.Map;
  */
 public class CDNModule implements ICDNModule {
 
+    @UseTon
+    private static ITon ton;
+
     private final Map<CDN, ICDNResolver<?>> resolvers = new HashMap<>();
 
     @Override
     public CDNResponse request(@NonNull CDNRequest request) {
         final String viewerID = request.getViewerID();
         final List<CDNRequestBranch> branches = request.getBranches();
+        final List<CDNResponseEntry> responseEntries = new ArrayList<>();
+        final IUser user = viewerID == null ? null : ton.userModule().getUser(request.getViewerID());
 
-        // branches.forEach(branch -> );
+        branches.forEach(branch -> {
+            final String id = branch.getBranch();
+            this.resolvers.keySet().stream().filter(cdn -> cdn.id().equals(id)).findAny().ifPresent(cdn -> {
+                final ICDNResolver<?> resolver = this.resolvers.get(cdn);
+                final List<Exception> errors = new ArrayList<>();
+                Object resolved = null;
+                CDNStatusCode status;
+                try {
+                    resolved = resolver.resolve(branch, request, user, ton);
+                    status = CDNStatusCode.OK;
+                } catch (final Exception e) {
+                    errors.add(e);
+                    status = CDNStatusCode.UNKNOWN_ERROR;
+                }
+                responseEntries.add(CDNResponseEntry.builder().data(resolved).errors(errors).status(status).build());
+            });
+        });
 
-        return null;
+        return CDNResponse.builder().entries(responseEntries).build();
     }
 
     @Override

@@ -2,13 +2,11 @@ package de.christianbernstein.bernie.ses.cdn;
 
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.ses.cdn.models.UserPublicProfileData;
 import de.christianbernstein.bernie.shared.module.Dependency;
 import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
 import de.christianbernstein.bernie.shared.module.Module;
 import de.christianbernstein.bernie.shared.module.ModuleDefinition;
 import lombok.NonNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Christian Bernstein

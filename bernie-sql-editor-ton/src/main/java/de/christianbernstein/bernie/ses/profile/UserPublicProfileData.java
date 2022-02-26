@@ -1,6 +1,7 @@
-package de.christianbernstein.bernie.ses.cdn.models;
+package de.christianbernstein.bernie.ses.profile;
 
-import de.christianbernstein.bernie.ses.cdn.models.*;
+import de.christianbernstein.bernie.ses.cdn.models.ContextualLink;
+import de.christianbernstein.bernie.ses.cdn.models.ImageData;
 import lombok.Data;
 
 import java.util.Date;

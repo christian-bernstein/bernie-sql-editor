@@ -1,4 +1,4 @@
-package de.christianbernstein.bernie.ses.cdn.models;
+package de.christianbernstein.bernie.ses.profile;
 
 import lombok.Data;
 

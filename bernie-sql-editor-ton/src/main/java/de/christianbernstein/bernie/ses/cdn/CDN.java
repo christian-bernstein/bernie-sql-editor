@@ -6,7 +6,7 @@ import java.lang.annotation.*;
  * @author Christian Bernstein
  */
 @Documented
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CDN {
 
