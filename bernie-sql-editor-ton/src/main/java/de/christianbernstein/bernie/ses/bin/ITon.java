@@ -14,23 +14,25 @@
  */
 package de.christianbernstein.bernie.ses.bin;
 
-import de.christianbernstein.bernie.ses.auth.AuthModule;
-import de.christianbernstein.bernie.ses.auth.IAuthModule;
-import de.christianbernstein.bernie.ses.cdn.CDNModule;
-import de.christianbernstein.bernie.ses.cdn.ICDNModule;
-import de.christianbernstein.bernie.ses.db.DBModule;
-import de.christianbernstein.bernie.ses.db.IDBModule;
-import de.christianbernstein.bernie.ses.flow.FlowModule;
-import de.christianbernstein.bernie.ses.flow.IFlowModule;
-import de.christianbernstein.bernie.ses.net.INetModule;
-import de.christianbernstein.bernie.ses.net.NetModule;
-import de.christianbernstein.bernie.ses.project.IProjectModule;
-import de.christianbernstein.bernie.ses.project.ProjectModule;
-import de.christianbernstein.bernie.ses.session.ISessionModule;
-import de.christianbernstein.bernie.ses.session.SessionModule;
-import de.christianbernstein.bernie.ses.user.IUser;
-import de.christianbernstein.bernie.ses.user.IUserModule;
-import de.christianbernstein.bernie.ses.user.UserModule;
+import de.christianbernstein.bernie.modules.auth.AuthModule;
+import de.christianbernstein.bernie.modules.auth.IAuthModule;
+import de.christianbernstein.bernie.modules.cdn.CDNModule;
+import de.christianbernstein.bernie.modules.cdn.ICDNModule;
+import de.christianbernstein.bernie.modules.db.DBModule;
+import de.christianbernstein.bernie.modules.db.IDBModule;
+import de.christianbernstein.bernie.modules.flow.FlowModule;
+import de.christianbernstein.bernie.modules.flow.IFlowModule;
+import de.christianbernstein.bernie.modules.net.INetModule;
+import de.christianbernstein.bernie.modules.net.NetModule;
+import de.christianbernstein.bernie.modules.profile.IProfileModule;
+import de.christianbernstein.bernie.modules.profile.ProfileModule;
+import de.christianbernstein.bernie.modules.project.IProjectModule;
+import de.christianbernstein.bernie.modules.project.ProjectModule;
+import de.christianbernstein.bernie.modules.session.ISessionModule;
+import de.christianbernstein.bernie.modules.session.SessionModule;
+import de.christianbernstein.bernie.modules.user.IUser;
+import de.christianbernstein.bernie.modules.user.IUserModule;
+import de.christianbernstein.bernie.modules.user.UserModule;
 import de.christianbernstein.bernie.shared.misc.IFluently;
 import lombok.NonNull;
 
@@ -80,5 +82,10 @@ public interface ITon extends ITonBase<ITon>, IFluently<ITon> {
      @NonNull
      default ICDNModule cdnModule() {
           return this.require(CDNModule.class, "cdn_module");
+     }
+
+     @NonNull
+     default IProfileModule profileModule() {
+          return this.require(ProfileModule.class, "profile_module");
      }
 }

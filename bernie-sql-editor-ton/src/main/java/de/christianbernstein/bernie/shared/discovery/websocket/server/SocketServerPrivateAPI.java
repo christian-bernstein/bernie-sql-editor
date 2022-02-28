@@ -124,14 +124,13 @@ public class SocketServerPrivateAPI extends PrivateAPI {
                 }
             }
         } else {
-            // dataPatternClass is null
-            // System.err.printf("DataPatternClass is null, but shouldn't be: '%s'%n", packetDataID);
-
-            ConsoleLogger.def().log(
-                    ConsoleLogger.LogType.ERROR,
-                    "Socket Server Private-API",
-                    String.format("DataPatternClass is null: '%s' from requested proto '%s' in actual proto '%s'", packetDataID, packet.getProtocol(), Objects.requireNonNull(context.session().getProtocolController().getActiveProtocol()).id())
-            );
+            if (!((SessionProtocolData) protocol.attachment()).isBaseProtocol()) {
+                ConsoleLogger.def().log(
+                        ConsoleLogger.LogType.ERROR,
+                        "Socket Server Private-API",
+                        String.format("DataPatternClass is null: '%s' from requested proto '%s' in actual proto '%s'", packetDataID, packet.getProtocol(), Objects.requireNonNull(context.session().getProtocolController().getActiveProtocol()).id())
+                );
+            }
         }
     }
 }

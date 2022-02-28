@@ -1,12 +1,12 @@
 package de.christianbernstein.bernie.ses.resolver;
 
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.ses.cdn.CDN;
-import de.christianbernstein.bernie.ses.cdn.CDNRequest;
-import de.christianbernstein.bernie.ses.cdn.CDNRequestBranch;
-import de.christianbernstein.bernie.ses.cdn.ICDNResolver;
-import de.christianbernstein.bernie.ses.profile.UserPublicProfileData;
-import de.christianbernstein.bernie.ses.user.IUser;
+import de.christianbernstein.bernie.modules.cdn.CDN;
+import de.christianbernstein.bernie.modules.cdn.CDNRequest;
+import de.christianbernstein.bernie.modules.cdn.CDNRequestBranch;
+import de.christianbernstein.bernie.modules.cdn.ICDNResolver;
+import de.christianbernstein.bernie.modules.profile.UserPublicProfileData;
+import de.christianbernstein.bernie.modules.user.IUser;
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 

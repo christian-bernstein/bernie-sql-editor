@@ -26,6 +26,8 @@ public class Constants {
 
     public final String centralProtocolName = "main";
 
+    public final String coreProtocolName = "base";
+
     public final String loginProtocolName = "login";
 
     public final String tonEngineID = "ton";

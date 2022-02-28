@@ -4,19 +4,19 @@ import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.ses.bin.Shortcut;
-import de.christianbernstein.bernie.ses.net.SocketLaneIdentifyingAttachment;
-import de.christianbernstein.bernie.ses.project.IProjectModule;
-import de.christianbernstein.bernie.ses.project.ProjectAlreadyExistException;
-import de.christianbernstein.bernie.ses.project.ProjectCreationData;
-import de.christianbernstein.bernie.ses.project.ProjectData;
-import de.christianbernstein.bernie.ses.project.in.CheckProjectExistenceRequestPacketData;
-import de.christianbernstein.bernie.ses.project.in.ListProjectPacketData;
-import de.christianbernstein.bernie.ses.project.in.ProjectCreateRequestPacketData;
-import de.christianbernstein.bernie.ses.project.in.ProjectDeleteRequestPacketData;
-import de.christianbernstein.bernie.ses.project.out.CheckProjectExistenceResponsePacketData;
-import de.christianbernstein.bernie.ses.project.out.ListProjectResponsePacketData;
-import de.christianbernstein.bernie.ses.project.out.ProjectCreateResponsePacketData;
-import de.christianbernstein.bernie.ses.project.out.ProjectCreationErrorPacketData;
+import de.christianbernstein.bernie.modules.net.SocketLaneIdentifyingAttachment;
+import de.christianbernstein.bernie.modules.project.IProjectModule;
+import de.christianbernstein.bernie.modules.project.ProjectAlreadyExistException;
+import de.christianbernstein.bernie.modules.project.ProjectCreationData;
+import de.christianbernstein.bernie.modules.project.ProjectData;
+import de.christianbernstein.bernie.modules.project.in.CheckProjectExistenceRequestPacketData;
+import de.christianbernstein.bernie.modules.project.in.ListProjectPacketData;
+import de.christianbernstein.bernie.modules.project.in.ProjectCreateRequestPacketData;
+import de.christianbernstein.bernie.modules.project.in.ProjectDeleteRequestPacketData;
+import de.christianbernstein.bernie.modules.project.out.CheckProjectExistenceResponsePacketData;
+import de.christianbernstein.bernie.modules.project.out.ListProjectResponsePacketData;
+import de.christianbernstein.bernie.modules.project.out.ProjectCreateResponsePacketData;
+import de.christianbernstein.bernie.modules.project.out.ProjectCreationErrorPacketData;
 import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
 import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
 import lombok.experimental.UtilityClass;
@@ -54,9 +54,6 @@ public class ProjectModuleDiscoverers {
 
     @Discoverer(packetID = "ProjectDeleteRequestPacketData", datatype = ProjectDeleteRequestPacketData.class, protocols = Constants.centralProtocolName)
     private final IPacketHandlerBase<ProjectDeleteRequestPacketData> deleteProjectHandler = (data, endpoint, socket, packet, server) -> {
-
-        System.err.println("Got ProjectDeleteRequestPacketData packet");
-
         final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
         final IProjectModule projectModule = ton.projectModule();
         projectModule.deleteProject(UUID.fromString(data.getId()));

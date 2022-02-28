@@ -736,3 +736,7 @@ Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/dev/berni
 	at org.h2.mvstore.FileStore.open(FileStore.java:172)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:381)
 	... 88 more
+2022-02-27 13:54:15 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "USERDATA" nicht gefunden
+Table "USERDATA" not found; SQL statement:
+select * from userdata [42102-200]

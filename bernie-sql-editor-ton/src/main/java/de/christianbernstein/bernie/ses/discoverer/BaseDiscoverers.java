@@ -1,13 +1,23 @@
 package de.christianbernstein.bernie.ses.discoverer;
 
 import de.christianbernstein.bernie.ses.annotations.UseTon;
+import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.ses.net.in.RequestServerFootprintPacketData;
-import de.christianbernstein.bernie.ses.user.*;
-import de.christianbernstein.bernie.ses.user.in.CheckUserAttributeAvailabilityRequestPacketData;
-import de.christianbernstein.bernie.ses.user.in.CreateUserRequestPacketData;
-import de.christianbernstein.bernie.ses.user.out.CheckUserAttributeAvailabilityResponsePacketData;
-import de.christianbernstein.bernie.ses.user.out.CreateUserResponsePacketData;
+import de.christianbernstein.bernie.ses.bin.Shortcut;
+import de.christianbernstein.bernie.modules.cdn.CDNRequest;
+import de.christianbernstein.bernie.modules.cdn.CDNResponse;
+import de.christianbernstein.bernie.modules.cdn.ICDNModule;
+import de.christianbernstein.bernie.modules.cdn.in.CDNRequestPacketData;
+import de.christianbernstein.bernie.modules.cdn.out.CDNResponsePacketData;
+import de.christianbernstein.bernie.modules.net.SocketLaneIdentifyingAttachment;
+import de.christianbernstein.bernie.modules.net.in.RequestServerFootprintPacketData;
+import de.christianbernstein.bernie.modules.user.IUserModule;
+import de.christianbernstein.bernie.modules.user.UserCreationResult;
+import de.christianbernstein.bernie.modules.user.UserData;
+import de.christianbernstein.bernie.modules.user.in.CheckUserAttributeAvailabilityRequestPacketData;
+import de.christianbernstein.bernie.modules.user.in.CreateUserRequestPacketData;
+import de.christianbernstein.bernie.modules.user.out.CheckUserAttributeAvailabilityResponsePacketData;
+import de.christianbernstein.bernie.modules.user.out.CreateUserResponsePacketData;
 import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
 import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
 import lombok.experimental.UtilityClass;
@@ -28,7 +38,7 @@ public class BaseDiscoverers {
 
     };
 
-    @Discoverer(packetID = "CheckUserAttributeAvailabilityRequestPacketData", datatype = CheckUserAttributeAvailabilityRequestPacketData.class, protocols = "base")
+    @Discoverer(packetID = "CheckUserAttributeAvailabilityRequestPacketData", datatype = CheckUserAttributeAvailabilityRequestPacketData.class, protocols =  Constants.coreProtocolName)
     private final IPacketHandlerBase<CheckUserAttributeAvailabilityRequestPacketData> checkUserAttributeAvailabilityHandler = (data, endpoint, socket, packet, server) -> {
         switch (data.getType()) {
             case EMAIL -> throw new UnsupportedOperationException("Email CheckUserAttributeAvailabilityRequestPacketData handler not implemented");
@@ -40,7 +50,7 @@ public class BaseDiscoverers {
         }
     };
 
-    @Discoverer(packetID = "CreateUserRequestPacketData", datatype = CreateUserRequestPacketData.class, protocols = "base")
+    @Discoverer(packetID = "CreateUserRequestPacketData", datatype = CreateUserRequestPacketData.class, protocols =  Constants.coreProtocolName)
     private final IPacketHandlerBase<CreateUserRequestPacketData> createUserHandler = (data, endpoint, socket, packet, server) -> {
         final IUserModule userModule = ton.userModule();
         final Date creationData = new Date();
@@ -58,5 +68,15 @@ public class BaseDiscoverers {
             case OK -> packet.respond(new CreateUserResponsePacketData(true, result), endpoint);
             case UUID_ALREADY_TAKEN, USERNAME_ALREADY_TAKEN, INTERNAL_ERROR -> packet.respond(new CreateUserResponsePacketData(false, result), endpoint);
         }
+    };
+
+    @Discoverer(packetID = "CDNRequestPacketData", datatype = CDNRequestPacketData.class, protocols = Constants.coreProtocolName)
+    private final IPacketHandlerBase<CDNRequestPacketData> cdnRequestHandler = (data, endpoint, socket, packet, server) -> {
+        final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
+        final String viewerID = sli != null ? ton.getUserFromSessionID(sli.getSessionID()).getID() : null;
+        final CDNRequest request = new CDNRequest(viewerID, data.getBranches());
+        final ICDNModule module = ton.cdnModule();
+        final CDNResponse response = module.request(request);
+        packet.respond(new CDNResponsePacketData(response), endpoint);
     };
 }

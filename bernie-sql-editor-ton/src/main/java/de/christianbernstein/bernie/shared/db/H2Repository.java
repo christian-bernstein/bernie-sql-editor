@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class H2Repository<T, ID extends Serializable> implements IRepository<T, ID> {
@@ -44,6 +45,15 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
         this.initHibernateConfiguration();
     }
 
+    public void update(UnaryOperator<T> updater, ID id) {
+        this.session(session -> {
+            T elem = this.get(id);
+            session.evict(elem);
+            elem = updater.apply(elem);
+            session.update(elem);
+        });
+    }
+
     public @NonNull SessionFactory getSessionFactory() {
         if (this.sessionFactory == null) {
             try {
@@ -65,7 +75,7 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
 
     @Override
     public @NotNull T save(@NonNull T entity) {
-        Transaction transaction = null;
+        Transaction transaction;
         try (final Session session = this.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.saveOrUpdate(entity);
@@ -90,7 +100,7 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "SqlNoDataSourceInspection"})
     @Override
     public void dropData() {
         this.session(session -> session.doWork(connection -> connection.prepareStatement("truncate table %s".replace("%s", this.tableName)).executeUpdate()));
@@ -105,7 +115,9 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
 
     @Override
     public List<T> getAll() {
-        @Language("H2") final String query = "select * from %s";
+        @Language("H2")
+        @SuppressWarnings("SqlNoDataSourceInspection")
+        final String query = "select * from %s";
         return this.nq(query);
     }
 
@@ -181,5 +193,4 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
         }
         this.repositoryConfiguration.annotatedClasses().forEach(configuration::addAnnotatedClass);
     }
-
 }

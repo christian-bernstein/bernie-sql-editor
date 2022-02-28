@@ -2,16 +2,15 @@ package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.ses.annotations.AutoExec;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
-import de.christianbernstein.bernie.ses.project.ProjectAlreadyExistException;
-import de.christianbernstein.bernie.ses.project.ProjectCreationData;
-import de.christianbernstein.bernie.ses.project.ProjectData;
+import de.christianbernstein.bernie.modules.project.ProjectAlreadyExistException;
+import de.christianbernstein.bernie.modules.project.ProjectCreationData;
+import de.christianbernstein.bernie.modules.project.ProjectData;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ISession;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Flow;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.Statement;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.misc.Utils;
-import de.christianbernstein.bernie.shared.module.Module;
 import lombok.NonNull;
 
 import java.io.BufferedReader;

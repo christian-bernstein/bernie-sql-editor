@@ -15,8 +15,8 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
-import de.christianbernstein.bernie.ses.session.Session;
-import de.christianbernstein.bernie.ses.user.IUser;
+import de.christianbernstein.bernie.modules.session.Session;
+import de.christianbernstein.bernie.modules.user.IUser;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.db.H2Repository;
 import de.christianbernstein.bernie.shared.document.Document;

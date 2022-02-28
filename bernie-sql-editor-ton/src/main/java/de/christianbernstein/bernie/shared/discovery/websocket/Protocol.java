@@ -31,6 +31,7 @@ import lombok.experimental.Accessors;
 @Data
 @Builder
 @Accessors(fluent = true)
+@SuppressWarnings("UnusedReturnValue")
 public class Protocol implements IFluently<Protocol> {
 
     @Builder.Default
