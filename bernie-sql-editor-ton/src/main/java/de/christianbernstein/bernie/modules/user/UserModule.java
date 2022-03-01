@@ -48,16 +48,6 @@ public class UserModule implements IUserModule {
         this.engine = manager;
         this.repository = new H2Repository<>(UserData.class, this.configuration.getRepositoryConfiguration());
         this.createRootUser();
-
-        System.err.println(this.plainCreateAccount(UserData.builder()
-                .userEntrySetupDate(new Date())
-                .lastActive(new Date())
-                .username("Christian")
-                .firstname("Christian")
-                .lastname("Bernstein")
-                .password("root")
-                .id(UUID.randomUUID().toString())
-                .build()));
     }
 
     @Override
@@ -107,6 +97,9 @@ public class UserModule implements IUserModule {
         // After checking for consistency, insert the user data into the repository
         try {
             this.repository.save(data);
+
+
+
             return UserCreationResult.OK;
         } catch (final Exception e) {
             e.printStackTrace();

@@ -1,0 +1,12 @@
+2022-03-01 00:22:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "PROJECTDATA" nicht gefunden
+Table "PROJECTDATA" not found; SQL statement:
+select * from projectdata [42102-200]
+2022-03-01 00:22:26 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "PROJECT_DATA" nicht gefunden
+Table "PROJECT_DATA" not found; SQL statement:
+select * from project_data [42102-200]
+2022-03-01 00:24:44 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "OAJSÖDOKJÖAOSJDJKASD[*]"
+Syntax error in SQL statement "OAJSÖDOKJÖAOSJDJKASD[*]"; SQL statement:
+oajsödokjöaosjdjkasd [42000-200]
