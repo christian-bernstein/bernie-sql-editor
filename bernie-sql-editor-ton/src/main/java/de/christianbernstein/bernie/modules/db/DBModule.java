@@ -69,9 +69,9 @@ public class DBModule implements IDBModule {
         final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
         final UUID sessionID = sli.getSessionID();
         instance.ifPresent(module -> {
-            final DBListenerID id = new DBListenerID(sessionID, DBListenerType.SOCKET);
-            if (module.sqlCommandStreamConnectionLookup.containsKey(projectID)) {
-                final List<DBListenerID> connections = module.sqlCommandStreamConnectionLookup.get(projectID);
+            final DBListenerID id = new DBListenerID(sessionID, DBListenerType.SOCKET, new HashMap<>());
+            if (module.sqlListenerLookup.containsKey(projectID)) {
+                final List<DBListenerID> connections = module.sqlListenerLookup.get(projectID);
 
                 if (connections.stream().noneMatch(bdID -> bdID.id().equals(sessionID))) {
                     connections.add(id);
@@ -79,7 +79,7 @@ public class DBModule implements IDBModule {
             } else {
                 final List<DBListenerID> connections = new ArrayList<>();
                 connections.add(id);
-                module.sqlCommandStreamConnectionLookup.put(projectID, connections);
+                module.sqlListenerLookup.put(projectID, connections);
             }
         });
     };
@@ -105,11 +105,13 @@ public class DBModule implements IDBModule {
                         .projectID(databaseID)
                         .build());
 
+                // todo inform client about the task update
+
                 final String raw = data.getRaw();
                 // todo time this function and send the duration back to the client
                 final ResultSet query = connection.prepareStatement(raw).executeQuery();
                 final List<Document> set = DBUtilities.resultSetToList(query);
-                final List<DBListenerID> listeningConnections = module.sqlCommandStreamConnectionLookup().get(data.getDbID());
+                final List<DBListenerID> listeningConnections = module.sqlListenerLookup().get(data.getDbID());
                 final Client client = Client.builder().type(ClientType.USER).id("implement..").username("implement..").build();
                 final String errormessage = "implement..";
                 final List<Column> columns = new ArrayList<>();
@@ -158,6 +160,7 @@ public class DBModule implements IDBModule {
                         }
                         case VIRTUAL -> {
                             // todo add method to handle virtual connections
+                            throw new UnsupportedOperationException("VIRTUAL connections not handled yet");
                         }
                     }
                 });
@@ -182,6 +185,8 @@ public class DBModule implements IDBModule {
     private final DBConfig config = DBConfig.builder().build();
 
     /**
+     * todo rename variable to sqlListenerLookup
+     *
      * todo replace UUID with better datatype -> {
      *      id, type: VIRTUAL | DEVICE
      *  }
@@ -191,7 +196,7 @@ public class DBModule implements IDBModule {
      * who listen on sql commands happening to the databases.
      */
     @Getter
-    private final Map<String, List<DBListenerID>> sqlCommandStreamConnectionLookup = new HashMap<>();
+    private final Map<String, List<DBListenerID>> sqlListenerLookup = new HashMap<>();
 
     private SessionFactory rootSessionFactory;
 
@@ -289,7 +294,7 @@ public class DBModule implements IDBModule {
             final SocketServerLane lane = socketPreShutdownEvent.session();
             final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(lane);
             if (sli != null && sli.getSessionID() != null) {
-                this.sqlCommandStreamConnectionLookup.forEach((databaseID, listeners) -> listeners.removeIf(id ->
+                this.sqlListenerLookup.forEach((databaseID, listeners) -> listeners.removeIf(id ->
                         id.type().equals(DBListenerType.SOCKET) && id.id().equals(sli.getSessionID())
                 ));
             }

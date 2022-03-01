@@ -34,6 +34,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.UnaryOperator;
 
 /**
+ * todo inform listenigng clients about updates targeting their project
+ *  - save connections to a map
+ *  - whenever an update occours, push packet to the client informing them about the update
+ *  (system like the one in the database module)
+ *
  * @author Christian Bernstein
  */
 @SuppressWarnings("all")
@@ -164,10 +169,7 @@ public class ProjectModule implements IProjectModule {
             this.createProject(ProjectCreationData.builder()
                     .id("ton")
                     .title("SES internal infrastructure db")
-
-                    //.creatorUserID(ton.get().userModule().root().getID())
                     .creatorUserID(ton.get().userModule().getUserOfUsername("root").getID())
-
                     .stator(true)
                     .description("Automatically generated bridge between SES's internal infrastructure and the SQL-Editor panel. **This is a debug project and should never be generated in production mode.**")
                     .build());

@@ -42,7 +42,7 @@ public interface IDBModule extends IBaseModuleClass<ITon>, IFluently<IDBModule> 
 
     IDatabaseAccessPoint loadDatabase(String dbID, DatabaseAccessPointLoadConfig config);
 
-    Map<String, List<DBListenerID>> sqlCommandStreamConnectionLookup();
+    Map<String, List<DBListenerID>> sqlListenerLookup();
 
     boolean unloadDatabase(String dbID);
 
