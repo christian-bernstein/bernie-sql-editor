@@ -15,6 +15,8 @@
 
 package de.christianbernstein.bernie.modules.db;
 
+import de.christianbernstein.bernie.modules.project.ProjectTask;
+import de.christianbernstein.bernie.modules.project.ProjectTaskStatus;
 import de.christianbernstein.bernie.modules.session.Client;
 import de.christianbernstein.bernie.modules.session.ClientType;
 import de.christianbernstein.bernie.ses.annotations.RegisterEventClass;
@@ -90,12 +92,22 @@ public class DBModule implements IDBModule {
         final IDatabaseAccessPoint db = module.loadDatabase(data.getDbID(), DatabaseAccessPointLoadConfig.builder().build());
         switch (data.getType()) {
             case PULL -> db.session(session -> session.doWork(connection -> {
-                final String raw = data.getRaw();
                 final String databaseID = data.getDbID();
 
+                // todo make information better
+                DBModule.ton.orElseThrow().projectModule().createTask(ProjectTask.builder()
+                        .status(ProjectTaskStatus.RUNNING)
+                        .taskID(UUID.randomUUID().toString())
+                        .data(new HashMap<>())
+                        .title("pull command")
+                        .type("pull")
+                        .timestamp(new Date())
+                        .projectID(databaseID)
+                        .build());
+
+                final String raw = data.getRaw();
                 // todo time this function and send the duration back to the client
                 final ResultSet query = connection.prepareStatement(raw).executeQuery();
-
                 final List<Document> set = DBUtilities.resultSetToList(query);
                 final List<DBListenerID> listeningConnections = module.sqlCommandStreamConnectionLookup().get(data.getDbID());
                 final Client client = Client.builder().type(ClientType.USER).id("implement..").username("implement..").build();
@@ -136,6 +148,7 @@ public class DBModule implements IDBModule {
                                                 .sql(raw)
                                                 .success(success)
                                                 .client(client)
+                                                .timestamp(new Date())
                                                 .build());
                                     }
                                 } else {

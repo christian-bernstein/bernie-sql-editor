@@ -25,6 +25,7 @@ import lombok.NonNull;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.UnaryOperator;
 
 /**
  * @author Christian Bernstein
@@ -46,4 +47,13 @@ public interface IProjectModule extends IBaseModuleClass<ITon> {
 
     void deleteProject(@NonNull UUID id);
 
+    List<ProjectTask> getTasksFromProjectID(@NonNull String projectID, int amount, int offset);
+
+    void updateProjectTask(String taskID, UnaryOperator<ProjectTask> updater);
+
+    IProjectTaskContext createTask(ProjectTask taskData);
+
+    ProjectTask getTask(@NonNull String taskID);
+
+    IProjectTaskContext initTaskContext(@NonNull String taskID);
 }

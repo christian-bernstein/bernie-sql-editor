@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.UnaryOperator;
 
 /**
  * @author Christian Bernstein
@@ -55,12 +56,15 @@ public class ProjectModule implements IProjectModule {
 
     private Centralized<H2Repository<ProjectData, UUID>> projectRepository;
 
+    private Centralized<H2Repository<ProjectTask, String>> projectTaskRepository;
+
     @Override
     public void boot(ITon api, @NotNull Module<ITon> module, IEngine<ITon> manager) {
         IProjectModule.super.boot(api, module, manager);
         ton = Optional.of(api);
         instance = Optional.of(this);
         this.projectRepository = api.db(ProjectData.class);
+        this.projectTaskRepository = api.db(ProjectTask.class);
         this.createInternalDatabaseProject();
     }
 
@@ -112,6 +116,46 @@ public class ProjectModule implements IProjectModule {
         } catch (final Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void updateProjectTask(String taskID, UnaryOperator<ProjectTask> updater) {
+        this.projectTaskRepository.get().update(updater, taskID);
+    }
+
+    /**
+     * todo .filter will get very resource intens, if the number of tasks in the system rises! -> Change to more efficient native sql solution
+     */
+    @Override
+    public List<ProjectTask> getTasksFromProjectID(@NonNull String projectID, int amount, int offset) {
+        final List<ProjectTask> tasks = this.projectTaskRepository.get().filter(projectTask -> projectTask.getProjectID().equals(projectID));
+        if (offset > tasks.size()) {
+            return tasks;
+        } else {
+            final int startIndex = tasks.size() - offset;
+            return tasks.subList(startIndex, startIndex + amount);
+        }
+    }
+
+    @Override
+    public IProjectTaskContext createTask(ProjectTask taskData) {
+        try {
+            this.projectTaskRepository.get().save(taskData);
+            return new ProjectTaskContext(this, taskData.getTaskID(), taskData);
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ProjectTask getTask(@NonNull String taskID) {
+        return this.projectTaskRepository.get().get(taskID);
+    }
+
+    @Override
+    public IProjectTaskContext initTaskContext(@NonNull String taskID) {
+        throw new UnsupportedOperationException();
     }
 
     // todo this is a debug method and should not be available in production

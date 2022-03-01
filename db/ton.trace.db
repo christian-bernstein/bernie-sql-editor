@@ -740,3 +740,7 @@ Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/dev/berni
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "USERDATA" nicht gefunden
 Table "USERDATA" not found; SQL statement:
 select * from userdata [42102-200]
+2022-03-01 23:38:26 jdbc[7]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT * PROJECT_TASK[*]"
+Syntax error in SQL statement "SELECT * PROJECT_TASK[*]"; SQL statement:
+select * project_task [42000-200]

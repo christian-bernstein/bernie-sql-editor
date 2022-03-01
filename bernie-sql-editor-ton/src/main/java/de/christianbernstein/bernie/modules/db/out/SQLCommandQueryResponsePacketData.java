@@ -8,6 +8,7 @@ import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
 import de.christianbernstein.bernie.shared.discovery.websocket.PacketMeta;
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,4 +38,6 @@ public class SQLCommandQueryResponsePacketData extends PacketData {
     private List<Column> columns;
 
     private List<Row> rows;
+
+    private Date timestamp;
 }
