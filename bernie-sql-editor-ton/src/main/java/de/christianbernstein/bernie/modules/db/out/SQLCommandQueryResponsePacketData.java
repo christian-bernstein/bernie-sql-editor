@@ -1,6 +1,7 @@
 package de.christianbernstein.bernie.modules.db.out;
 
 import de.christianbernstein.bernie.modules.db.Column;
+import de.christianbernstein.bernie.modules.db.DBCommandError;
 import de.christianbernstein.bernie.modules.db.Row;
 import de.christianbernstein.bernie.modules.session.Client;
 import de.christianbernstein.bernie.ses.bin.Constants;
@@ -40,4 +41,8 @@ public class SQLCommandQueryResponsePacketData extends PacketData {
     private List<Row> rows;
 
     private Date timestamp;
+
+    private DBCommandError error;
+
+    private long durationMS;
 }

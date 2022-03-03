@@ -1,5 +1,6 @@
 package de.christianbernstein.bernie.modules.profile;
 
+import de.christianbernstein.bernie.modules.user.UserData;
 import de.christianbernstein.bernie.ses.bin.Centralized;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
@@ -8,6 +9,7 @@ import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
 import de.christianbernstein.bernie.shared.module.Module;
 import de.christianbernstein.bernie.shared.module.ModuleDefinition;
 import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -26,4 +28,6 @@ public interface IProfileModule extends IBaseModuleClass<ITon> {
     Centralized<H2Repository<BiographyMapping, String>> getBiographyRepo();
 
     void setBiography(@NonNull String targetID, String biography);
+
+    void initUserProfile(@NotNull UserData data);
 }

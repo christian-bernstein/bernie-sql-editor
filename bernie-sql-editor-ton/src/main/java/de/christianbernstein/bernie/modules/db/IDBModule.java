@@ -15,16 +15,23 @@
 
 package de.christianbernstein.bernie.modules.db;
 
+import de.christianbernstein.bernie.modules.db.out.SQLCommandQueryResponsePacketData;
+import de.christianbernstein.bernie.modules.db.out.SQLCommandUpdateResponsePacketData;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
+import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
+import de.christianbernstein.bernie.shared.document.Document;
+import de.christianbernstein.bernie.shared.document.IDocument;
 import de.christianbernstein.bernie.shared.misc.IFluently;
 import de.christianbernstein.bernie.shared.module.Dependency;
 import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
 import de.christianbernstein.bernie.shared.module.ModuleDefinition;
 import de.christianbernstein.bernie.shared.module.Module;
+import lombok.NonNull;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +61,17 @@ public interface IDBModule extends IBaseModuleClass<ITon>, IFluently<IDBModule> 
 
     SessionFactory getRootSessionFactory();
 
+    void broadcastDBPacket(@NonNull String databaseID, @NonNull PacketData data, Class<? extends PacketData> type, IDocument<Document> params);
 
+    void broadcastPullResponsePacket(@NonNull String databaseID, @NonNull SQLCommandQueryResponsePacketData responsePacket);
 
+    void broadcastPushResponsePacket(@NonNull String databaseID, @NonNull SQLCommandUpdateResponsePacketData responsePacket);
+
+    DBQueryResult executeQuery(Connection connection, String raw);
+
+    DBUpdateResult executeUpdate(Connection connection, String raw);
+
+    DBCommandError generatePullError(DBQueryResult result, Map<String, Object> appendix);
+
+    DBCommandError generatePushError(DBUpdateResult result, Map<String, Object> appendix);
 }

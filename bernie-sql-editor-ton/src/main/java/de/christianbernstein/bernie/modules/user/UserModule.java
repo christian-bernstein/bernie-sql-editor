@@ -15,6 +15,7 @@
 
 package de.christianbernstein.bernie.modules.user;
 
+import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.shared.db.H2Repository;
 import de.christianbernstein.bernie.shared.module.IEngine;
@@ -33,6 +34,9 @@ import java.util.function.Function;
  * @author Christian Bernstein
  */
 public class UserModule implements IUserModule {
+
+    @UseTon
+    private static ITon ton;
 
     private final UserModuleConfig configuration = UserModuleConfig.defaultConfiguration;
 
@@ -97,14 +101,24 @@ public class UserModule implements IUserModule {
         // After checking for consistency, insert the user data into the repository
         try {
             this.repository.save(data);
-
-
+            this.initUserProfile(data);
 
             return UserCreationResult.OK;
         } catch (final Exception e) {
             e.printStackTrace();
             return UserCreationResult.INTERNAL_ERROR;
         }
+    }
+
+    /**
+     * Initiate the profile of the user and fill it with sample data & fallback information.
+     * This is part of {@link de.christianbernstein.bernie.modules.profile.IProfileModule}'s domain
+     * and will be relayed to it.
+     *
+     * @param data The new user's basic data
+     */
+    private void initUserProfile(@NotNull UserData data) {
+        ton.profileModule().initUserProfile(data);
     }
 
     @Override

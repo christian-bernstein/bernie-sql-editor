@@ -3,9 +3,9 @@ import de.christianbernstein.bernie.shared.tailwind.IPublicAPI;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.ISocketServerPublicAPI;
 import de.christianbernstein.bernie.shared.tailwind.Bridge;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.OnStopSocketContext;
-import de.christianbernstein.bernie.shared.discovery.websocket.server.OnErrorSocketContext;
-import de.christianbernstein.bernie.shared.discovery.websocket.server.OnMessageSocketContext;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.OnOpenSocketContext;
+import de.christianbernstein.bernie.shared.discovery.websocket.server.OnMessageSocketContext;
+import de.christianbernstein.bernie.shared.discovery.websocket.server.OnErrorSocketContext;
 
 @SuppressWarnings("unchecked")
 public class ISocketServerPublicAPIImpl implements ISocketServerPublicAPI {
@@ -35,9 +35,9 @@ public class ISocketServerPublicAPIImpl implements ISocketServerPublicAPI {
     this.proteus().internal().sync("on-stop", (ctx, gate) -> ctx.yield(gate.sync(param0)));
   }
 
-  @Bridge(value = "on-error", async = false)
-  public void onError(OnErrorSocketContext param0) {
-    this.proteus().internal().sync("on-error", (ctx, gate) -> ctx.yield(gate.sync(param0)));
+  @Bridge(value = "on-open", async = false)
+  public void onOpen(OnOpenSocketContext param0) {
+    this.proteus().internal().sync("on-open", (ctx, gate) -> ctx.yield(gate.sync(param0)));
   }
 
   @Bridge(value = "on-message", async = false)
@@ -45,8 +45,8 @@ public class ISocketServerPublicAPIImpl implements ISocketServerPublicAPI {
     this.proteus().internal().sync("on-message", (ctx, gate) -> ctx.yield(gate.sync(param0)));
   }
 
-  @Bridge(value = "on-open", async = false)
-  public void onOpen(OnOpenSocketContext param0) {
-    this.proteus().internal().sync("on-open", (ctx, gate) -> ctx.yield(gate.sync(param0)));
+  @Bridge(value = "on-error", async = false)
+  public void onError(OnErrorSocketContext param0) {
+    this.proteus().internal().sync("on-error", (ctx, gate) -> ctx.yield(gate.sync(param0)));
   }
 }
