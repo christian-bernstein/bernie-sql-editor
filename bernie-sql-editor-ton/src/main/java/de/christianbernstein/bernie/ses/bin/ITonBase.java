@@ -19,10 +19,12 @@ import de.christianbernstein.bernie.shared.db.H2Repository;
 import de.christianbernstein.bernie.shared.document.Document;
 import de.christianbernstein.bernie.shared.document.IDocument;
 import de.christianbernstein.bernie.shared.event.EventAPI;
+import de.christianbernstein.bernie.shared.misc.Resource;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
 import de.christianbernstein.bernie.shared.union.IEventManager;
 import lombok.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -33,11 +35,21 @@ public interface ITonBase<Impl extends ITon> {
 
     Impl start(@NonNull TonConfiguration configuration);
 
+    Impl start(@NonNull TonConfiguration configuration, boolean autoConfigReload);
+
     Impl shutdown();
+
+    String interpolate(String format);
+
+    <Config> Resource<Config> config(Class<Config> type, String id, @Nullable Config def);
 
     IEventManager eventManager();
 
+    Resource<TonConfiguration> configResource();
+
     TonConfiguration configuration();
+
+    TonConfiguration defaultConfiguration();
 
     TonState tonState();
 

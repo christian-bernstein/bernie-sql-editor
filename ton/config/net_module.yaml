@@ -1,0 +1,14 @@
+!!de.christianbernstein.bernie.modules.net.NetModuleConfigShard {
+  ssl: true,
+  sslCertificateDir: '{root_dir}/ssl/',
+  sslCertificateFactory: X.509,
+  sslContext: TLS,
+  sslKeyFactory: RSA,
+  sslKeyManagerFactory: SunX509,
+  sslKeyStore: JKS,
+  sslProviderType: letsencrypt,
+  sslRelativeCertificatePath: cert.pem,
+  sslRelativePrivateKeyPath: privkey.pem,
+  syncClose: true,
+  syncOpen: true
+}

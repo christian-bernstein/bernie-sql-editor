@@ -18,6 +18,7 @@ package de.christianbernstein.bernie.shared.misc;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 /**
@@ -46,6 +47,18 @@ public interface IFluently<T> {
     @NonNull
     default T $(@NonNull @NotNull Consumer<T> consumer) {
         return this.me(consumer);
+    }
+
+    default T doIf(@NonNull BooleanSupplier condition, Consumer<T> action) {
+        return me(t -> {
+            if (condition.getAsBoolean()) {
+                action.accept(t);
+            }
+        });
+    }
+
+    default T doIf(boolean condition, Consumer<T> action) {
+        return this.doIf(() -> condition, action);
     }
 
     default T stdout() {

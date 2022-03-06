@@ -175,15 +175,15 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
         this.configuration = new Configuration()
                 .setProperty("hibernate.connection.driver_class", "org.h2.Driver")
                 .setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect")
-                .setProperty("hibernate.connection.url", "jdbc:h2:%1%2".replace("%1", this.repositoryConfiguration.databaseDir()).replace("%2", this.repositoryConfiguration.database()))
-                .setProperty("hibernate.connection.username", this.repositoryConfiguration.username())
-                .setProperty("hibernate.connection.password", this.repositoryConfiguration.password())
+                .setProperty("hibernate.connection.url", "jdbc:h2:%1%2".replace("%1", this.repositoryConfiguration.getDatabaseDir()).replace("%2", this.repositoryConfiguration.getDatabase()))
+                .setProperty("hibernate.connection.username", this.repositoryConfiguration.getUsername())
+                .setProperty("hibernate.connection.password", this.repositoryConfiguration.getPassword())
 
                 .setProperty("hibernate.enable_lazy_load_no_trans", "true")
 
                 .addAnnotatedClass(this.type);
-        if (this.repositoryConfiguration.hbm2DDLMode() != HBM2DDLMode.NOT_SET) {
-            this.configuration.setProperty("hibernate.hbm2ddl.auto", this.repositoryConfiguration.hbm2DDLMode().getHbnPropertyVal());
+        if (this.repositoryConfiguration.getHbm2DDLMode() != HBM2DDLMode.NOT_SET) {
+            this.configuration.setProperty("hibernate.hbm2ddl.auto", this.repositoryConfiguration.getHbm2DDLMode().getHbnPropertyVal());
         }
         if (this.type.isAnnotationPresent(H2RepositoryEntity.class)) {
             final H2RepositoryEntity entity = this.type.getAnnotation(H2RepositoryEntity.class);
@@ -191,6 +191,6 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
                 this.configuration.addAnnotatedClass(relatedClass);
             }
         }
-        this.repositoryConfiguration.annotatedClasses().forEach(configuration::addAnnotatedClass);
+        this.repositoryConfiguration.getAnnotatedClasses().forEach(configuration::addAnnotatedClass);
     }
 }

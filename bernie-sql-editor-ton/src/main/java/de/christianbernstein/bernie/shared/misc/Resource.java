@@ -30,6 +30,9 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
@@ -43,7 +46,7 @@ import java.util.function.Supplier;
  */
 @ToString
 @RequiredArgsConstructor
-public class Resource<T> {
+public class Resource<T> implements IFluently<Resource<T>> {
 
     // todo make configurable
     @Getter
@@ -54,8 +57,18 @@ public class Resource<T> {
     @Getter
     private T cache;
 
+    @Getter
+    private ExecutorService executorService;
+
+    private final List<Consumer<T>> onLoadHandlers = new ArrayList<>();
+
     public Resource(@NonNull final String path) {
         this(new File(path));
+    }
+
+    public Resource<T> registerOnLoad(Consumer<T> handler) {
+        this.onLoadHandlers.add(handler);
+        return this;
     }
 
     // todo make defaultDataSupplier a private variable od resource
@@ -65,7 +78,7 @@ public class Resource<T> {
                 this.save(defaultDataSupplier.get());
             }
         });
-        this.load(LoadTrigger.UNDEFINED);
+        this.load(LoadTrigger.DEFAULT_LOAD);
         return this;
     }
 
@@ -86,6 +99,14 @@ public class Resource<T> {
         return this.load(LoadTrigger.UNDEFINED);
     }
 
+    public T use(boolean bypassCache) {
+        T t = this.getCache();
+        if (bypassCache || t == null) {
+            t = this.load(LoadTrigger.DEFAULT_LOAD);
+        }
+        return t;
+    }
+
     public T load(@NonNull LoadTrigger trigger) {
         this.createFile();
         final Yaml yaml = new Yaml();
@@ -98,7 +119,14 @@ public class Resource<T> {
         return this.cache;
     }
 
-    protected void onLoad(@NonNull LoadTrigger trigger) {
+    protected void onLoad(@SuppressWarnings("unused") @NonNull LoadTrigger trigger) {
+        this.onLoadHandlers.forEach(handler -> {
+            try {
+                handler.accept(this.cache);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void save(T data) {
@@ -157,22 +185,45 @@ public class Resource<T> {
         return this.wipeCache();
     }
 
-    public void enableAutoFileUpdate() {
-        try {
-            WatchService watchService = FileSystems.getDefault().newWatchService();
-            @SuppressWarnings("UnusedAssignment")
-            WatchKey key = this.file.getParentFile().toPath().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
-            while ((key = watchService.take()) != null) {
-                for (WatchEvent<?> event : key.pollEvents()) {
-                    if (event.context().toString().equals(this.file.getName())) {
-                        this.load(LoadTrigger.FILESYSTEM_UPDATE);
-                    }
-                }
-                key.reset();
+    public Resource<T> stop() {
+        if (this.executorService != null) {
+            try {
+                this.executorService.shutdownNow();
+            } catch (final Exception e) {
+                e.printStackTrace();
             }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            this.executorService = null;
         }
+        return this;
+    }
+
+    public Resource<T> enableAutoFileUpdate() {
+        if (this.executorService == null) {
+            this.executorService = Executors.newSingleThreadExecutor();
+            this.executorService.submit(() -> {
+                try {
+                    WatchService watchService = FileSystems.getDefault().newWatchService();
+                    @SuppressWarnings("UnusedAssignment")
+                    WatchKey key = this.file.getParentFile().toPath().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                    while ((key = watchService.take()) != null) {
+                        for (WatchEvent<?> event : key.pollEvents()) {
+                            if (event.context().toString().equals(this.file.getName())) {
+                                this.load(LoadTrigger.FILESYSTEM_UPDATE);
+                            }
+                        }
+                        key.reset();
+                    }
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                } catch (final InterruptedException ignored) {}
+            });
+        }
+        return this;
+    }
+
+    @Override
+    public @NonNull Resource<T> me() {
+        return this;
     }
 
     public enum LoadTrigger {

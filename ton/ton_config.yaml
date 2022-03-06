@@ -1,0 +1,32 @@
+!!de.christianbernstein.bernie.ses.bin.TonConfiguration
+configPath: '{root_dir}config/'
+defaultConfigFileExtension: yaml
+internalDatabaseConfiguration:
+  annotatedClasses: [
+    ]
+  database: ton
+  databaseDir: ./db/
+  hbm2DDLMode: UPDATE
+  password: root
+  username: root
+jraPhaseOrder:
+- [
+  construct-phase]
+- [
+  inject-ton-api]
+- [
+  register-event-class-phase]
+- [
+  module]
+- [
+  flow]
+- [
+  cdn]
+- [
+  auto-exec]
+mode: DEBUG
+moduleConfigPath: '{root_dir}config/'
+rootDir: ton/
+tonEngineID: ton
+variableInterpolationSyntax: '{%s}'
+workingDirectory: ./ton/

@@ -42,14 +42,8 @@ import java.util.concurrent.TimeUnit;
 public class ServerConfiguration {
 
     public static final ServerConfiguration defaultConfiguration = ServerConfiguration.builder()
-
-
-
             // todo remove dirty patch (1)
             .address(new InetSocketAddress(25574))
-
-
-
             .build();
 
     // todo remove dirty patch (1)

@@ -10,6 +10,7 @@ import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ISession;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Flow;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.Statement;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
+import de.christianbernstein.bernie.shared.misc.Resource;
 import de.christianbernstein.bernie.shared.misc.Utils;
 import lombok.NonNull;
 
@@ -81,7 +82,7 @@ public class Console {
     }
 
 
-    @Command(path = "debug", literal = "listProjects", aliases = "lP")
+    @Command(path = "debug", literal = "listModules", aliases = "lM")
     private void listProjects() {
         ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", String.format("Installed modules: '%s'", ton
                 .engine()
@@ -113,6 +114,42 @@ public class Console {
                     .description(description)
                     .build());
         } catch (ProjectAlreadyExistException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Command(path = "config", literal = "disengage", tags = "unstable")
+    private void disengageConfig() {
+        try {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", "Disengaging central configuration file.");
+            final Resource<TonConfiguration> resource = ton.configResource();
+            resource.stop();
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Command(path = "config", literal = "engage", tags = "unstable")
+    private void engageConfig(boolean populate) {
+        try {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", "Engaging central configuration file.");
+            final Resource<TonConfiguration> resource = ton.configResource();
+            resource.wipeCache();
+            resource.init(populate, () -> ton.defaultConfiguration());
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Command(path = "config", literal = "reset", tags = "unstable")
+    private void resetConfig() {
+        try {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", "Resetting central configuration file to default value.");
+            final Resource<TonConfiguration> resource = ton.configResource();
+            resource.stop();
+            resource.wipeCache();
+            resource.init(true, () -> ton.defaultConfiguration());
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

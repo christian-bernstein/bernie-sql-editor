@@ -15,12 +15,13 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
+import ch.qos.logback.classic.Level;
+import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
+import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
 import de.christianbernstein.bernie.shared.document.Document;
-import org.apache.logging.log4j.spi.LoggerContext;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This is the bootstrap class for the embedded ton server.
@@ -33,7 +34,30 @@ public class TonLauncher {
     private static Optional<ITon> ton = Optional.empty();
 
     public static void main(String[] args) {
+        // LoggerFactory.getLogger(TonLauncher.class).error("Hell world");
+
+        ch.qos.logback.classic.Logger root;
+
+        root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.reflections");
+        root.setLevel(Level.OFF);
+
+        root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate");
+        root.setLevel(Level.OFF);
+
+        root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.jboss");
+        root.setLevel(Level.OFF);
+
+        root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.jboss");
+        root.setLevel(Level.OFF);
+
+        root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.java_websocket");
+        root.setLevel(Level.TRACE);
+
+        // BernieSystemPrintAdapter.systemInstall();
+
+
         new Ton(Document.fromArgumentsArray(args)).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
+                .internalDatabaseConfiguration(H2RepositoryConfiguration.builder().hbm2DDLMode(HBM2DDLMode.UPDATE).databaseDir("./db/").database("ton").username("root").password("root").build())
                 .mode(TonMode.DEBUG)
                 .workingDirectory("./ton/")
                 .build()

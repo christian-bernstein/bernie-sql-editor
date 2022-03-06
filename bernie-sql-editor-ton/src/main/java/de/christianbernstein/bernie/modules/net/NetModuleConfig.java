@@ -16,25 +16,28 @@
 package de.christianbernstein.bernie.modules.net;
 
 import de.christianbernstein.bernie.shared.discovery.websocket.server.ServerConfiguration;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 /**
  * @author Christian Bernstein
  */
 @Data
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NetModuleConfig {
 
     public static final NetModuleConfig defaultConfig = NetModuleConfig.builder().build();
 
     @Builder.Default
-    private final boolean syncOpen = true;
+    private boolean syncOpen = true;
 
     @Builder.Default
-    private final boolean syncClose = true;
+    private boolean syncClose = true;
 
     @Builder.Default
-    private final ServerConfiguration serverConfiguration = ServerConfiguration.defaultConfiguration;
+    private ServerConfiguration serverConfiguration = ServerConfiguration.defaultConfiguration;
 
 }

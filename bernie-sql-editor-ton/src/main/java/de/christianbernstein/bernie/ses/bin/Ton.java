@@ -17,9 +17,11 @@ package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.modules.session.Session;
 import de.christianbernstein.bernie.modules.user.IUser;
+import de.christianbernstein.bernie.shared.document.IDocument;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.db.H2Repository;
 import de.christianbernstein.bernie.shared.document.Document;
+import de.christianbernstein.bernie.shared.misc.Resource;
 import de.christianbernstein.bernie.shared.misc.Utils;
 import de.christianbernstein.bernie.shared.module.Engine;
 import de.christianbernstein.bernie.shared.module.IEngine;
@@ -32,11 +34,14 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 /**
+ * todo ensure if debugConfiguration isn't used anywhere, else than in configuration()
+ *
  * @author Christian Bernstein
  */
 @Getter
@@ -51,9 +56,15 @@ public class Ton implements ITon {
 
     private TonState tonState;
 
-    private TonConfiguration configuration;
+    private TonConfiguration defaultConfiguration;
 
     private IEventManager eventManager;
+
+    private String configResourcePath;
+
+    private Resource<TonConfiguration> configResource;
+
+    private Map<String, Supplier<String>> globalStringReplacers;
 
     public Ton() {
         this.arguments = Document.empty();
@@ -63,11 +74,22 @@ public class Ton implements ITon {
         this.arguments = Objects.requireNonNullElse(arguments, Document.empty());
     }
 
+    private void initGlobalStringReplacers() {
+        final Map<String, Supplier<String>> map = this.globalStringReplacers;
+        final TonConfiguration configuration = configuration();
+        map.put("root_dir", configuration::getRootDir);
+        map.put("config_dir", () -> this.interpolate(configuration.getConfigPath()));
+    }
+
     @Override
-    public ITon start(@NonNull final TonConfiguration configuration) {
+    public ITon start(@NonNull TonConfiguration configuration, boolean autoConfigReload) {
         final long s = Utils.durationMonitoredExecution(() -> {
-            this.configuration = configuration;
+            this.configResourcePath = "ton/ton_config.yaml";
+            this.defaultConfiguration = configuration;
             this.tonState = TonState.LAUNCHING;
+            this.configResource = new Resource<TonConfiguration>(this.configResourcePath()).init(true, () -> configuration).doIf(autoConfigReload, Resource::enableAutoFileUpdate);
+            this.globalStringReplacers = new HashMap<>();
+            this.initGlobalStringReplacers();
             this.engine = new Engine<ITon>(configuration.getTonEngineID(), this).enableDependencyChecking();
             this.eventManager = new DefaultEventManager();
             this.initJRA();
@@ -83,11 +105,65 @@ public class Ton implements ITon {
     }
 
     @Override
+    public ITon start(@NonNull final TonConfiguration configuration) {
+        return this.start(configuration, true);
+    }
+
+    @Override
     public ITon shutdown() {
         this.tonState = TonState.STOPPING;
         this.engine().uninstallAll();
         this.tonState = TonState.PREPARED;
         return this;
+    }
+
+    @Override
+    public String interpolate(String format) {
+        final String syntax = this.configuration().getVariableInterpolationSyntax();
+        final String quote = Pattern.quote(syntax);
+        final AtomicReference<String> form = new AtomicReference<>(format);
+        this.globalStringReplacers.forEach((key, stringSupplier) -> {
+            form.getAndUpdate(f -> {
+                try {
+                    final String richKey = String.format(quote, key);
+                    if (f.contains(String.format(syntax, key))) {
+                        return f.replaceAll(richKey, stringSupplier.get());
+                    } else {
+                        // Not checking this will result in continuous loop, when calling interpolate() inside an interpolation
+                        return f;
+                    }
+                } catch (final StackOverflowError e) {
+                    new IllegalStateException(
+                            String.format("StackOverflowError caused. This might indicate a string interpolation which interpolates itself continuously. [interpolator key: %s, interpolation target: %s]", key, f), e
+                    ).printStackTrace();
+                    return f;
+                }
+            });
+        });
+        return form.get();
+    }
+
+    @Override
+    public <Config> Resource<Config> config(Class<Config> type, String id, @Nullable Config def) {
+        final TonConfiguration configuration = this.configuration();
+        final String configPath = this.interpolate(configuration.getModuleConfigPath());
+        final String fileExt = configuration.getDefaultConfigFileExtension();
+        return new Resource<Config>(String.format("%s%s.%s", configPath, id, fileExt)).init(true, () -> def);
+    }
+
+    @Override
+    public TonConfiguration configuration() {
+        try {
+            final TonConfiguration configuration = this.configResource().use(false);
+            if (configuration == null) {
+                return this.defaultConfiguration();
+            } else {
+                return configuration;
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return this.defaultConfiguration();
+        }
     }
 
     @Override
@@ -139,7 +215,7 @@ public class Ton implements ITon {
         jra.init();
         // Execute the phases in given order
         final Document meta = Document.of("ton", this);
-        Arrays.asList(this.configuration.getJraPhaseOrder()).forEach(phases -> {
+        Arrays.asList(this.defaultConfiguration.getJraPhaseOrder()).forEach(phases -> {
             jra.process(meta, phases);
         });
     }

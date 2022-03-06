@@ -19,6 +19,7 @@ import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.StandaloneSocketServer;
 import de.christianbernstein.bernie.shared.misc.IFluently;
+import de.christianbernstein.bernie.shared.misc.Resource;
 import de.christianbernstein.bernie.shared.module.Dependency;
 import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
 import de.christianbernstein.bernie.shared.module.ModuleDefinition;
@@ -38,4 +39,5 @@ public interface INetModule extends IBaseModuleClass<ITon>, IFluently<INetModule
 
     StandaloneSocketServer getSocketServer();
 
+    Resource<NetModuleConfigShard> configResource();
 }

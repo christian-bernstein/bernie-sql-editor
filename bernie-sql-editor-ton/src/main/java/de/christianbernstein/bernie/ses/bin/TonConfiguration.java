@@ -2,29 +2,51 @@ package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
 import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 
 /**
  * Standard configuration for Ton.
  * Controls the advanced behavior of the Ton server.
  */
+@ToString
 @Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TonConfiguration {
 
     @NonNull
-    private final String workingDirectory;
+    private String workingDirectory;
 
     @Builder.Default
-    private final TonMode mode = TonMode.RELEASE;
+    private TonMode mode = TonMode.RELEASE;
+
+    @NonNull
+    @Builder.Default
+    private String rootDir = "ton/";
+
+    @NonNull
+    @Builder.Default
+    private String configPath = "{root_dir}config/";
+
+    @NonNull
+    @Builder.Default
+    private String moduleConfigPath = "{root_dir}config/";
+
+    @NonNull
+    @Builder.Default
+    private String variableInterpolationSyntax = "{%s}";
+
+    @NonNull
+    @Builder.Default
+    private String defaultConfigFileExtension = "yaml";
 
     @Builder.Default
-    private final String tonEngineID = Constants.tonEngineID;
+    private String tonEngineID = Constants.tonEngineID;
 
     @Builder.Default
-    private final String[][] jraPhaseOrder = new String[][]{
+    private String[][] jraPhaseOrder = new String[][]{
             {Constants.constructJRAPhase},
             {Constants.useTonJRAPhase},
             {Constants.registerEventClassJRAPhase},
@@ -35,7 +57,7 @@ public class TonConfiguration {
     };
 
     @Builder.Default
-    private final H2RepositoryConfiguration internalDatabaseConfiguration = H2RepositoryConfiguration.builder()
+    private H2RepositoryConfiguration internalDatabaseConfiguration = H2RepositoryConfiguration.builder()
             .hbm2DDLMode(HBM2DDLMode.UPDATE)
             .databaseDir("./db/")
             .database("ton")

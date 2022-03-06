@@ -15,10 +15,7 @@
 
 package de.christianbernstein.bernie.shared.db;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Singular;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -28,29 +25,50 @@ import java.util.List;
  */
 @Getter
 @Builder
-@Accessors(fluent = true)
+@ToString
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class H2RepositoryConfiguration {
 
     @Singular
-    private final List<Class<?>> annotatedClasses;
+    private List<Class<?>> annotatedClasses;
 
     @NonNull
-    @Getter
-    private final String database;
+    private String database;
 
     @NonNull
-    @Getter
-    private final String databaseDir;
+    private String databaseDir;
 
     @NonNull
-    @Getter
-    private final String username;
+    private String username;
 
     @NonNull
-    @Getter
-    private final String password;
+    private String password;
 
     @NonNull
     @Builder.Default
-    private final HBM2DDLMode hbm2DDLMode = HBM2DDLMode.UPDATE;
+    private HBM2DDLMode hbm2DDLMode = HBM2DDLMode.UPDATE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

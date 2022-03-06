@@ -16,9 +16,6 @@ public class RegisterEventClassJPAProcessor {
     public final JavaReflectiveAnnotationAPI.Processors.IAnnotationAtClassProcessor registerEventClassJPAProcessor = (annotation, at, meta, instance) -> {
         final RegisterEventClass definition = (RegisterEventClass) annotation;
 
-        if (instance == null) {
-
-        }
-
+        // throw new UnsupportedOperationException("not implemented");
     };
 }

@@ -15,21 +15,55 @@
 
 package de.christianbernstein.bernie.modules.net;
 
+import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.shared.discovery.websocket.SocketShutdownReason;
 import de.christianbernstein.bernie.shared.discovery.websocket.packets.SocketSwitchProtocolDataPacket;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.ServerConfiguration;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.StandaloneSocketServer;
+import de.christianbernstein.bernie.shared.misc.Resource;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.module.Module;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
+import org.java_websocket.WebSocket;
+import org.java_websocket.WebSocketImpl;
+import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.security.KeyFactory;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Christian Bernstein
  */
 public class NetModule implements INetModule {
+
+    @UseTon
+    private static ITon ton;
 
     private final NetModuleConfig config = NetModuleConfig.builder()
             .serverConfiguration(ServerConfiguration.builder()
@@ -45,10 +79,56 @@ public class NetModule implements INetModule {
 
     private StandaloneSocketServer server;
 
+    private static final Map<String, Class<? extends ISSLContextProvider>> sslContextProviders = Map.of(
+            "letsencrypt", LetsencryptSSLContextProvider.class
+    );
+
+    @Getter
+    @Accessors(fluent = true)
+    private Resource<NetModuleConfigShard> configResource;
+
+    private @Nullable SSLContext loadSSLContext() {
+        final NetModuleConfigShard conf = configResource.use(false);
+
+        if (conf.isSsl()) {
+            final String providerType = conf.getSslProviderType();
+            if (!sslContextProviders.containsKey(providerType)) {
+                throw new IllegalArgumentException(String.format("SSL environment provider type '%s' isn't mapped to a SSL context provider. This might indicate a version mismatch or a typo in net_module's internal config at option 'sslProviderType'.", providerType));
+            }
+            final Class<? extends ISSLContextProvider> providerClass = sslContextProviders.get(providerType);
+            try {
+                final Constructor<? extends ISSLContextProvider> constructor = providerClass.getConstructor();
+                constructor.setAccessible(true);
+                final ISSLContextProvider provider = constructor.newInstance();
+                return provider.load(this);
+            } catch (final NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            throw new UnsupportedOperationException("Cannot load SSL context without enabling 'SSL' option in net_module's internal config.");
+        }
+    }
+
     @Override
     public void boot(ITon api, @NotNull Module<ITon> module, IEngine<ITon> manager) {
         INetModule.super.boot(api, module, manager);
+        this.configResource = api.config(NetModuleConfigShard.class, "net_module", NetModuleConfigShard.builder().build());
+
+        final NetModuleConfigShard conf = this.configResource.use(false);
         this.server = new StandaloneSocketServer(this.config.getServerConfiguration());
+
+        try {
+            if (conf.isSsl()) {
+                final SSLContext context = this.loadSSLContext();
+                assert context != null;
+                this.server.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(context));
+            }
+        } catch (final Exception e) {
+            new NetModuleSSLException("While enabling SSL, an error occurred", e).printStackTrace();
+        }
+
+
 
         // Sync protocol changes to the client
         this.server.onPostEstablish((event, document) -> {
@@ -99,4 +179,5 @@ public class NetModule implements INetModule {
     public @NonNull INetModule me() {
         return this;
     }
+
 }
