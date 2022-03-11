@@ -64,6 +64,8 @@ public class SessionModule implements ISessionModule {
         ISessionModule.super.boot(api, module, manager);
         SessionModule.sessionModuleOptional = Optional.of(this);
         SessionModule.tonOptional = Optional.of(api);
+
+
     }
 
     @Override
