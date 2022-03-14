@@ -19,6 +19,7 @@ import ch.qos.logback.classic.Level;
 import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
 import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
 import de.christianbernstein.bernie.shared.document.Document;
+import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
@@ -51,10 +52,9 @@ public class TonLauncher {
         root.setLevel(Level.OFF);
 
         root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.java_websocket");
-        root.setLevel(Level.TRACE);
+        root.setLevel(Level.OFF);
 
         // BernieSystemPrintAdapter.systemInstall();
-
 
         new Ton(Document.fromArgumentsArray(args)).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
                 .internalDatabaseConfiguration(H2RepositoryConfiguration.builder().hbm2DDLMode(HBM2DDLMode.UPDATE).databaseDir("./db/").database("ton").username("root").password("root").build())

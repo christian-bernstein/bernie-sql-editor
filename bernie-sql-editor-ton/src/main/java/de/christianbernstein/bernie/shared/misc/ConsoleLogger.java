@@ -15,6 +15,7 @@
 
 package de.christianbernstein.bernie.shared.misc;
 
+import de.christianbernstein.bernie.ses.bin.ConsoleColors;
 import de.christianbernstein.bernie.shared.document.Document;
 import de.christianbernstein.bernie.shared.document.IDocument;
 import lombok.Builder;
@@ -102,16 +103,19 @@ public class ConsoleLogger {
     @Getter
     public enum LogType {
 
-        INFO(ANSI_PURPLE, "i"),
-        WARN(ANSI_PURPLE, "⚠"),
-        ERROR(ANSI_RED, "!"),
-        SUCCESS(ANSI_GREEN, "+");
+        INFO(ANSI_PURPLE, ANSI_PURPLE, "i"),
+        WARN(ConsoleColors.YELLOW_BACKGROUND_BRIGHT,ConsoleColors.YELLOW, "⚠"),
+        ERROR(ConsoleColors.RED_BACKGROUND_BRIGHT, ConsoleColors.RED_BRIGHT, "!"),
+        SUCCESS(ConsoleColors.GREEN_BACKGROUND, "", "+");
+
+        private final String prefixColor;
 
         private final String color;
 
         private final String prefix;
 
-        LogType(String color, String prefix) {
+        LogType(String prefixColor, String color, String prefix) {
+            this.prefixColor = prefixColor;
             this.color = color;
             this.prefix = prefix;
         }
@@ -132,8 +136,10 @@ public class ConsoleLogger {
     public void log(LogType type, String module, String message) {
         final StringBuilder sb = new StringBuilder()
                 .append("[")
-                .append(type.color)
+                .append(type.prefixColor)
+                .append(" ")
                 .append(type.prefix)
+                .append(" ")
                 .append(ANSI_RESET)
                 .append("] ")
                 .append("│")
@@ -143,21 +149,27 @@ public class ConsoleLogger {
                 .append("│ ");
 
         switch (type) {
-            case WARN, ERROR -> sb.append(type.color);
+            case WARN, ERROR, SUCCESS -> sb.append(type.color);
+        }
+        sb.append(message).append(ANSI_RESET);
+
+        if (!init) {
+            init = true;
+            ConsoleLogger.init(this.dateAnnotationWidth, this.moduleAnnotationWidth);
         }
 
-        sb.append(message).append(ANSI_RESET);
         System.out.println(sb);
     }
 
     public static void init(int dateWith, int modWith) {
         final StringBuilder sb = new StringBuilder()
-                .append(" ".repeat(4))
+                .append(" ".repeat(6))
                 .append("╷")
-                .append(Utils.margin(String.format("%"+ dateWith + "s", "Date".toUpperCase(Locale.ROOT)), 1))
+                .append(Utils.margin(String.format("\033[0;1m%"+ dateWith + "s", "Date".toUpperCase(Locale.ROOT)), 1))
                 .append("╷")
-                .append(Utils.margin(String.format("%"+ modWith + "s", "Module".toUpperCase(Locale.ROOT)), 1))
-                .append("╷");
+                .append(Utils.margin(String.format("\033[0;1m%"+ modWith + "s", "Module".toUpperCase(Locale.ROOT)), 1))
+                .append("╷")
+                .append(ANSI_RESET);
         System.out.println(sb);
     }
 }

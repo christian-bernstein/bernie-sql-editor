@@ -33,6 +33,7 @@ public class Main {
                         .jraPhaseOrder(new String[][]{
                                 {Constants.constructJRAPhase},
                                 {Constants.useTonJRAPhase},
+                                {Constants.threadedJRAPhase},
                                 {Constants.registerEventClassJRAPhase},
                                 {Constants.moduleJRAPhase},
                                 {Constants.flowJRAPhase},

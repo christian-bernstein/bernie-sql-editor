@@ -17,7 +17,6 @@ package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.modules.session.Session;
 import de.christianbernstein.bernie.modules.user.IUser;
-import de.christianbernstein.bernie.shared.document.IDocument;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.db.H2Repository;
 import de.christianbernstein.bernie.shared.document.Document;
@@ -35,6 +34,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -66,6 +68,10 @@ public class Ton implements ITon {
 
     private Map<String, Supplier<String>> globalStringReplacers;
 
+    private Map<String, ExecutorService> pools;
+
+    private Map<String, ScheduledExecutorService> schedulingPools;
+
     public Ton() {
         this.arguments = Document.empty();
     }
@@ -78,18 +84,34 @@ public class Ton implements ITon {
         final Map<String, Supplier<String>> map = this.globalStringReplacers;
         final TonConfiguration configuration = configuration();
         map.put("root_dir", configuration::getRootDir);
+        // todo get colors right c.c
+        map.put("blue", () -> ConsoleColors.PURPLE);
+        map.put("reset", () -> ConsoleColors.RESET);
+        map.put("date_year", () -> String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
         map.put("config_dir", () -> this.interpolate(configuration.getConfigPath()));
+    }
+
+    private void initBootingScreen() {
+        if (this.configuration().isEnableBanner()) {
+            final String rawBanner = String.join("\n", this.configuration().getBanner());
+            final String banner = this.interpolate(rawBanner);
+            System.out.println(ConsoleColors.confined(banner));
+        }
     }
 
     @Override
     public ITon start(@NonNull TonConfiguration configuration, boolean autoConfigReload) {
         final long s = Utils.durationMonitoredExecution(() -> {
+            this.pools = new HashMap<>();
+            this.schedulingPools = new HashMap<>();
             this.configResourcePath = "ton/ton_config.yaml";
             this.defaultConfiguration = configuration;
             this.tonState = TonState.LAUNCHING;
             this.configResource = new Resource<TonConfiguration>(this.configResourcePath()).init(true, () -> configuration).doIf(autoConfigReload, Resource::enableAutoFileUpdate);
             this.globalStringReplacers = new HashMap<>();
             this.initGlobalStringReplacers();
+            this.initBootingScreen();
+            this.pool("main");
             this.engine = new Engine<ITon>(configuration.getTonEngineID(), this).enableDependencyChecking();
             this.eventManager = new DefaultEventManager();
             this.initJRA();
@@ -97,7 +119,7 @@ public class Ton implements ITon {
         }).toSeconds();
 
         ConsoleLogger.def().log(
-                ConsoleLogger.LogType.INFO,
+                ConsoleLogger.LogType.SUCCESS,
                 "central module",
                 "Ton server online, it took " + String.format("%dh %02dm %02ds", s / 3600, (s % 3600) / 60, (s % 60))
         );
@@ -113,8 +135,71 @@ public class Ton implements ITon {
     public ITon shutdown() {
         this.tonState = TonState.STOPPING;
         this.engine().uninstallAll();
+
+        this.pools.forEach((id, service) -> service.shutdownNow());
+        this.schedulingPools.forEach((id, service) -> service.shutdownNow());
+
         this.tonState = TonState.PREPARED;
         return this;
+    }
+
+    @Override
+    public ExecutorService pool(String pool) {
+        return this.pool(pool, Executors::newSingleThreadExecutor);
+    }
+
+    @Override
+    public ExecutorService pool(String pool, @Nullable Supplier<ExecutorService> factory) {
+        if (this.pools.containsKey(pool)) {
+            return this.pools.get(pool);
+        } else {
+            ExecutorService service = null;
+            if (factory != null) {
+                try {
+                    service = factory.get();
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (service == null) {
+                service = Executors.newSingleThreadExecutor();
+            }
+
+            ConsoleLogger.def().log(
+                    ConsoleLogger.LogType.INFO,
+                    "central module",
+                    String.format("Created new executor pool '%s'", pool)
+            );
+
+            this.pools.put(pool, service);
+            return service;
+        }
+    }
+
+    @Override
+    public ScheduledExecutorService schedulingPool(String pool) {
+        return this.schedulingPool(pool, Executors::newSingleThreadScheduledExecutor);
+    }
+
+    @Override
+    public ScheduledExecutorService schedulingPool(String pool, @Nullable Supplier<ScheduledExecutorService> factory) {
+        if (this.schedulingPools.containsKey(pool)) {
+            return this.schedulingPools.get(pool);
+        } else {
+            ScheduledExecutorService service = null;
+            if (factory != null) {
+                try {
+                    service = factory.get();
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (service == null) {
+                service = Executors.newSingleThreadScheduledExecutor();
+            }
+            this.schedulingPools.put(pool, service);
+            return service;
+        }
     }
 
     @Override

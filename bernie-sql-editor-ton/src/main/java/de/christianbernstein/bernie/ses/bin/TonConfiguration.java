@@ -4,6 +4,9 @@ import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
 import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
 import lombok.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Standard configuration for Ton.
  * Controls the advanced behavior of the Ton server.
@@ -46,7 +49,23 @@ public class TonConfiguration {
     private String tonEngineID = Constants.tonEngineID;
 
     @Builder.Default
+    private List<String> banner = List.of(
+            "",
+            "  ██╗  ██╗███████╗██████╗  ██████╗██╗   ██╗██╗     ███████╗███████╗  {blue}┃{reset} A SQL-Editor software using 7149-bernie",
+            "  ██║  ██║██╔════╝██╔══██╗██╔════╝██║   ██║██║     ██╔════╝██╔════╝  {blue}┃{reset} Copyright © 2021 - {date_year} Christian Bernstein & Contributors",
+            "  ███████║█████╗  ██████╔╝██║     ██║   ██║██║     █████╗  ███████╗  {blue}┃{reset}",
+            "  ██╔══██║██╔══╝  ██╔══██╗██║     ██║   ██║██║     ██╔══╝  ╚════██║  {blue}┃{reset}   Community: https://discord.gg/ag7G5HPkcF  ",
+            "  ██║  ██║███████╗██║  ██║╚██████╗╚██████╔╝███████╗███████╗███████║  {blue}┃{reset}      Source: https://github.com/christian-bernstein/bernie-sql-editor",
+            "  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚══════╝╚══════╝  {blue}┃{reset}     License: https://github.com/christian-bernstein/7149-bernie/blob/master/LICENSE",
+            "\n"
+    );
+
+    @Builder.Default
+    private boolean enableBanner = true;
+
+    @Builder.Default
     private String[][] jraPhaseOrder = new String[][]{
+            {Constants.threadedJRAPhase},
             {Constants.constructJRAPhase},
             {Constants.useTonJRAPhase},
             {Constants.registerEventClassJRAPhase},

@@ -48,5 +48,7 @@ public class Constants {
 
     public final String constructJRAPhase = "construct-phase";
 
+    public final String threadedJRAPhase = "threaded-phase";
+
     public final String defaultDbFactoryID = "def-db-factory";
 }

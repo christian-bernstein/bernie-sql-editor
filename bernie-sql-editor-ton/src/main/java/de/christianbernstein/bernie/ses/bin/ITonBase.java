@@ -27,6 +27,10 @@ import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Supplier;
 
 /**
  * @author Christian Bernstein
@@ -38,6 +42,14 @@ public interface ITonBase<Impl extends ITon> {
     Impl start(@NonNull TonConfiguration configuration, boolean autoConfigReload);
 
     Impl shutdown();
+
+    ExecutorService pool(String pool);
+
+    ExecutorService pool(String pool, @Nullable Supplier<ExecutorService> factory);
+
+    ScheduledExecutorService schedulingPool(String pool);
+
+    ScheduledExecutorService schedulingPool(String pool, @Nullable Supplier<ScheduledExecutorService> factory);
 
     String interpolate(String format);
 

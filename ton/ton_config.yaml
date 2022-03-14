@@ -1,6 +1,22 @@
 !!de.christianbernstein.bernie.ses.bin.TonConfiguration
+banner:
+- ''
+- '  ██╗  ██╗███████╗██████╗  ██████╗██╗   ██╗██╗     ███████╗███████╗  {blue}┃{reset}
+  A SQL-Editor software using 7149-bernie'
+- '  ██║  ██║██╔════╝██╔══██╗██╔════╝██║   ██║██║     ██╔════╝██╔════╝  {blue}┃{reset}
+  Copyright © 2021 - {date_year} Christian Bernstein & Contributors'
+- '  ███████║█████╗  ██████╔╝██║     ██║   ██║██║     █████╗  ███████╗  {blue}┃{reset}'
+- '  ██╔══██║██╔══╝  ██╔══██╗██║     ██║   ██║██║     ██╔══╝  ╚════██║  {blue}┃{reset}   Community:
+  https://discord.gg/ag7G5HPkcF  '
+- '  ██║  ██║███████╗██║  ██║╚██████╗╚██████╔╝███████╗███████╗███████║  {blue}┃{reset}      Source:
+  https://github.com/christian-bernstein/bernie-sql-editor'
+- '  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚══════╝╚══════╝  {blue}┃{reset}     License:
+  https://github.com/christian-bernstein/7149-bernie/blob/master/LICENSE'
+- |2+
+
 configPath: '{root_dir}config/'
 defaultConfigFileExtension: yaml
+enableBanner: true
 internalDatabaseConfiguration:
   annotatedClasses: [
     ]

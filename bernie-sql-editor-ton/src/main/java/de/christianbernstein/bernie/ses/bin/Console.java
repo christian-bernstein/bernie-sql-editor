@@ -1,6 +1,7 @@
 package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.ses.annotations.AutoExec;
+import de.christianbernstein.bernie.ses.annotations.Threaded;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.modules.project.ProjectAlreadyExistException;
 import de.christianbernstein.bernie.modules.project.ProjectCreationData;
@@ -17,6 +18,8 @@ import lombok.NonNull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,9 @@ public class Console {
 
     @UseTon
     private static ITon ton;
+
+    @Threaded
+    private static ExecutorService main;
 
     @AutoExec
     private static void console() {
@@ -55,12 +61,14 @@ public class Console {
             };
         }
 
-        while (gloria.getSessionManager().getStaticSession().getSessionData().getOr("keep-online", true)) {
-            String line = lineRetriever.get();
-            if (line != null && !line.isBlank()) {
-                gloria.submit(line.trim());
+        main.submit(() -> {
+            while (gloria.getSessionManager().getStaticSession().getSessionData().getOr("keep-online", true)) {
+                String line = lineRetriever.get();
+                if (line != null && !line.isBlank()) {
+                    gloria.submit(line.trim());
+                }
             }
-        }
+        });
     }
 
     @Command(literal = "debug", aliases = {"d", "test"}, type = Command.Type.JUNCTION)
