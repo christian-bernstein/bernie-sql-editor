@@ -339,6 +339,7 @@ public class DBModule implements IDBModule {
     @Override
     public void uninstall(ITon api, @NotNull Module<ITon> module, IEngine<ITon> manager) {
         IDBModule.super.uninstall(api, module, manager);
+        this.activeDatabases.forEach(IDatabaseAccessPoint::unload);
         this.ton = Optional.empty();
     }
 

@@ -45,23 +45,23 @@ public class Console {
 
         // todo create annotation for adding the console classes
         gloria.registerMethodsInClass(Console.class, true);
-        Supplier<String> lineRetriever;
-
-        if (System.console() != null) {
-            lineRetriever = () -> System.console().readLine();
-        } else {
-            lineRetriever = () -> {
-                final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                try {
-                    return br.readLine();
-                } catch(final IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            };
-        }
-
         main.submit(() -> {
+            Supplier<String> lineRetriever;
+
+            if (System.console() != null) {
+                lineRetriever = () -> System.console().readLine();
+            } else {
+                lineRetriever = () -> {
+                    final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                    try {
+                        return br.readLine();
+                    } catch(final IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                };
+            }
+
             while (gloria.getSessionManager().getStaticSession().getSessionData().getOr("keep-online", true)) {
                 String line = lineRetriever.get();
                 if (line != null && !line.isBlank()) {

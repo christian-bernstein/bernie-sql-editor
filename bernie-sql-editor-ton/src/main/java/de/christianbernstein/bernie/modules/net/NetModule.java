@@ -22,6 +22,7 @@ import de.christianbernstein.bernie.shared.discovery.websocket.SocketShutdownRea
 import de.christianbernstein.bernie.shared.discovery.websocket.packets.SocketSwitchProtocolDataPacket;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.ServerConfiguration;
 import de.christianbernstein.bernie.shared.discovery.websocket.server.StandaloneSocketServer;
+import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.misc.Resource;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.module.Module;
@@ -151,6 +152,11 @@ public class NetModule implements INetModule {
     @Override
     public void uninstall(ITon api, @NotNull Module<ITon> module, IEngine<ITon> manager) {
         INetModule.super.uninstall(api, module, manager);
+        ConsoleLogger.def().log(
+                ConsoleLogger.LogType.INFO,
+                "central module",
+                String.format("Uninstalling net-module '%s'", this.config.getServerConfiguration().address())
+        );
         try {
             this.server.shutdown(SocketShutdownReason.CORE_SHUTDOWN);
         } catch (final InterruptedException e) {

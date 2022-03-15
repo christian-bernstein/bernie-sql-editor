@@ -16,6 +16,7 @@
 package de.christianbernstein.bernie.ses.bin;
 
 import ch.qos.logback.classic.Level;
+import de.christianbernstein.bernie.ses.annotations.AutoExec;
 import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
 import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
 import de.christianbernstein.bernie.shared.document.Document;
@@ -33,6 +34,13 @@ public class TonLauncher {
 
     @SuppressWarnings("all")
     private static Optional<ITon> ton = Optional.empty();
+
+    @AutoExec
+    private static void stop() {
+        ton.ifPresent(ITon::shutdown);
+
+        Thread.currentThread().getThreadGroup().stop();
+    }
 
     public static void main(String[] args) {
         // LoggerFactory.getLogger(TonLauncher.class).error("Hell world");

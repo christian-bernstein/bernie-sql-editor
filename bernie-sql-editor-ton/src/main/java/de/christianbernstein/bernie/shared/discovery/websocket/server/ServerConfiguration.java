@@ -64,7 +64,7 @@ public class ServerConfiguration {
     private final long sessionDepletionTimeAmount = Integer.MAX_VALUE;
 
     @Builder.Default
-    private final Duration socketServerStopTimeout = Duration.of(10, ChronoUnit.SECONDS);
+    private final Duration socketServerStopTimeout = Duration.of(5, ChronoUnit.SECONDS);
 
     @Builder.Default
     private final boolean setDefaultProtocolOnPostEstablish = false;

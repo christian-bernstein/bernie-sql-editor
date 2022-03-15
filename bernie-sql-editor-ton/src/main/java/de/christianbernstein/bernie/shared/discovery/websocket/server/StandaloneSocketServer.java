@@ -183,11 +183,11 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
         try {
             this.stop((int) this.configuration.socketServerStopTimeout().toMillis());
         } catch (final InterruptedException e) {
-            // e.printStackTrace();
+            e.printStackTrace();
             try {
                 this.stop();
             } catch (final IOException e2) {
-                // e2.printStackTrace();
+                e2.printStackTrace();
             }
         }
         this.fireSyncEvent(SyncLatchEvent.SERVER_CLOSE);

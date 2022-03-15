@@ -72,6 +72,8 @@ public class Ton implements ITon {
 
     private Map<String, ScheduledExecutorService> schedulingPools;
 
+    private int nextPoolID;
+
     public Ton() {
         this.arguments = Document.empty();
     }
@@ -102,6 +104,7 @@ public class Ton implements ITon {
     @Override
     public ITon start(@NonNull TonConfiguration configuration, boolean autoConfigReload) {
         final long s = Utils.durationMonitoredExecution(() -> {
+            this.nextPoolID = 0;
             this.pools = new HashMap<>();
             this.schedulingPools = new HashMap<>();
             this.configResourcePath = "ton/ton_config.yaml";
@@ -136,16 +139,33 @@ public class Ton implements ITon {
         this.tonState = TonState.STOPPING;
         this.engine().uninstallAll();
 
-        this.pools.forEach((id, service) -> service.shutdownNow());
+        this.pools.forEach((id, service) -> {
+            ConsoleLogger.def().log(
+                    ConsoleLogger.LogType.INFO,
+                    "central module",
+                    String.format("Shutdown of executor pool '%s'", id)
+            );
+            try {
+                service.shutdownNow();
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        });
         this.schedulingPools.forEach((id, service) -> service.shutdownNow());
-
+        this.configResource.stop();
         this.tonState = TonState.PREPARED;
         return this;
     }
 
     @Override
     public ExecutorService pool(String pool) {
-        return this.pool(pool, Executors::newSingleThreadExecutor);
+        return this.pool(pool, null);
+    }
+
+    private int generateNextExecutorPoolID() {
+        final int npID = this.nextPoolID;
+        this.nextPoolID++;
+        return npID;
     }
 
     @Override
@@ -162,7 +182,9 @@ public class Ton implements ITon {
                 }
             }
             if (service == null) {
-                service = Executors.newSingleThreadExecutor();
+                service = Executors.newSingleThreadExecutor(r -> new Thread(r, String.format(
+                        "hercules-pool-%s-%s", this.generateNextExecutorPoolID(), pool
+                )));
             }
 
             ConsoleLogger.def().log(

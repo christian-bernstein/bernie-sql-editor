@@ -83,6 +83,9 @@ public class DatabaseAccessPoint implements IDatabaseAccessPoint {
 
     @Override
     public void unload() {
-
+        if (this.sessionFactory != null) {
+            this.sessionFactory.close();
+            this.sessionFactory = null;
+        }
     }
 }
