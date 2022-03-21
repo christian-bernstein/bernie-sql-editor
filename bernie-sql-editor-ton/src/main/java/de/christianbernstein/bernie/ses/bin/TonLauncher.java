@@ -24,6 +24,7 @@ import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.Scanner;
 
 /**
  * This is the bootstrap class for the embedded ton server.
@@ -35,14 +36,7 @@ public class TonLauncher {
     @SuppressWarnings("all")
     private static Optional<ITon> ton = Optional.empty();
 
-    @AutoExec
-    private static void stop() {
-        ton.ifPresent(ITon::shutdown);
-
-        Thread.currentThread().getThreadGroup().stop();
-    }
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // LoggerFactory.getLogger(TonLauncher.class).error("Hell world");
 
         ch.qos.logback.classic.Logger root;
@@ -64,11 +58,15 @@ public class TonLauncher {
 
         // BernieSystemPrintAdapter.systemInstall();
 
-        new Ton(Document.fromArgumentsArray(args)).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
-                .internalDatabaseConfiguration(H2RepositoryConfiguration.builder().hbm2DDLMode(HBM2DDLMode.UPDATE).databaseDir("./db/").database("ton").username("root").password("root").build())
-                .mode(TonMode.DEBUG)
-                .workingDirectory("./ton/")
-                .build()
-        );
+        while (!Thread.currentThread().isInterrupted()) {
+            String s = new Scanner(System.in).nextLine();
+
+            new Ton(Document.fromArgumentsArray(args).putIf(() -> !s.isEmpty(), "exec", s).put("path", "conf_test/")).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
+                    .internalDatabaseConfiguration(H2RepositoryConfiguration.builder().hbm2DDLMode(HBM2DDLMode.UPDATE).databaseDir("./db/").database("ton").username("root").password("root").build())
+                    .mode(TonMode.DEBUG)
+                    .workingDirectory("./ton/")
+                    .build()
+            );
+        }
     }
 }

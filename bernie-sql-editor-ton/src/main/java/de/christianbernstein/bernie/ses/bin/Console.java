@@ -9,19 +9,27 @@ import de.christianbernstein.bernie.modules.project.ProjectData;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ISession;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Flow;
+import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Param;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.Statement;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.misc.Resource;
 import de.christianbernstein.bernie.shared.misc.Utils;
+import de.christianbernstein.bernie.shared.module.Lifecycle;
+import de.christianbernstein.bernie.shared.module.Module;
 import lombok.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.Command;
 import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicParameterAnnotations.APISession;
@@ -45,7 +53,7 @@ public class Console {
 
         // todo create annotation for adding the console classes
         gloria.registerMethodsInClass(Console.class, true);
-        main.submit(() -> {
+        main.execute(() -> {
             Supplier<String> lineRetriever;
 
             if (System.console() != null) {
@@ -53,6 +61,23 @@ public class Console {
             } else {
                 lineRetriever = () -> {
                     final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+
+                    // todo fix https://stackoverflow.com/questions/50394846/interrupt-system-console-readline
+                    boolean waiting = true;
+
+                    do {
+                        try {
+                            if (!br.ready()) {
+                                Thread.sleep(200);
+                            } else {
+                                waiting = false;
+                            }
+                        } catch (final IOException e) {
+                            e.printStackTrace();
+                        } catch (final InterruptedException ignored) {}
+                    } while (waiting && !main.isShutdown());
+
                     try {
                         return br.readLine();
                     } catch(final IOException e) {
@@ -62,7 +87,7 @@ public class Console {
                 };
             }
 
-            while (gloria.getSessionManager().getStaticSession().getSessionData().getOr("keep-online", true)) {
+            while (!main.isShutdown() && gloria.getSessionManager().getStaticSession().getSessionData().getOr("keep-online", true)) {
                 String line = lineRetriever.get();
                 if (line != null && !line.isBlank()) {
                     gloria.submit(line.trim());
@@ -84,21 +109,58 @@ public class Console {
         ));
     }
 
-    @Command(path = "debug", literal = "shutdown")
+    @Command(literal = "end")
+    @Command(path = "debug", literal = "shutdown", aliases = "s")
     private void shutdown() {
         ton.shutdown();
     }
 
 
     @Command(path = "debug", literal = "listModules", aliases = "lM")
-    private void listProjects() {
-        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", String.format("Installed modules: '%s'", ton
+    private void listModules(@Param(mandatory = false, name = "filter") String filterLifecycle) {
+        Function<Lifecycle, String> lifecycleDisplay = lifecycle -> {
+            switch (lifecycle) {
+                case ENGAGED -> {
+                    return String.format("%s%s%s", ConsoleColors.GREEN_BACKGROUND, lifecycle, ConsoleColors.RESET);
+                }
+                case DISENGAGED -> {
+                    return String.format("%s%s%s", ConsoleColors.RED_BACKGROUND_BRIGHT, lifecycle, ConsoleColors.RESET);
+                }
+                case ENGAGING -> {
+                    return String.format("%s%s%s", ConsoleColors.YELLOW_BACKGROUND_BRIGHT, lifecycle, ConsoleColors.RESET);
+                }
+                case INSTALLED -> {
+                    return lifecycle.name();
+                }
+                default -> {
+                    return "ERR";
+                }
+            }
+        };
+        Stream<Module<ITon>> stream = ton
                 .engine()
                 .getModules()
-                .stream()
-                .map(mod -> String.format("(%s, %S)", mod.getName(), mod.getLifecycle()))
-                .collect(Collectors.joining(", "))
-        ));
+                .stream();
+        if (filterLifecycle != null) {
+            try {
+                final Lifecycle filter = Lifecycle.valueOf(filterLifecycle.toUpperCase(Locale.ROOT));
+                stream = stream.filter(mod -> mod.getLifecycle() == filter);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+        final List<Module<ITon>> modules = stream.collect(Collectors.toList());
+        if (!modules.isEmpty()) {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", String.format("Installed modules: '%s'", modules
+                    .stream()
+                    .map(mod -> String.format("(%s, %s)", mod.getName(), lifecycleDisplay.apply(mod.getLifecycle())))
+                    .collect(Collectors.joining(", "))
+            ));
+        } else {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.WARN, "ton-zentral-io", String.format(
+                    "No modules found (Filter: '%s')", filterLifecycle
+            ));
+        }
     }
 
     @Command(path = "debug", literal = "getProjects", aliases = "gP")

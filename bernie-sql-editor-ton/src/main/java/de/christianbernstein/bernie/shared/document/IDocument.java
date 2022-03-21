@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -57,6 +58,8 @@ public interface IDocument<T extends IDocument<T>> extends EventHolder<T> {
 
     @SuppressWarnings("UnusedReturnValue")
     T forEach(BiConsumer<String, Object> consumer);
+
+    T putIf(BooleanSupplier condition, String key, Object value);
 
     // todo rename to 'put'
     T putObject(String key, Object value);

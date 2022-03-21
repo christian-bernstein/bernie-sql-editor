@@ -1,5 +1,5 @@
 !!de.christianbernstein.bernie.modules.net.NetModuleConfigShard {
-  ssl: true,
+  ssl: false,
   sslCertificateDir: '{root_dir}/ssl/',
   sslCertificateFactory: X.509,
   sslContext: TLS,

@@ -18,16 +18,17 @@ package de.christianbernstein.bernie.ses.bin;
 import de.christianbernstein.bernie.shared.db.H2Repository;
 import de.christianbernstein.bernie.shared.document.Document;
 import de.christianbernstein.bernie.shared.document.IDocument;
-import de.christianbernstein.bernie.shared.event.EventAPI;
 import de.christianbernstein.bernie.shared.misc.Resource;
 import de.christianbernstein.bernie.shared.module.IEngine;
 import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
 import de.christianbernstein.bernie.shared.union.IEventManager;
 import lombok.NonNull;
+import org.checkerframework.common.value.qual.IntRange;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
-import java.util.concurrent.Executor;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
@@ -82,4 +83,11 @@ public interface ITonBase<Impl extends ITon> {
 
     Impl ifDebug(Runnable action);
 
+    void installGlobalStringReplacers();
+
+    void sync(@NonNull final String latchSyncEvent, @IntRange(from = 1) final int latchSyncAmount) throws InterruptedException;
+
+    void syncClose() throws InterruptedException;
+
+    void syncOpen() throws InterruptedException;
 }

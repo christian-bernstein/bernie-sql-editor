@@ -1686,12 +1686,14 @@ public final class GloriaAPI {
                             final RegisteredCommandNode node = statement.getNode();
 
                             // todo remove debug
-                            // System.out.println(String.format(
-                            //         "%s, %s, %s", statement.getRaw(), statement.getParameters().toSlimString(), statement.getArguments().toSlimString()
-                            // ));
-                            // System.out.println("#");
+                            // System.out.printf(
+                            //         "Raw: %s, Params: %s, Arguments: %s%n", statement.getRaw(), statement.getParameters().toSlimString(), statement.getArguments().toSlimString()
+                            // );
                             this.specializedTryCatch(() -> node.getHandler().invoke(node.getHandlerInstance(), mappedParameters),
-                                    SpecifiedCatcher.of(InvocationTargetException.class, throwable -> System.out.println("Cannot call the method!")));
+                                    SpecifiedCatcher.of(InvocationTargetException.class, throwable -> {
+                                        System.out.println("Cannot call the method!");
+                                        throwable.printStackTrace();
+                                    }));
                         } else {
                             System.out.println("execution cancelled");
                         }

@@ -29,6 +29,7 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -223,6 +224,14 @@ public class Document implements IDocument<Document> {
     @Override
     public @NonNull Document forEach(@NonNull BiConsumer<String, Object> consumer) {
         this.toMap().forEach(consumer);
+        return this;
+    }
+
+    @Override
+    public Document putIf(BooleanSupplier condition, String key, Object value) {
+        if (condition.getAsBoolean()) {
+            this.putObject(key, value);
+        }
         return this;
     }
 

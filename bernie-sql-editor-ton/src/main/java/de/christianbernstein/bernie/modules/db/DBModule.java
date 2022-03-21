@@ -21,6 +21,7 @@ import de.christianbernstein.bernie.modules.project.ProjectTask;
 import de.christianbernstein.bernie.modules.project.ProjectTaskStatus;
 import de.christianbernstein.bernie.modules.session.Client;
 import de.christianbernstein.bernie.modules.session.ClientType;
+import de.christianbernstein.bernie.modules.user.UserData;
 import de.christianbernstein.bernie.ses.annotations.RegisterEventClass;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
@@ -178,7 +179,7 @@ public class DBModule implements IDBModule {
     }
 
     @Override
-    public DBCommandError generatePullError(@NotNull DBQueryResult result, Map<String, Object> appendix) {
+    public DBCommandError generatePullError(UserData ud, @NotNull DBQueryResult result, Map<String, Object> appendix) {
         final String pullErrorTitle = "SQL pull instruction faulty";
         final List<SerializedException> exceptions = result.getExceptions();
         final Map<String, Object> finalAppendix = appendix == null ? new HashMap<>() : appendix;
@@ -186,6 +187,11 @@ public class DBModule implements IDBModule {
                 .success(result.isSuccess()).commandType(SessionCommandType.PULL)
                 .exceptions(exceptions).id(UUID.randomUUID().toString())
                 .title(pullErrorTitle).data(finalAppendix)
+                .client(Client.builder()
+                        .type(ClientType.USER)
+                        .id(ud.getId())
+                        .username(ud.getUsername())
+                        .build())
                 .timestamp(new Date()).message(String.format(
                         "%s arose while processing SQL query **(pull instruction)**. Engine processing time: %sms.",
                         exceptions.size() > 1 ? String.format("%s errors", exceptions.size()) : "One error",
@@ -195,7 +201,7 @@ public class DBModule implements IDBModule {
     }
 
     @Override
-    public DBCommandError generatePushError(@NotNull DBUpdateResult result, Map<String, Object> appendix) {
+    public DBCommandError generatePushError(UserData ud, @NotNull DBUpdateResult result, Map<String, Object> appendix) {
         final String pullErrorTitle = "SQL push instruction faulty or engine error";
         final List<SerializedException> exceptions = result.getExceptions();
         final Map<String, Object> finalAppendix = appendix == null ? new HashMap<>() : appendix;
@@ -203,6 +209,11 @@ public class DBModule implements IDBModule {
                 .success(result.isSuccess()).commandType(SessionCommandType.PULL)
                 .exceptions(exceptions).id(UUID.randomUUID().toString())
                 .title(pullErrorTitle).data(finalAppendix)
+                .client(Client.builder()
+                        .type(ClientType.USER)
+                        .id(ud.getId())
+                        .username(ud.getUsername())
+                        .build())
                 .timestamp(new Date()).message(String.format(
                         "%s arose while processing SQL update. Engine processing time: %sms.",
                         exceptions.size() > 1 ? String.format("%s errors", exceptions.size()) : "One error",
@@ -213,7 +224,7 @@ public class DBModule implements IDBModule {
 
     // todo make information better
     // todo inform client about the task update
-    private static void doPull(@NotNull IDatabaseAccessPoint db, SessionCommandPacketData data, SocketServerLane endpoint) {
+    private static void doPull(UserData ud, @NotNull IDatabaseAccessPoint db, SessionCommandPacketData data, SocketServerLane endpoint) {
         db.session(session -> session.doWork(connection -> {
             final IDBModule module = DBModule.ton.orElseThrow().dbModule();
             final String databaseID = data.getDbID();
@@ -222,7 +233,7 @@ public class DBModule implements IDBModule {
             final DBQueryResult result = module.executeQuery(connection, raw);
             final boolean success = result.isSuccess();
             final long durationMS = result.getEpd().toMillis();
-            final DBCommandError error = success ? null : module.generatePullError(result, new HashMap<>());
+            final DBCommandError error = success ? null : module.generatePullError(ud, result, new HashMap<>());
             final List<Document> set = success ? DBUtilities.resultSetToList(result.getResult()) : new ArrayList<>();
             final Client client = Client.builder().type(ClientType.USER).id("implement..").username("implement..").build();
             final String errormessage = "implement..";
@@ -249,14 +260,14 @@ public class DBModule implements IDBModule {
         }));
     }
 
-    private static void doPush(@NonNull IDatabaseAccessPoint db, SessionCommandPacketData data, SocketServerLane endpoint) {
+    private static void doPush(UserData ud, @NonNull IDatabaseAccessPoint db, SessionCommandPacketData data, SocketServerLane endpoint) {
         db.session(session -> session.doWork(connection -> {
             final IDBModule module = DBModule.ton.orElseThrow().dbModule();
             final String raw = data.getRaw();
             final String databaseID = data.getDbID();
             final DBUpdateResult result = module.executeUpdate(connection, raw);
             final boolean success = result.isSuccess();
-            final DBCommandError error = success ? null : module.generatePushError(result, new HashMap<>());
+            final DBCommandError error = success ? null : module.generatePushError(ud, result, new HashMap<>());
             final Client client = Client.builder().type(ClientType.USER).id("implement..").username("implement..").build();
             final SQLCommandUpdateResponsePacketData responsePacket = SQLCommandUpdateResponsePacketData.builder().timestamp(new Date()).affected(result.getAffectedRows()).client(client).errormessage("").code(result.getCode()).success(success).error(error).sql(raw).databaseID(databaseID).durationMS(result.getEpd().toMillis()).build();
             module.broadcastPushResponsePacket(databaseID, responsePacket);
@@ -267,9 +278,13 @@ public class DBModule implements IDBModule {
     private static final IPacketHandlerBase<SessionCommandPacketData> commandHandler = (data, endpoint, socket, packet, server) -> {
         final IDBModule module = DBModule.ton.orElseThrow().dbModule();
         final IDatabaseAccessPoint db = module.loadDatabase(data.getDbID(), DatabaseAccessPointLoadConfig.builder().build());
+
+        final ITon instance = DBModule.ton.orElseThrow();
+        final UserData ud = instance.userModule().getUserDataOfUsername(Shortcut.useUserSession(endpoint).getCredentials().getUsername());
+
         switch (data.getType()) {
-            case PULL -> DBModule.doPull(db, data, endpoint);
-            case PUSH -> DBModule.doPush(db, data, endpoint);
+            case PULL -> DBModule.doPull(ud, db, data, endpoint);
+            case PUSH -> DBModule.doPush(ud, db, data, endpoint);
         }
     };
 

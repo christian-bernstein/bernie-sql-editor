@@ -1,5 +1,6 @@
 package de.christianbernstein.bernie.modules.db;
 
+import de.christianbernstein.bernie.modules.session.Client;
 import de.christianbernstein.bernie.shared.misc.SerializedException;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,8 @@ public class DBCommandError {
     private boolean success;
 
     private Date timestamp;
+
+    private Client client;
 
     private SessionCommandType commandType;
 }

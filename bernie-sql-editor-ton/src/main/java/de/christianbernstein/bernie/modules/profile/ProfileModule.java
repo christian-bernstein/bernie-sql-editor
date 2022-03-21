@@ -24,12 +24,17 @@ public class ProfileModule implements IProfileModule {
         return new ProfileContext(new ProfileContextMeta(viewerID, targetID, this));
     }
 
+    // todo make more performant.. -> not at least 2 requests with a full table load
     @Override
     public void setBiography(@NonNull String targetID, String biography) {
-        biographyRepo.get().update(elem -> {
-            elem.setBiography(biography);
-            return elem;
-        }, targetID);
+        if (biographyRepo.get().filter(bio -> bio.getUserID().equals(targetID)).isEmpty()) {
+            biographyRepo.get().save(new BiographyMapping(targetID, biography));
+        } else {
+            biographyRepo.get().update(elem -> {
+                elem.setBiography(biography);
+                return elem;
+            }, targetID);
+        }
     }
 
     @Override

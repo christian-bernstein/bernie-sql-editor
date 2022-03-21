@@ -17,6 +17,7 @@ package de.christianbernstein.bernie.modules.db;
 
 import de.christianbernstein.bernie.modules.db.out.SQLCommandQueryResponsePacketData;
 import de.christianbernstein.bernie.modules.db.out.SQLCommandUpdateResponsePacketData;
+import de.christianbernstein.bernie.modules.user.UserData;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
@@ -71,7 +72,7 @@ public interface IDBModule extends IBaseModuleClass<ITon>, IFluently<IDBModule> 
 
     DBUpdateResult executeUpdate(Connection connection, String raw);
 
-    DBCommandError generatePullError(DBQueryResult result, Map<String, Object> appendix);
+    DBCommandError generatePullError(UserData ud, DBQueryResult result, Map<String, Object> appendix);
 
-    DBCommandError generatePushError(DBUpdateResult result, Map<String, Object> appendix);
+    DBCommandError generatePushError(UserData ud, DBUpdateResult result, Map<String, Object> appendix);
 }

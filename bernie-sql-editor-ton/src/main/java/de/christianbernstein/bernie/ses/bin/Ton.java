@@ -17,9 +17,10 @@ package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.modules.session.Session;
 import de.christianbernstein.bernie.modules.user.IUser;
-import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.db.H2Repository;
+import de.christianbernstein.bernie.shared.discovery.websocket.server.StandaloneSocketServer;
 import de.christianbernstein.bernie.shared.document.Document;
+import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.misc.Resource;
 import de.christianbernstein.bernie.shared.misc.Utils;
 import de.christianbernstein.bernie.shared.module.Engine;
@@ -30,16 +31,18 @@ import de.christianbernstein.bernie.shared.union.IEventManager;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
+import org.checkerframework.common.value.qual.IntRange;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.List;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * todo ensure if debugConfiguration isn't used anywhere, else than in configuration()
@@ -49,6 +52,14 @@ import java.util.regex.Pattern;
 @Getter
 @Accessors(fluent = true)
 public class Ton implements ITon {
+
+    private static final List<TonBootProfile> bootProfiles = new ArrayList<>();
+
+    static {
+        Ton.bootProfiles.add(TonBootProfile.builder().name("conf").name("config").name("configuration").mainSupplier(ConfiguratorMain::new).build());
+    }
+
+    private final Map<String, List<CountDownLatch>> syncLatches = new ConcurrentHashMap<>();
 
     private final Document arguments;
 
@@ -82,8 +93,14 @@ public class Ton implements ITon {
         this.arguments = Objects.requireNonNullElse(arguments, Document.empty());
     }
 
-    private void initGlobalStringReplacers() {
-        final Map<String, Supplier<String>> map = this.globalStringReplacers;
+    @Override
+    public void installGlobalStringReplacers() {
+        Map<String, Supplier<String>> map = this.globalStringReplacers;
+        if (map == null) {
+            map = this.globalStringReplacers = new HashMap<>();
+        } else if (!map.isEmpty()) {
+            map.clear();
+        }
         final TonConfiguration configuration = configuration();
         map.put("root_dir", configuration::getRootDir);
         // todo get colors right c.c
@@ -91,6 +108,7 @@ public class Ton implements ITon {
         map.put("reset", () -> ConsoleColors.RESET);
         map.put("date_year", () -> String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
         map.put("config_dir", () -> this.interpolate(configuration.getConfigPath()));
+        map.put("config_file_ext", configuration::getDefaultConfigFileExtension);
     }
 
     private void initBootingScreen() {
@@ -103,16 +121,69 @@ public class Ton implements ITon {
 
     @Override
     public ITon start(@NonNull TonConfiguration configuration, boolean autoConfigReload) {
+        this.defaultConfiguration = configuration;
+        this.arguments().ifPresentOr("exec", (String procedure) -> {
+            this.startInPreflightMode(configuration, procedure);
+        }, doc -> {
+            // Starting ton in the default manner.
+            this.startInDefaultMode(configuration, autoConfigReload);
+        });
+        return this;
+    }
+
+    /**
+     * Executing a preflight method. Calling preflight mode using the 'exec'-argument as a program argument
+     * Example: java -jar ton.jar -exec=a_preflight_script
+     *
+     * @param procedure The selected procedure to execute
+     */
+    private void startInPreflightMode(@NonNull TonConfiguration configuration, @NonNull String procedure) {
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "preflight", String.format("Executing Ton in preflight mode (%s)", procedure));
+        Ton.bootProfiles.stream().filter(profile -> profile.getNames().contains(procedure)).findAny().ifPresentOrElse(profile -> {
+            try {
+                final AtomicReference<MainResult> resultRef = new AtomicReference<>();
+                final long s = Utils.durationMonitoredExecution(() -> resultRef.set(profile.getMainSupplier().get().main(this))).toSeconds();
+                final MainResult result = resultRef.get();
+                final String processingTimeString = String.format("%dh %02dm %02ds", s / 3600, (s % 3600) / 60, (s % 60));
+                if (result.getExitCode() == 0) {
+                    ConsoleLogger.def().log(ConsoleLogger.LogType.SUCCESS, "preflight", String.format(
+                            "Preflight execution was%s successful%s and finished after %s with exit code %s",
+                            ConsoleColors.GREEN_BOLD_BRIGHT,
+                            ConsoleColors.RESET,
+                            processingTimeString,
+                            result.getExitCode()));
+                } else {
+                    ConsoleLogger.def().log(ConsoleLogger.LogType.ERROR, "preflight", String.format(
+                            "Preflight execution was%s unsuccessful%s and finished after %s with exit code %s",
+                            ConsoleColors.RED_BOLD_BRIGHT,
+                            ConsoleColors.RESET,
+                            processingTimeString,
+                            result.getExitCode()));
+                }
+            } catch (final Exception e) {
+                ConsoleLogger.def().log(ConsoleLogger.LogType.ERROR, "preflight", String.format("An unhandled error occurred while executing main method for procedure '%s'", procedure));
+                e.printStackTrace();
+            }
+        }, () -> {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.ERROR, "preflight", String.format(
+                    "No preflight registered with name of '%s'. Available preflight modes are '%s'", procedure,
+                    Ton.bootProfiles.stream().map(TonBootProfile::getNames).map(Object::toString).collect(Collectors.joining(", "))));
+        });
+
+        this.fireSyncEvent(TonSyncLatch.CLOSE.getName());
+    }
+
+    private void startInDefaultMode(@NonNull TonConfiguration configuration, boolean autoConfigReload) {
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "preflight", "Executing Ton in main mode");
         final long s = Utils.durationMonitoredExecution(() -> {
             this.nextPoolID = 0;
             this.pools = new HashMap<>();
             this.schedulingPools = new HashMap<>();
             this.configResourcePath = "ton/ton_config.yaml";
-            this.defaultConfiguration = configuration;
             this.tonState = TonState.LAUNCHING;
             this.configResource = new Resource<TonConfiguration>(this.configResourcePath()).init(true, () -> configuration).doIf(autoConfigReload, Resource::enableAutoFileUpdate);
             this.globalStringReplacers = new HashMap<>();
-            this.initGlobalStringReplacers();
+            this.installGlobalStringReplacers();
             this.initBootingScreen();
             this.pool("main");
             this.engine = new Engine<ITon>(configuration.getTonEngineID(), this).enableDependencyChecking();
@@ -126,7 +197,8 @@ public class Ton implements ITon {
                 "central module",
                 "Ton server online, it took " + String.format("%dh %02dm %02ds", s / 3600, (s % 3600) / 60, (s % 60))
         );
-        return this;
+
+        this.fireSyncEvent(TonSyncLatch.OPEN.getName());
     }
 
     @Override
@@ -154,6 +226,8 @@ public class Ton implements ITon {
         this.schedulingPools.forEach((id, service) -> service.shutdownNow());
         this.configResource.stop();
         this.tonState = TonState.PREPARED;
+
+        this.fireSyncEvent(TonSyncLatch.CLOSE.getName());
         return this;
     }
 
@@ -261,11 +335,15 @@ public class Ton implements ITon {
     @Override
     public TonConfiguration configuration() {
         try {
-            final TonConfiguration configuration = this.configResource().use(false);
-            if (configuration == null) {
+            if (this.configResource() == null) {
                 return this.defaultConfiguration();
             } else {
-                return configuration;
+                final TonConfiguration configuration = this.configResource().use(false);
+                if (configuration == null) {
+                    return this.defaultConfiguration();
+                } else {
+                    return configuration;
+                }
             }
         } catch (final Exception e) {
             e.printStackTrace();
@@ -325,5 +403,38 @@ public class Ton implements ITon {
         Arrays.asList(this.defaultConfiguration.getJraPhaseOrder()).forEach(phases -> {
             jra.process(meta, phases);
         });
+    }
+
+    private void fireSyncEvent(@NonNull final String latchSyncEvent) {
+        if (this.syncLatches.containsKey(latchSyncEvent)) {
+            this.syncLatches.get(latchSyncEvent).forEach(latch -> {
+                try {
+                    latch.countDown();
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void sync(@NonNull final String latchSyncEvent, @IntRange(from = 1) final int latchSyncAmount) throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(latchSyncAmount);
+        if (!this.syncLatches.containsKey(latchSyncEvent)) {
+            this.syncLatches.put(latchSyncEvent, List.of(latch));
+        } else {
+            this.syncLatches.get(latchSyncEvent).add(latch);
+        }
+        latch.await();
+    }
+
+    @Override
+    public void syncClose() throws InterruptedException {
+        this.sync(TonSyncLatch.CLOSE.getName(), 1);
+    }
+
+    @Override
+    public void syncOpen() throws InterruptedException {
+        this.sync(TonSyncLatch.OPEN.getName(), 1);
     }
 }

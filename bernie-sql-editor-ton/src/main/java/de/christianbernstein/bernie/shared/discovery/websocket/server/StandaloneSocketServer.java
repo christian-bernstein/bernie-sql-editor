@@ -73,8 +73,6 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
         this.init();
     }
 
-
-
     public StandaloneSocketServer() {
         super(new InetSocketAddress(80));
         this.configuration = ServerConfiguration.defaultConfiguration;

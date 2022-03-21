@@ -32,11 +32,22 @@ public class ProfileContext implements IProfileContext {
 
     @Override
     public String getBiography() {
-        return Objects.requireNonNull(this.meta()
-                        .module()
-                        .getBiographyRepo()
-                        .get()
-                        .get(this.meta.targetID())).getBiography();
+        final BiographyMapping mapping = this.meta()
+                .module()
+                .getBiographyRepo()
+                .get()
+                .get(this.meta.targetID());
+        if (mapping == null) {
+            // todo init the bio
+            return "";
+        } else {
+            try {
+                return mapping.getBiography();
+            } catch (final Exception e) {
+                e.printStackTrace();
+                return "";
+            }
+        }
     }
 
     @Override

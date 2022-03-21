@@ -49,6 +49,8 @@ public class ProjectData {
 
     private String title;
 
+    // todo test
+    @Column(columnDefinition="TEXT")
     private String description;
 
     private boolean stator;
