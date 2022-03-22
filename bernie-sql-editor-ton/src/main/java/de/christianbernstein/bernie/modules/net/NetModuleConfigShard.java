@@ -1,5 +1,7 @@
 package de.christianbernstein.bernie.modules.net;
 
+import de.christianbernstein.bernie.shared.misc.FileLocation;
+import de.christianbernstein.bernie.shared.misc.FileLocationType;
 import lombok.*;
 
 /**
@@ -55,4 +57,7 @@ public class NetModuleConfigShard {
 
     @Builder.Default
     private String sslCertificateFactory = "X.509";
+
+    @Builder.Default
+    private FileLocation sslPrivateKeyFile = FileLocation.of("privkey.pem", FileLocationType.FS_RELATIVE);
 }

@@ -31,6 +31,7 @@ public class LetsencryptSSLContextProvider implements ISSLContextProvider {
     @UseTon
     private static ITon ton;
 
+
     @Override
     public SSLContext load(@NotNull INetModule module) {
         final NetModuleConfigShard config = module.configResource().use(false);
@@ -43,10 +44,12 @@ public class LetsencryptSSLContextProvider implements ISSLContextProvider {
         try {
             context = SSLContext.getInstance(config.getSslContext());
 
+            // todo allow absolute paths
             byte[] certBytes = parseDERFromPEM(getBytes(new File(String.format(
                     "%s%s%s", pathname, File.separator, config.getSslRelativeCertificatePath())
             )), "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
 
+            // todo allow absolute paths
             byte[] keyBytes = parseDERFromPEM(getBytes(new File(String.format(
                     "%s%s%s", pathname, File.separator, config.getSslRelativePrivateKeyPath())
             )), "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");

@@ -56,7 +56,7 @@ public class Ton implements ITon {
     private static final List<TonBootProfile> bootProfiles = new ArrayList<>();
 
     static {
-        Ton.bootProfiles.add(TonBootProfile.builder().name("conf").name("config").name("configuration").mainSupplier(ConfiguratorMain::new).build());
+        Ton.bootProfiles.add(TonBootProfile.builder().name("c").name("conf").name("config").name("configuration").mainSupplier(ConfiguratorMain::new).build());
     }
 
     private final Map<String, List<CountDownLatch>> syncLatches = new ConcurrentHashMap<>();

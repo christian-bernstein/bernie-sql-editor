@@ -1,4 +1,4 @@
-package de.christianbernstein.bernie;
+package thread;
 
 import de.christianbernstein.bernie.ses.annotations.AutoExec;
 import de.christianbernstein.bernie.ses.annotations.Threaded;
