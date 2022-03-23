@@ -2,6 +2,7 @@ package de.christianbernstein.bernie.modules.net;
 
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.ITon;
+import de.christianbernstein.bernie.shared.misc.FileLocation;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.KeyManager;
@@ -31,28 +32,32 @@ public class LetsencryptSSLContextProvider implements ISSLContextProvider {
     @UseTon
     private static ITon ton;
 
-
     @Override
     public SSLContext load(@NotNull INetModule module) {
         final NetModuleConfigShard config = module.configResource().use(false);
-
         SSLContext context;
-        // todo change it c.c rofl
         String password = "";
 
         String pathname = ton.interpolate(config.getSslCertificateDir());
+
         try {
             context = SSLContext.getInstance(config.getSslContext());
 
             // todo allow absolute paths
-            byte[] certBytes = parseDERFromPEM(getBytes(new File(String.format(
-                    "%s%s%s", pathname, File.separator, config.getSslRelativeCertificatePath())
-            )), "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
+            // byte[] certBytes = parseDERFromPEM(getBytes(new File(String.format(
+            //         "%s%s%s", pathname, File.separator, config.getSslRelativeCertificatePath())
+            // )), "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
+
+            final File certFile = new File(ton.interpolate(config.getSslCertificateFile().getLocation()));
+            byte[] certBytes = parseDERFromPEM(getBytes(certFile), "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
+
+            final File keyFile = new File(ton.interpolate(config.getSslPrivateKeyFile().getLocation()));
+            byte[] keyBytes = parseDERFromPEM(getBytes(keyFile), "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");
 
             // todo allow absolute paths
-            byte[] keyBytes = parseDERFromPEM(getBytes(new File(String.format(
-                    "%s%s%s", pathname, File.separator, config.getSslRelativePrivateKeyPath())
-            )), "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");
+            // byte[] keyBytes = parseDERFromPEM(getBytes(new File(String.format(
+            //         "%s%s%s", pathname, File.separator, config.getSslRelativePrivateKeyPath())
+            // )), "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");
 
             X509Certificate cert = generateCertificateFromDER(certBytes, config);
             RSAPrivateKey key = generatePrivateKeyFromDER(keyBytes, config);

@@ -14,5 +14,4 @@ public class FileLocation {
 
     private FileLocationType type;
 
-
 }

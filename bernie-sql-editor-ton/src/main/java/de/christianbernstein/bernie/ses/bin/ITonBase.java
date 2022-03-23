@@ -36,6 +36,7 @@ import java.util.function.Supplier;
 /**
  * @author Christian Bernstein
  */
+@SuppressWarnings("UnusedReturnValue")
 public interface ITonBase<Impl extends ITon> {
 
     Impl start(@NonNull TonConfiguration configuration);

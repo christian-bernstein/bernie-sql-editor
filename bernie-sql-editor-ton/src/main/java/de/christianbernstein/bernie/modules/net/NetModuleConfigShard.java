@@ -40,9 +40,11 @@ public class NetModuleConfigShard {
     @Builder.Default
     private String sslContext = "TLS";
 
+    @Deprecated
     @Builder.Default
     private String sslRelativeCertificatePath = "cert.pem";
 
+    @Deprecated
     @Builder.Default
     private String sslRelativePrivateKeyPath = "privkey.pem";
 
@@ -57,6 +59,9 @@ public class NetModuleConfigShard {
 
     @Builder.Default
     private String sslCertificateFactory = "X.509";
+
+    @Builder.Default
+    private FileLocation sslCertificateFile = FileLocation.of("cert.pem", FileLocationType.FS_RELATIVE);
 
     @Builder.Default
     private FileLocation sslPrivateKeyFile = FileLocation.of("privkey.pem", FileLocationType.FS_RELATIVE);

@@ -15,6 +15,7 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
+import de.christianbernstein.bernie.modules.net.NetModuleConfigShard;
 import de.christianbernstein.bernie.modules.session.Session;
 import de.christianbernstein.bernie.modules.user.IUser;
 import de.christianbernstein.bernie.shared.db.H2Repository;
@@ -85,6 +86,9 @@ public class Ton implements ITon {
 
     private int nextPoolID;
 
+    @Accessors()
+    private boolean preflight;
+
     public Ton() {
         this.arguments = Document.empty();
     }
@@ -102,13 +106,18 @@ public class Ton implements ITon {
             map.clear();
         }
         final TonConfiguration configuration = configuration();
+
         map.put("root_dir", configuration::getRootDir);
-        // todo get colors right c.c
         map.put("blue", () -> ConsoleColors.PURPLE);
         map.put("reset", () -> ConsoleColors.RESET);
         map.put("date_year", () -> String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
         map.put("config_dir", () -> this.interpolate(configuration.getConfigPath()));
         map.put("config_file_ext", configuration::getDefaultConfigFileExtension);
+
+        // todo test
+        if (!this.isPreflight()) {
+            map.put("ssl_dir", () -> this.config(NetModuleConfigShard.class, "net_module", NetModuleConfigShard.builder().build()).load().getSslCertificateDir());
+        }
     }
 
     private void initBootingScreen() {
@@ -123,9 +132,11 @@ public class Ton implements ITon {
     public ITon start(@NonNull TonConfiguration configuration, boolean autoConfigReload) {
         this.defaultConfiguration = configuration;
         this.arguments().ifPresentOr("exec", (String procedure) -> {
+            this.preflight = true;
             this.startInPreflightMode(configuration, procedure);
         }, doc -> {
             // Starting ton in the default manner.
+            this.preflight = false;
             this.startInDefaultMode(configuration, autoConfigReload);
         });
         return this;
