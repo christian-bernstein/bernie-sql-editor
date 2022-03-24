@@ -23,11 +23,16 @@ import de.christianbernstein.bernie.shared.document.Document;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * This is the bootstrap class for the embedded ton server.
+ *
+ * todo autoset logger settings
  *
  * @author Christian Bernstein
  */
@@ -50,23 +55,24 @@ public class TonLauncher {
         root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.jboss");
         root.setLevel(Level.OFF);
 
-        root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.jboss");
-        root.setLevel(Level.OFF);
-
         root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.java_websocket");
         root.setLevel(Level.OFF);
 
-        // BernieSystemPrintAdapter.systemInstall();
-
         while (!Thread.currentThread().isInterrupted()) {
-            String s = new Scanner(System.in).nextLine();
+            final String[] arr = new Scanner(System.in).nextLine().split("( )+");
 
-            new Ton(Document.fromArgumentsArray(args).putIf(() -> !s.isEmpty(), "exec", s).put("path", "conf_test/")).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
+            new Ton(Document.fromArgumentsArray(Stream.concat(Arrays.stream(args), Arrays.stream(arr)).toArray(String[]::new)).put("path", "conf_test/")).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
                     .internalDatabaseConfiguration(H2RepositoryConfiguration.builder().hbm2DDLMode(HBM2DDLMode.UPDATE).databaseDir("./db/").database("ton").username("root").password("root").build())
                     .mode(TonMode.DEBUG)
                     .workingDirectory("./ton/")
                     .build()
-            );
+            ).$(ton -> {
+                try {
+                    ton.syncClose();
+                } catch (final InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 }

@@ -1,0 +1,46 @@
+!!de.christianbernstein.bernie.ses.bin.TonConfiguration
+banner:
+- ''
+- '  ██╗  ██╗███████╗██████╗  ██████╗██╗   ██╗██╗     ███████╗███████╗  {blue}┃{reset}
+  A SQL-Editor software using 7149-bernie'
+- '  ██║  ██║██╔════╝██╔══██╗██╔════╝██║   ██║██║     ██╔════╝██╔════╝  {blue}┃{reset}
+  Copyright © 2021 - {date_year} Christian Bernstein & Contributors'
+- '  ███████║█████╗  ██████╔╝██║     ██║   ██║██║     █████╗  ███████╗  {blue}┃{reset}'
+- '  ██╔══██║██╔══╝  ██╔══██╗██║     ██║   ██║██║     ██╔══╝  ╚════██║  {blue}┃{reset}   Community:
+  https://discord.gg/ag7G5HPkcF  '
+- '  ██║  ██║███████╗██║  ██║╚██████╗╚██████╔╝███████╗███████╗███████║  {blue}┃{reset}      Source:
+  https://github.com/christian-bernstein/bernie-sql-editor'
+- '  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚══════╝╚══════╝  {blue}┃{reset}     License:
+  https://github.com/christian-bernstein/7149-bernie/blob/master/LICENSE'
+- |2+
+
+configPath: '{root_dir}config/'
+defaultConfigFileExtension: yaml
+enableBanner: true
+internalDatabaseConfiguration:
+  annotatedClasses: []
+  database: ton
+  databaseDir: ./db/
+  hbm2DDLMode: UPDATE
+  password: root
+  username: root
+jraPhaseOrder:
+- [threaded-phase]
+- [construct-phase]
+- [inject-ton-api]
+- [register-event-class-phase]
+- [module]
+- [flow]
+- [cdn]
+- [auto-exec]
+loggerConfigsD:
+- {level: 'OFF', logger: org.java_websocket, type: NAME}
+- {level: 'OFF', logger: org.reflections, type: NAME}
+- {level: 'OFF', logger: org.hibernate, type: NAME}
+- {level: 'OFF', logger: org.jboss, type: NAME}
+mode: DEBUG
+moduleConfigPath: '{root_dir}config/'
+rootDir: ton/
+tonEngineID: ton
+variableInterpolationSyntax: '{%s}'
+workingDirectory: ./ton/

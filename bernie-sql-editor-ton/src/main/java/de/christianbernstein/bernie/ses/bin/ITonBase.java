@@ -45,6 +45,8 @@ public interface ITonBase<Impl extends ITon> {
 
     Impl shutdown();
 
+    boolean isPreflight();
+
     ExecutorService pool(String pool);
 
     ExecutorService pool(String pool, @Nullable Supplier<ExecutorService> factory);

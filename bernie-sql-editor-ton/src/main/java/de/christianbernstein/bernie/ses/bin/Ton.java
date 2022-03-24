@@ -95,6 +95,8 @@ public class Ton implements ITon {
 
     public Ton(@Nullable final Document arguments) {
         this.arguments = Objects.requireNonNullElse(arguments, Document.empty());
+
+        System.out.println("ton with: " + arguments.toSlimString());
     }
 
     @Override

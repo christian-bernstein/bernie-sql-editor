@@ -39,6 +39,16 @@ public class ConfiguratorMain implements IMain<Ton> {
     public void file(String path, @Nullable Supplier<String> def) {
         path = String.format("%s%s", this.pathSuffix, this.ton.interpolate(path));
         final File file = new File(path);
+
+        if (this.ton.arguments().containsKey("reset") && file.exists()) {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "config", String.format("Deleting file '%s'", path));
+            if (file.delete()) {
+                ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "config", String.format("Deleting file '%s' successfully", path));
+            } else {
+                ConsoleLogger.def().log(ConsoleLogger.LogType.ERROR, "config", String.format("File '%s' can't be deleted", path));
+            }
+        }
+
         if (!file.exists()) {
             try {
                 Utils.createFileIfNotExists(file);
