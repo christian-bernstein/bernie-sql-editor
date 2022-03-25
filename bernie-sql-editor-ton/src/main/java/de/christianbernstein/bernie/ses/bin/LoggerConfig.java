@@ -1,15 +1,17 @@
 package de.christianbernstein.bernie.ses.bin;
 
-import ch.qos.logback.classic.Level;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.jetbrains.annotations.Nullable;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Christian Bernstein
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoggerConfig {
 
     private String logger;

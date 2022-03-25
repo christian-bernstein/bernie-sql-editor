@@ -15,11 +15,12 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import de.christianbernstein.bernie.modules.net.NetModuleConfigShard;
 import de.christianbernstein.bernie.modules.session.Session;
 import de.christianbernstein.bernie.modules.user.IUser;
 import de.christianbernstein.bernie.shared.db.H2Repository;
-import de.christianbernstein.bernie.shared.discovery.websocket.server.StandaloneSocketServer;
 import de.christianbernstein.bernie.shared.document.Document;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
 import de.christianbernstein.bernie.shared.misc.Resource;
@@ -34,8 +35,8 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 import org.checkerframework.common.value.qual.IntRange;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;
@@ -95,8 +96,6 @@ public class Ton implements ITon {
 
     public Ton(@Nullable final Document arguments) {
         this.arguments = Objects.requireNonNullElse(arguments, Document.empty());
-
-        System.out.println("ton with: " + arguments.toSlimString());
     }
 
     @Override
@@ -108,7 +107,6 @@ public class Ton implements ITon {
             map.clear();
         }
         final TonConfiguration configuration = configuration();
-
         map.put("root_dir", configuration::getRootDir);
         map.put("blue", () -> ConsoleColors.PURPLE);
         map.put("reset", () -> ConsoleColors.RESET);
@@ -133,6 +131,7 @@ public class Ton implements ITon {
     @Override
     public ITon start(@NonNull TonConfiguration configuration, boolean autoConfigReload) {
         this.defaultConfiguration = configuration;
+        this.updateLoggers();
         this.arguments().ifPresentOr("exec", (String procedure) -> {
             this.preflight = true;
             this.startInPreflightMode(configuration, procedure);
@@ -142,6 +141,28 @@ public class Ton implements ITon {
             this.startInDefaultMode(configuration, autoConfigReload);
         });
         return this;
+    }
+
+    private void updateLoggers() {
+        this.configuration().getLoggerConfigs().forEach(config -> {
+            Logger logger = null;
+            switch (config.getType()) {
+                case NAME -> logger = (Logger) LoggerFactory.getLogger(config.getLogger());
+                case CLASS -> {
+                    try {
+                        final Class<?> loggerClass = Class.forName(config.getLogger());
+                        logger = (Logger) LoggerFactory.getLogger(loggerClass);
+                    } catch (final ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            if (logger != null) {
+                logger.setLevel(Level.toLevel(config.getLevel()));
+            } else {
+                ConsoleLogger.def().log(ConsoleLogger.LogType.ERROR, "startup", String.format("Cannot generate Logger instance for logger '%s' in %s-mode", config.getLogger(), config.getType().name().toLowerCase()));
+            }
+        });
     }
 
     /**
@@ -186,17 +207,22 @@ public class Ton implements ITon {
         this.fireSyncEvent(TonSyncLatch.CLOSE.getName());
     }
 
+    private void onMainConfigFileReload(@NonNull TonConfiguration config) {
+        this.updateLoggers();
+    }
+
     private void startInDefaultMode(@NonNull TonConfiguration configuration, boolean autoConfigReload) {
-        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "preflight", "Executing Ton in main mode");
+        // ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "preflight", "Executing Ton in main mode");
         final long s = Utils.durationMonitoredExecution(() -> {
             this.nextPoolID = 0;
             this.pools = new HashMap<>();
             this.schedulingPools = new HashMap<>();
             this.configResourcePath = "ton/ton_config.yaml";
             this.tonState = TonState.LAUNCHING;
-            this.configResource = new Resource<TonConfiguration>(this.configResourcePath()).init(true, () -> configuration).doIf(autoConfigReload, Resource::enableAutoFileUpdate);
+            this.configResource = new Resource<TonConfiguration>(this.configResourcePath()).init(true, () -> configuration).doIf(autoConfigReload, Resource::enableAutoFileUpdate).registerOnLoad(this::onMainConfigFileReload);
             this.globalStringReplacers = new HashMap<>();
             this.installGlobalStringReplacers();
+            this.updateLoggers();
             this.initBootingScreen();
             this.pool("main");
             this.engine = new Engine<ITon>(configuration.getTonEngineID(), this).enableDependencyChecking();
@@ -221,15 +247,11 @@ public class Ton implements ITon {
 
     @Override
     public ITon shutdown() {
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "central module", "Shutting down…");
         this.tonState = TonState.STOPPING;
         this.engine().uninstallAll();
-
         this.pools.forEach((id, service) -> {
-            ConsoleLogger.def().log(
-                    ConsoleLogger.LogType.INFO,
-                    "central module",
-                    String.format("Shutdown of executor pool '%s'", id)
-            );
+            ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "central module", String.format("Shutdown of executor pool '%s'", id));
             try {
                 service.shutdownNow();
             } catch (final Exception e) {
@@ -239,7 +261,7 @@ public class Ton implements ITon {
         this.schedulingPools.forEach((id, service) -> service.shutdownNow());
         this.configResource.stop();
         this.tonState = TonState.PREPARED;
-
+        ConsoleLogger.def().log(ConsoleLogger.LogType.SUCCESS, "central module", "Shutdown successfully completed, releasing close sync latches…");
         this.fireSyncEvent(TonSyncLatch.CLOSE.getName());
         return this;
     }

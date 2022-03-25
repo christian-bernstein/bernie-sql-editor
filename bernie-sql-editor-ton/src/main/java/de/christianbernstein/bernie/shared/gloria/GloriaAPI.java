@@ -16,6 +16,7 @@
 package de.christianbernstein.bernie.shared.gloria;
 
 import com.google.gson.reflect.TypeToken;
+import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.Command;
 import de.christianbernstein.bernie.shared.misc.Contextual;
 import de.christianbernstein.bernie.shared.misc.ICallback;
 import de.christianbernstein.bernie.shared.misc.Instance;
@@ -227,7 +228,7 @@ public final class GloriaAPI {
                         next.print(buffer, childrenPrefix + "├─", childrenPrefix + "│ ");
                     } else {
                         // todo use ╰ └
-                        next.print(buffer, childrenPrefix + "└─", childrenPrefix + "  ");
+                        next.print(buffer, childrenPrefix + "╰─", childrenPrefix + "  ");
                     }
                 }
             }
@@ -1312,7 +1313,7 @@ public final class GloriaAPI {
 
         private final IStatementProcessor processor;
 
-        private final ExecutorAnnotations.Command command;
+        private final Command command;
 
         // todo change to SerializedAnnotations
         private final List<Annotation> executorAnnotations;
@@ -1635,7 +1636,7 @@ public final class GloriaAPI {
             return result.get();
         }
 
-        private void _registerMethodHandler(@NonNull Method method, @Nullable Object instance, @NonNull GloriaAPI.ExecutorAnnotations.Command command) {
+        private void _registerMethodHandler(@NonNull Method method, @Nullable Object instance, @NonNull Command command) {
             method.setAccessible(true);
             final List<Annotation> executorAnnotations = new ArrayList<>(Arrays.asList(method.getAnnotations()));
             executorAnnotations.remove(command);
@@ -1651,8 +1652,8 @@ public final class GloriaAPI {
             final RegisteredCommandNode node = new RegisteredCommandNode(new IStatementProcessor() {
                 @Override
                 public void handle(@NonNull Statement statement) {
-                    final ExecutorAnnotations.Command commandInfo = statement.getNode().getCommand();
-                    if (commandInfo.type() == ExecutorAnnotations.Command.Type.UNDEFINED || commandInfo.type() == ExecutorAnnotations.Command.Type.HANDLER) {
+                    final Command commandInfo = statement.getNode().getCommand();
+                    if (commandInfo.type() == Command.Type.UNDEFINED || commandInfo.type() == Command.Type.HANDLER) {
                         final Object[] mappedParameters = Gloria.this.map(new Object[method.getParameterCount()], statement, "default");
                         // todo inject global variables & sessions
                         // Validate all the parameters
@@ -1714,9 +1715,9 @@ public final class GloriaAPI {
                 Arrays.stream(polymorphCommand.value()).forEach(command -> {
                     this._registerMethodHandler(method, instance, command);
                 });
-            } else if (method.isAnnotationPresent(ExecutorAnnotations.Command.class)) {
+            } else if (method.isAnnotationPresent(Command.class)) {
                 // Register as singleton
-                final ExecutorAnnotations.Command command = method.getAnnotation(ExecutorAnnotations.Command.class);
+                final Command command = method.getAnnotation(Command.class);
                 this._registerMethodHandler(method, instance, command);
             }
             return this;
@@ -1912,7 +1913,7 @@ public final class GloriaAPI {
                 System.out.println("Node body is null, abort deserialization");
                 return null;
             }
-            final ExecutorAnnotations.Command commandInfo = body.getCommand();
+            final Command commandInfo = body.getCommand();
             final AtomicReference<String> calculatedPath = new AtomicReference<>(cleanCommand);
             int pathDeepness = commandInfo.path().length() == 0 ? 0 : (int) (Stream.of(commandInfo.path().split(" ")).count());
             final int nodeDeepness = pathDeepness + 1;
@@ -2222,19 +2223,19 @@ public final class GloriaAPI {
         @NoArgsConstructor
         public static final class ModuleAPIAddon {
 
-            @ExecutorAnnotations.Command(literal = "modules", type = ExecutorAnnotations.Command.Type.JUNCTION)
-            protected void modules() {
+            @Command(literal = "modules", type = Command.Type.JUNCTION)
+            private void modules() {
             }
 
-            @ExecutorAnnotations.Command(path = "modules", literal = "print")
-            protected void print(@IntrinsicParameterAnnotations.APIStatement Statement statement, String value) {
+            @Command(path = "modules", literal = "print")
+            private void print(@IntrinsicParameterAnnotations.APIStatement Statement statement, String value) {
                 statement.getApi().getModuleEngine().getModules().forEach(module -> {
-                    statement.getOut().println(String.format("[%s, %s, %s]", module.getName(), module.getLifecycle(), module.isStator() ? "stator" : "dynamic"));
+                    statement.getOut().printf("[%s, %s, %s]%n", module.getName(), module.getLifecycle(), module.isStator() ? "stator" : "dynamic");
                 });
             }
 
-            @ExecutorAnnotations.Command(path = "modules", literal = "uninstall")
-            protected void uninstall(@IntrinsicParameterAnnotations.APIStatement Statement statement, String module) {
+            @Command(path = "modules", literal = "uninstall")
+            private void uninstall(@IntrinsicParameterAnnotations.APIStatement Statement statement, String module) {
                 System.out.println("Trying to uninstall module: " + module);
                 statement.getApi().getModuleEngine().uninstall(module);
             }
@@ -2243,14 +2244,14 @@ public final class GloriaAPI {
         @NoArgsConstructor
         public static final class UtilityAddon {
 
-            @ExecutorAnnotations.Command(literal = "utilities", aliases = {"de.christianbernstein.bernie.ses.ton.utils", "util", "u"}, type = ExecutorAnnotations.Command.Type.JUNCTION)
+            @Command(literal = "utilities", aliases = {"utils", "util", "u"}, type = Command.Type.JUNCTION)
             private void utils() {
             }
 
             /**
              * todo substitution of command chains
              */
-            @ExecutorAnnotations.Command(literal = "schedule", aliases = {"later"})
+            @Command(literal = "schedule", aliases = {"later"})
             private void schedule(@IntrinsicParameterAnnotations.APIStatement Statement statement, @ParamAnnotations.DurationMeta Duration duration, @ParamAnnotations.Flow String command) {
                 statement.getOut().println("Duration in seconds: " + duration.toSeconds());
                 Executors.newSingleThreadScheduledExecutor().schedule(() -> {
@@ -2259,13 +2260,13 @@ public final class GloriaAPI {
                 }, duration.toMillis(), TimeUnit.MILLISECONDS);
             }
 
-            @ExecutorAnnotations.Command(path = "utilities", literal = "substitute", tags = ExecutorAnnotations.Command.EMITTER_TAG)
+            @Command(path = "utilities", literal = "substitute", tags = Command.EMITTER_TAG)
             private void substitute(@IntrinsicParameterAnnotations.APIStatement Statement statement, String identifier, @ParamAnnotations.Flow String sequence) {
                 statement.emit(Utilities.substitute(sequence, identifier, "'"));
             }
 
-            @ExecutorAnnotations.Command(literal = "help", aliases = {"?"}, description = "Shows essential information about commands", sampleUsage = "help [command_name]", arguments = @ExecutorAnnotations.Command.Arguments(
-                    @ExecutorAnnotations.Command.Argument(identifier = "d", description = "Shows more detailed information, like package names, internal data etc.")
+            @Command(literal = "help", aliases = {"?"}, description = "Shows essential information about commands", sampleUsage = "help [command_name]", arguments = @Command.Arguments(
+                    @Command.Argument(identifier = "d", description = "Shows more detailed information, like package names, internal data etc.")
             ))
             private void help(@IntrinsicParameterAnnotations.APIStatement Statement statement, @ParamAnnotations.Param(name = "path") @ParamAnnotations.Flow String path) {
                 final PrintStream out = statement.getOut();
@@ -2284,7 +2285,7 @@ public final class GloriaAPI {
                     out.println("The path is a junction, there is no command-body present");
                     return;
                 }
-                final ExecutorAnnotations.Command command = body.getCommand();
+                final Command command = body.getCommand();
 
                 final int printLatitude = 11;
                 final Utilities.PrintableNode.PrintableNodeBuilder builder = Utilities.PrintableNode.builder();
@@ -2297,10 +2298,10 @@ public final class GloriaAPI {
                         .child(Utilities.PrintableNode.fromKeyValueText("Aliases", Arrays.toString(command.aliases()), printLatitude))
                         .child(Utilities.PrintableNode.fromKeyValueText("Node Type", String.valueOf(command.type()), printLatitude));
                 // Add command arguments
-                final ExecutorAnnotations.Command.Argument[] arguments = command.arguments().value();
+                final Command.Argument[] arguments = command.arguments().value();
                 if (arguments.length > 0) {
                     final Utilities.PrintableNode.PrintableNodeBuilder argumentNode = Utilities.PrintableNode.builder().text("Arguments");
-                    for (ExecutorAnnotations.Command.Argument argument : arguments) {
+                    for (Command.Argument argument : arguments) {
                         argumentNode.child(Utilities.PrintableNode.fromKeyValueText(argument.identifier(), argument.description(), printLatitude));
                     }
                     builder.child(argumentNode.build());
@@ -2329,22 +2330,22 @@ public final class GloriaAPI {
                 builder.build().renderAndHandle(out::println);
             }
 
-            @ExecutorAnnotations.Command(path = "utilities", literal = "return", aliases = {"ret", "r"}, tags = ExecutorAnnotations.Command.EMITTER_TAG)
+            @Command(path = "utilities", literal = "return", aliases = {"ret", "r"}, tags = Command.EMITTER_TAG)
             private void ret(@IntrinsicParameterAnnotations.APIStatement Statement statement, String value) {
                 statement.emit(value);
             }
 
             @ExecutorAnnotations.PolymorphCommand({
-                    @ExecutorAnnotations.Command(literal = "echo"),
-                    @ExecutorAnnotations.Command(path = "utilities", literal = "echo", aliases = {"print", "cout", "e"})
+                    @Command(literal = "echo"),
+                    @Command(path = "utilities", literal = "echo", aliases = {"print", "cout", "e"})
             })
             private void echo(@IntrinsicParameterAnnotations.APIStatement Statement statement, @ParamAnnotations.Flow String text) {
                 statement.getOut().println(text);
             }
 
-            @ExecutorAnnotations.Command(path = "utilities", literal = "nodes", description = "", arguments = @ExecutorAnnotations.Command.Arguments({
-                    @ExecutorAnnotations.Command.Argument(identifier = "c", description = "Prints all child nodes of the next level"),
-                    @ExecutorAnnotations.Command.Argument(identifier = "d", description = "Prints more details about the node")
+            @Command(path = "utilities", literal = "nodes", description = "", arguments = @Command.Arguments({
+                    @Command.Argument(identifier = "c", description = "Prints all child nodes of the next level"),
+                    @Command.Argument(identifier = "d", description = "Prints more details about the node")
             }))
             private void printNodes(@IntrinsicParameterAnnotations.APIStatement Statement statement, String path) {
                 final PrintStream out = statement.getOut();
@@ -2374,7 +2375,7 @@ public final class GloriaAPI {
                 }
             }
 
-            @ExecutorAnnotations.Command(path = "utilities", literal = "delay", aliases = {"sleep", "wait"})
+            @Command(path = "utilities", literal = "delay", aliases = {"sleep", "wait"})
             private void delay(@ParamAnnotations.Range(min = 0) long amount, TimeUnit unit) {
                 try {
                     Thread.sleep(unit.toMillis(amount));
@@ -2384,7 +2385,7 @@ public final class GloriaAPI {
             }
 
             // todo add background loop
-            @ExecutorAnnotations.Command(path = "utilities", literal = "loop")
+            @Command(path = "utilities", literal = "loop")
             private void loop(@IntrinsicParameterAnnotations.APIStatement Statement statement, @ParamAnnotations.Range(min = -1) int amount, @ParamAnnotations.Flow String command) {
                 if (amount == -1) {
                     // infinite loop
@@ -2421,12 +2422,12 @@ public final class GloriaAPI {
                 }
             });
 
-            @ExecutorAnnotations.Command(literal = "memory", aliases = {"mem", "cache", "m"}, type = ExecutorAnnotations.Command.Type.JUNCTION)
+            @Command(literal = "memory", aliases = {"mem", "cache", "m"}, type = Command.Type.JUNCTION)
             private void memory() {
             }
 
-            @ExecutorAnnotations.Command(path = "memory", literal = "set", aliases = {"put", "append", "add"}, arguments = @ExecutorAnnotations.Command.Arguments({
-                    @ExecutorAnnotations.Command.Argument(identifier = "s", description = "Defines a static value (ignored by wipe)")
+            @Command(path = "memory", literal = "set", aliases = {"put", "append", "add"}, arguments = @Command.Arguments({
+                    @Command.Argument(identifier = "s", description = "Defines a static value (ignored by wipe)")
             }))
             private void set(@IntrinsicParameterAnnotations.APIStatement Statement statement, String key, String value) {
                 System.out.println("set " + key + " to " + value);
@@ -2437,12 +2438,12 @@ public final class GloriaAPI {
                 });
             }
 
-            @ExecutorAnnotations.Command(path = "memory", literal = "get", tags = {ExecutorAnnotations.Command.EMITTER_TAG})
+            @Command(path = "memory", literal = "get", tags = {Command.EMITTER_TAG})
             private void get(@IntrinsicParameterAnnotations.APIStatement Statement statement, String key) {
                 statement.emit(this.memory.get(key));
             }
 
-            @ExecutorAnnotations.Command(path = "memory", literal = "copy")
+            @Command(path = "memory", literal = "copy")
             private void copy(@IntrinsicParameterAnnotations.APIStatement Statement statement, String key, @ParamAnnotations.Flow String[] newKeys) {
                 final Object o = this.memory.get(key);
                 for (final String newKey : newKeys) {
@@ -2450,8 +2451,8 @@ public final class GloriaAPI {
                 }
             }
 
-            @ExecutorAnnotations.Command(path = "memory", literal = "print", arguments = @ExecutorAnnotations.Command.Arguments({
-                    @ExecutorAnnotations.Command.Argument(identifier = "t", description = "Enable tree printing (Print a more visually readable version).")
+            @Command(path = "memory", literal = "print", arguments = @Command.Arguments({
+                    @Command.Argument(identifier = "t", description = "Enable tree printing (Print a more visually readable version).")
             }))
             private void print(@IntrinsicParameterAnnotations.APIStatement Statement statement, String target) {
                 if (target == null) {
@@ -2497,20 +2498,20 @@ public final class GloriaAPI {
                 });
             }
 
-            @ExecutorAnnotations.Command(path = "memory", literal = "wipe", aliases = {"clear"})
+            @Command(path = "memory", literal = "wipe", aliases = {"clear"})
             private void wipe() {
                 System.out.println("wiping memory");
                 this.memory.clear();
             }
 
-            @ExecutorAnnotations.Command(path = "memory", literal = "remove", aliases = {"delete", "rem"})
+            @Command(path = "memory", literal = "remove", aliases = {"delete", "rem"})
             private void remove(@ParamAnnotations.Flow String[] keys) {
                 for (final String key : keys) {
                     this.memory.remove(key);
                 }
             }
 
-            @ExecutorAnnotations.Command(path = "memory meta", literal = "set", sampleUsage = "memory meta set a_name a_meta sample_value")
+            @Command(path = "memory meta", literal = "set", sampleUsage = "memory meta set a_name a_meta sample_value")
             private void metaSet(String entry, String property, String value) {
                 final IDocument<?> meta = this.propertyMetas.get(entry);
                 if (meta != null) {
@@ -2518,7 +2519,7 @@ public final class GloriaAPI {
                 }
             }
 
-            @ExecutorAnnotations.Command(path = "memory meta", literal = "stator", aliases = "static", sampleUsage = "memory meta set a_name a_meta sample_value")
+            @Command(path = "memory meta", literal = "stator", aliases = "static", sampleUsage = "memory meta set a_name a_meta sample_value")
             private void setStator(String entry, @SuppressWarnings("SameParameterValue") boolean stator) {
                 final IDocument<?> meta = this.propertyMetas.get(entry);
                 if (meta != null) {
@@ -2526,7 +2527,7 @@ public final class GloriaAPI {
                 }
             }
 
-            @ExecutorAnnotations.Command(path = "memory meta", literal = "remove", sampleUsage = "memory meta rem a_name a_meta")
+            @Command(path = "memory meta", literal = "remove", sampleUsage = "memory meta rem a_name a_meta")
             private void metaRemove(String entry, String property) {
                 final IDocument<?> meta = this.propertyMetas.get(entry);
                 if (meta != null) {
@@ -2534,7 +2535,7 @@ public final class GloriaAPI {
                 }
             }
 
-            @ExecutorAnnotations.Command(path = "memory", literal = "path", sampleUsage = "sets the memory base path")
+            @Command(path = "memory", literal = "path", sampleUsage = "sets the memory base path")
             private void setPath(String path) {
                 this.memory.setQueryBasePath(path);
             }
@@ -2553,7 +2554,7 @@ public final class GloriaAPI {
                 api.removeNodeIf(predicateNode -> {
                     if (predicateNode.getCommandBody() != null) {
                         final String ofModule = predicateNode.getCommandBody().getCommand().ofModule();
-                        if (!ofModule.equals(ExecutorAnnotations.Command.GLOBAL_COMMAND_MODULE)) {
+                        if (!ofModule.equals(Command.GLOBAL_COMMAND_MODULE)) {
                             return ofModule.equals(moduleRemovedEvent.getModule().getName());
                         }
                         return false;

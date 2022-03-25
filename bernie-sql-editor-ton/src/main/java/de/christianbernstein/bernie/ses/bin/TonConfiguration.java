@@ -6,9 +6,7 @@ import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
 import lombok.*;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Standard configuration for Ton.
@@ -88,7 +86,7 @@ public class TonConfiguration {
             .build();
 
     @Builder.Default
-    private List<LoggerConfig> loggerConfigsD = Arrays.asList(
+    private List<LoggerConfig> loggerConfigs = Arrays.asList(
             LoggerConfig.builder().logger("org.java_websocket").type(LoggerSpecificationType.NAME).level(Level.OFF.levelStr).build(),
             LoggerConfig.builder().logger("org.reflections").type(LoggerSpecificationType.NAME).level(Level.OFF.levelStr).build(),
             LoggerConfig.builder().logger("org.hibernate").type(LoggerSpecificationType.NAME).level(Level.OFF.levelStr).build(),

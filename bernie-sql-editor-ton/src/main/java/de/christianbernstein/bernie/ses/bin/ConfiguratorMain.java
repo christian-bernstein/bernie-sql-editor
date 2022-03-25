@@ -57,7 +57,7 @@ public class ConfiguratorMain implements IMain<Ton> {
                     ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "config", String.format("Writing content to '%s' (%s bytes)", path, val.getBytes(StandardCharsets.UTF_8).length));
                     try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                         writer.write(val);
-                        ConsoleLogger.def().log(ConsoleLogger.LogType.SUCCESS, "config", "Writing process successfully finished");
+                        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "config", "Writing process successfully finished");
                     } catch (final Exception e) {
                         ConsoleLogger.def().log(ConsoleLogger.LogType.ERROR, "config", "Writing process unsuccessful");
                         e.printStackTrace();
@@ -66,7 +66,7 @@ public class ConfiguratorMain implements IMain<Ton> {
             } catch (final IOException e) {
                 e.printStackTrace();
             }
-            ConsoleLogger.def().log(ConsoleLogger.LogType.SUCCESS, "config", String.format("File '%s' created", path));
+            ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "config", String.format("File '%s' created", path));
         } else {
             ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "config", String.format("Skipping '%s', file already exists", path));
         }
@@ -76,7 +76,7 @@ public class ConfiguratorMain implements IMain<Ton> {
         path = String.format("%s%s", this.pathSuffix, this.ton.interpolate(path));
         final File file = new File(path);
         if (file.mkdirs()) {
-            ConsoleLogger.def().log(ConsoleLogger.LogType.SUCCESS, "config", String.format("Folder '%s' created", path));
+            ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "config", String.format("Folder '%s' created", path));
         } else {
             ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "config", String.format("Skipping '%s', folder already exists", path));
         }

@@ -7,6 +7,7 @@ import de.christianbernstein.bernie.modules.project.ProjectAlreadyExistException
 import de.christianbernstein.bernie.modules.project.ProjectCreationData;
 import de.christianbernstein.bernie.modules.project.ProjectData;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI;
+import de.christianbernstein.bernie.shared.gloria.GloriaAPI.GloriaCommandAddons.UtilityAddon;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ISession;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Flow;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Param;
@@ -17,7 +18,6 @@ import de.christianbernstein.bernie.shared.misc.Utils;
 import de.christianbernstein.bernie.shared.module.Lifecycle;
 import de.christianbernstein.bernie.shared.module.Module;
 import lombok.NonNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +25,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -53,6 +52,7 @@ public class Console {
 
         // todo create annotation for adding the console classes
         gloria.registerMethodsInClass(Console.class, true);
+        gloria.registerMethodsInClass(UtilityAddon.class, true);
         main.execute(() -> {
             Supplier<String> lineRetriever;
 
@@ -61,14 +61,12 @@ public class Console {
             } else {
                 lineRetriever = () -> {
                     final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-
                     // todo fix https://stackoverflow.com/questions/50394846/interrupt-system-console-readline
                     boolean waiting = true;
-
                     do {
                         try {
                             if (!br.ready()) {
+                                //noinspection BusyWait
                                 Thread.sleep(200);
                             } else {
                                 waiting = false;
@@ -143,6 +141,7 @@ public class Console {
                 .stream();
         if (filterLifecycle != null) {
             try {
+                // todo check if filterLifeCycle is contained un Lifecycle enum
                 final Lifecycle filter = Lifecycle.valueOf(filterLifecycle.toUpperCase(Locale.ROOT));
                 stream = stream.filter(mod -> mod.getLifecycle() == filter);
             } catch (final Exception e) {
@@ -163,6 +162,9 @@ public class Console {
         }
     }
 
+    /**
+     * Get projects from root user
+     */
     @Command(path = "debug", literal = "getProjects", aliases = "gP")
     private void getProjects(@APIStatement Statement statement, @APISession ISession session) {
         ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", String.format("Projects: '%s'", ton
