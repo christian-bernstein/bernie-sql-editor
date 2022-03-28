@@ -33,9 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
-import java.util.function.IntFunction;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 /**
  * todo better method structure
@@ -68,6 +66,13 @@ public class Resource<T> implements IFluently<Resource<T>> {
 
     public Resource<T> registerOnLoad(Consumer<T> handler) {
         this.onLoadHandlers.add(handler);
+        return this;
+    }
+
+    public Resource<T> update(@NonNull UnaryOperator<T> updater) {
+        T res = this.load();
+        res = updater.apply(res);
+        this.save(res);
         return this;
     }
 

@@ -53,6 +53,7 @@ public class Console {
         // todo create annotation for adding the console classes
         gloria.registerMethodsInClass(Console.class, true);
         gloria.registerMethodsInClass(UtilityAddon.class, true);
+        gloria.registerMethodsInClass(SSLCommand.class, true);
         main.execute(() -> {
             Supplier<String> lineRetriever;
 

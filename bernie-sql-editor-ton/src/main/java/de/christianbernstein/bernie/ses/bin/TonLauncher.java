@@ -15,24 +15,17 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
-import ch.qos.logback.classic.Level;
-import de.christianbernstein.bernie.ses.annotations.AutoExec;
 import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
 import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
 import de.christianbernstein.bernie.shared.document.Document;
-import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
  * This is the bootstrap class for the embedded ton server.
- *
- * todo autoset logger settings
  *
  * @author Christian Bernstein
  */
@@ -42,25 +35,10 @@ public class TonLauncher {
     private static Optional<ITon> ton = Optional.empty();
 
     public static void main(String[] args) throws InterruptedException {
-        // LoggerFactory.getLogger(TonLauncher.class).error("Hell world");
-
-        // ch.qos.logback.classic.Logger root;
-//
-        // root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.reflections");
-        // root.setLevel(Level.OFF);
-//
-        // root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate");
-        // root.setLevel(Level.OFF);
-//
-        // root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.jboss");
-        // root.setLevel(Level.OFF);
-//
-        // root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.java_websocket");
-        // root.setLevel(Level.OFF);
-
         while (!Thread.currentThread().isInterrupted()) {
             final String[] arr = new Scanner(System.in).nextLine().split("( )+");
 
+            // Create and start the ton server & enter sync mode, if ton starts in the default mode (no preflight)
             new Ton(Document.fromArgumentsArray(Stream.concat(Arrays.stream(args), Arrays.stream(arr)).toArray(String[]::new))).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
                     .internalDatabaseConfiguration(H2RepositoryConfiguration.builder().hbm2DDLMode(HBM2DDLMode.UPDATE).databaseDir("./db/").database("ton").username("root").password("root").build())
                     .mode(TonMode.DEBUG)

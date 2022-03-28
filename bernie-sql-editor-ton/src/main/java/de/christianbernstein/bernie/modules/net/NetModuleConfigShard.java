@@ -61,8 +61,8 @@ public class NetModuleConfigShard {
     private String sslCertificateFactory = "X.509";
 
     @Builder.Default
-    private FileLocation sslCertificateFile = FileLocation.of("cert.pem", FileLocationType.FS_RELATIVE);
+    private FileLocation sslCertificateFile = FileLocation.of("{ssl_dir}cert.pem", FileLocationType.FS_RELATIVE);
 
     @Builder.Default
-    private FileLocation sslPrivateKeyFile = FileLocation.of("privkey.pem", FileLocationType.FS_RELATIVE);
+    private FileLocation sslPrivateKeyFile = FileLocation.of("{ssl_dir}privkey.pem", FileLocationType.FS_RELATIVE);
 }

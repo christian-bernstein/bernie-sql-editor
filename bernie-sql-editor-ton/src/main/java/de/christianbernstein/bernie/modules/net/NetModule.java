@@ -94,7 +94,7 @@ public class NetModule implements INetModule {
     @Override
     public void boot(ITon api, @NotNull Module<ITon> module, IEngine<ITon> manager) {
         INetModule.super.boot(api, module, manager);
-        this.configResource = api.config(NetModuleConfigShard.class, "net_module", NetModuleConfigShard.builder().build());
+        this.configResource = api.config(NetModuleConfigShard.class, "net_config", NetModuleConfigShard.builder().build());
 
         final NetModuleConfigShard conf = this.configResource.use(false);
         this.server = new StandaloneSocketServer(this.config.getServerConfiguration());
@@ -104,12 +104,11 @@ public class NetModule implements INetModule {
                 final SSLContext context = this.loadSSLContext();
                 assert context != null;
                 this.server.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(context));
+                ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "net module", "enabled SSL");
             }
         } catch (final Exception e) {
             new NetModuleSSLException("While enabling SSL, an error occurred", e).printStackTrace();
         }
-
-
 
         // Sync protocol changes to the client
         this.server.onPostEstablish((event, document) -> {

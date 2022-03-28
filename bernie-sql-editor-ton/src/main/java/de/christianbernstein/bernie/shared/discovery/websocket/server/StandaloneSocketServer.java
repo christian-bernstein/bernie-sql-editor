@@ -109,7 +109,7 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
                 event.session().getProtocolController().register(protocol.id(), controller -> protocol).changeProtocol(protocol.id());
             }));
         }
-        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "Server Lane", String.format("Opening ws server on port '%s'", this.getAddress().getPort()));
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "Server Lane", String.format("Opening websocket server on port '%s'", this.getAddress().getPort()));
     }
 
     @Override

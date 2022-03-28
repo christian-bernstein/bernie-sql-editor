@@ -41,6 +41,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -114,9 +115,8 @@ public class Ton implements ITon {
         map.put("config_dir", () -> this.interpolate(configuration.getConfigPath()));
         map.put("config_file_ext", configuration::getDefaultConfigFileExtension);
 
-        // todo test
         if (!this.isPreflight()) {
-            map.put("ssl_dir", () -> this.config(NetModuleConfigShard.class, "net_module", NetModuleConfigShard.builder().build()).load().getSslCertificateDir());
+            map.put("ssl_dir", () -> this.config(NetModuleConfigShard.class, "net_config", NetModuleConfigShard.builder().build()).load().getSslCertificateDir());
         }
     }
 
@@ -247,6 +247,9 @@ public class Ton implements ITon {
 
     @Override
     public ITon shutdown() {
+
+        // todo check if already in shutdown / has shut down -> then no execution
+
         ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "central module", "Shutting down…");
         this.tonState = TonState.STOPPING;
         this.engine().uninstallAll();
@@ -260,6 +263,12 @@ public class Ton implements ITon {
         });
         this.schedulingPools.forEach((id, service) -> service.shutdownNow());
         this.configResource.stop();
+
+
+        this.pools.clear();
+        this.schedulingPools.clear();
+
+
         this.tonState = TonState.PREPARED;
         ConsoleLogger.def().log(ConsoleLogger.LogType.SUCCESS, "central module", "Shutdown successfully completed, releasing close sync latches…");
         this.fireSyncEvent(TonSyncLatch.CLOSE.getName());
@@ -333,16 +342,28 @@ public class Ton implements ITon {
         }
     }
 
+    /**
+     * todo Test method speed
+     * todo make syntax / quote a static, non editable var -> faster interpolation
+     */
     @Override
     public String interpolate(String format) {
         final String syntax = this.configuration().getVariableInterpolationSyntax();
         final String quote = Pattern.quote(syntax);
         final AtomicReference<String> form = new AtomicReference<>(format);
+
+        // -> new
+        final AtomicBoolean hasInterpolated = new AtomicBoolean(false);
+
         this.globalStringReplacers.forEach((key, stringSupplier) -> {
             form.getAndUpdate(f -> {
                 try {
                     final String richKey = String.format(quote, key);
                     if (f.contains(String.format(syntax, key))) {
+
+                        // -> new
+                        hasInterpolated.set(true);
+
                         return f.replaceAll(richKey, stringSupplier.get());
                     } else {
                         // Not checking this will result in continuous loop, when calling interpolate() inside an interpolation
@@ -356,7 +377,16 @@ public class Ton implements ITon {
                 }
             });
         });
-        return form.get();
+
+
+        // -> new
+        if (hasInterpolated.get()) {
+            return this.interpolate(form.get());
+        } else {
+            return form.get();
+        }
+
+
     }
 
     @Override
