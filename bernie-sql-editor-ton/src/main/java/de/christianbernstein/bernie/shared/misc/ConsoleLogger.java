@@ -104,6 +104,7 @@ public class ConsoleLogger {
     public enum LogType {
 
         INFO(ANSI_PURPLE, ANSI_PURPLE, "i"),
+        DEBUG(ANSI_BLUE, "", "d"),
         WARN(ConsoleColors.YELLOW_BACKGROUND_BRIGHT,ConsoleColors.YELLOW, "⚠"),
         ERROR(ConsoleColors.RED_BACKGROUND_BRIGHT, ConsoleColors.RED_BRIGHT, "!"),
         SUCCESS(ConsoleColors.GREEN_BACKGROUND, "", "+");

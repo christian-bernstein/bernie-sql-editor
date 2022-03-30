@@ -70,6 +70,7 @@ public class TonConfiguration {
             {Constants.constructJRAPhase},
             {Constants.useTonJRAPhase},
             {Constants.registerEventClassJRAPhase},
+            {Constants.commandClassJRAPhase},
             {Constants.moduleJRAPhase},
             {Constants.flowJRAPhase},
             {Constants.cdnJRAPhase},

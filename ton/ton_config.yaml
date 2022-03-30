@@ -29,6 +29,7 @@ jraPhaseOrder:
 - [construct-phase]
 - [inject-ton-api]
 - [register-event-class-phase]
+- [command-class-phase]
 - [module]
 - [flow]
 - [cdn]

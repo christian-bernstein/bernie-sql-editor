@@ -58,8 +58,6 @@ public class NetModule implements INetModule {
             .syncClose(false)
             .build();
 
-    private StandaloneSocketServer server;
-
     private static final Map<String, Class<? extends ISSLContextProvider>> sslContextProviders = Map.of(
             "letsencrypt", LetsencryptSSLContextProvider.class
     );
@@ -67,6 +65,11 @@ public class NetModule implements INetModule {
     @Getter
     @Accessors(fluent = true)
     private Resource<NetModuleConfigShard> configResource;
+
+    @Getter
+    private boolean usingSSL = false;
+
+    private StandaloneSocketServer server;
 
     private @Nullable SSLContext loadSSLContext() {
         final NetModuleConfigShard conf = configResource.use(false);
@@ -104,10 +107,14 @@ public class NetModule implements INetModule {
                 final SSLContext context = this.loadSSLContext();
                 assert context != null;
                 this.server.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(context));
+                this.usingSSL = true;
                 ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "net module", "enabled SSL");
+            } else {
+                this.usingSSL = false;
             }
         } catch (final Exception e) {
             new NetModuleSSLException("While enabling SSL, an error occurred", e).printStackTrace();
+            this.usingSSL = false;
         }
 
         // Sync protocol changes to the client

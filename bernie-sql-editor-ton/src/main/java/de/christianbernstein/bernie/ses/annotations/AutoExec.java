@@ -20,6 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * todo rename to @Flare
+ *
  * @author Christian Bernstein
  */
 @Documented

@@ -43,6 +43,8 @@ public interface ITonBase<Impl extends ITon> {
 
     Impl shutdown();
 
+    Impl shutdown(boolean releaseSyncLatches);
+
     boolean isPreflight();
 
     ExecutorService pool(String pool);

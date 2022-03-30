@@ -40,4 +40,6 @@ public interface INetModule extends IBaseModuleClass<ITon>, IFluently<INetModule
     StandaloneSocketServer getSocketServer();
 
     Resource<NetModuleConfigShard> configResource();
+
+    boolean isUsingSSL();
 }

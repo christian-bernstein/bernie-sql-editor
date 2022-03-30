@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
@@ -212,6 +213,11 @@ public class Ton implements ITon {
     }
 
     private void startInDefaultMode(@NonNull TonConfiguration configuration, boolean autoConfigReload) {
+        if (this.tonState != null && this.tonState != TonState.PREPARED) {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.WARN, "central module", String.format("Cannot start ton in default mode, because the state is not 'prepared' or null (state: %s)", this.tonState));
+            return;
+        }
+
         // ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "preflight", "Executing Ton in main mode");
         final long s = Utils.durationMonitoredExecution(() -> {
             this.nextPoolID = 0;
@@ -247,10 +253,17 @@ public class Ton implements ITon {
 
     @Override
     public ITon shutdown() {
+        return this.shutdown(true);
+    }
 
-        // todo check if already in shutdown / has shut down -> then no execution
-
+    @Override
+    public ITon shutdown(boolean releaseSyncLatches) {
         ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "central module", "Shutting down…");
+        if (this.tonState != TonState.ONLINE) {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.WARN, "central module", String.format("Cannot shutdown ton, because the state is not online (state: %s)", this.tonState));
+            return this;
+        }
+
         this.tonState = TonState.STOPPING;
         this.engine().uninstallAll();
         this.pools.forEach((id, service) -> {
@@ -263,15 +276,17 @@ public class Ton implements ITon {
         });
         this.schedulingPools.forEach((id, service) -> service.shutdownNow());
         this.configResource.stop();
-
-
         this.pools.clear();
         this.schedulingPools.clear();
-
-
         this.tonState = TonState.PREPARED;
-        ConsoleLogger.def().log(ConsoleLogger.LogType.SUCCESS, "central module", "Shutdown successfully completed, releasing close sync latches…");
-        this.fireSyncEvent(TonSyncLatch.CLOSE.getName());
+
+        if (releaseSyncLatches) {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.SUCCESS, "central module", "Shutdown successfully completed, releasing close sync latches…");
+            this.fireSyncEvent(TonSyncLatch.CLOSE.getName());
+        } else {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.SUCCESS, "central module", "Shutdown successfully completed");
+        }
+
         return this;
     }
 
@@ -466,7 +481,9 @@ public class Ton implements ITon {
         // Execute the phases in given order
         final Document meta = Document.of("ton", this);
         Arrays.asList(this.defaultConfiguration.getJraPhaseOrder()).forEach(phases -> {
-            jra.process(meta, phases);
+            // ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "JRA", String.format("Processing phase pod '%s'", Arrays.toString(phases)));
+            final Duration duration = Utils.durationMonitoredExecution(() -> jra.process(meta, phases));
+            // ConsoleLogger.def().log(ConsoleLogger.LogType.DEBUG, "JRA", String.format("Phase pod execution '%s' took %ss", Arrays.toString(phases), duration.toSeconds()));
         });
     }
 

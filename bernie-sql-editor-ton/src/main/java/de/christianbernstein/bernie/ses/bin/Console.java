@@ -7,7 +7,8 @@ import de.christianbernstein.bernie.modules.project.ProjectAlreadyExistException
 import de.christianbernstein.bernie.modules.project.ProjectCreationData;
 import de.christianbernstein.bernie.modules.project.ProjectData;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.GloriaCommandAddons.UtilityAddon;
+import de.christianbernstein.bernie.ses.annotations.CommandClass;
+import de.christianbernstein.bernie.shared.gloria.GloriaAPI.IGloria;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ISession;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Flow;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Param;
@@ -22,6 +23,7 @@ import lombok.NonNull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -37,8 +39,11 @@ import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicPara
 /**
  * @author Christian Bernstein
  */
+@CommandClass
 @SuppressWarnings("unused")
 public class Console {
+
+    public static final List<ConsoleCommandRegisterRequest> requests = new ArrayList<>();
 
     @UseTon
     private static ITon ton;
@@ -48,12 +53,11 @@ public class Console {
 
     @AutoExec
     private static void console() {
-        final GloriaAPI.IGloria gloria = new GloriaAPI.Gloria("ton-zentral-io");
+        final IGloria gloria = new GloriaAPI.Gloria(Constants.mainGloriaInstanceID);
 
-        // todo create annotation for adding the console classes
-        gloria.registerMethodsInClass(Console.class, true);
-        gloria.registerMethodsInClass(UtilityAddon.class, true);
-        gloria.registerMethodsInClass(SSLCommand.class, true);
+        requests.stream().filter(req -> req.getGloriaInstance().equals(gloria.getInstanceIdentifier())).forEach(req -> gloria.registerMethodsInClass(req.getTarget(), req.isAutoInstanceInvoking()));
+        gloria.registerMethodsInClass(GloriaAPI.GloriaCommandAddons.UtilityAddon.class, true);
+
         main.execute(() -> {
             Supplier<String> lineRetriever;
 
@@ -103,7 +107,7 @@ public class Console {
         ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", String.format("Command '%s' took %sms",
                 command,
                 Utils.durationMonitoredExecution(() -> {
-                    statement.getApi().submit(command, statement.getSender(), GloriaAPI.IGloria.DEFAULT_INBOUND_HANDLER_IDENTIFIER);
+                    statement.getApi().submit(command, statement.getSender(), IGloria.DEFAULT_INBOUND_HANDLER_IDENTIFIER);
                 }).toMillis()
         ));
     }
@@ -114,11 +118,23 @@ public class Console {
         ton.shutdown();
     }
 
+    /**
+     * todo fix two errors
+     */
+    @Command(literal = "restart", aliases = {"reboot"})
+    private void restart() {
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "central-io", "Trying to restart ton…");
+        ton.$(ton -> {
+            final TonConfiguration configuration = ton.configuration();
+            ton.shutdown(false).start(configuration);
+        });
+    }
 
     @Command(path = "debug", literal = "listModules", aliases = "lM")
     private void listModules(@Param(mandatory = false, name = "filter") String filterLifecycle) {
         Function<Lifecycle, String> lifecycleDisplay = lifecycle -> {
             switch (lifecycle) {
+                // todo replace by ConsoleColor's confined method
                 case ENGAGED -> {
                     return String.format("%s%s%s", ConsoleColors.GREEN_BACKGROUND, lifecycle, ConsoleColors.RESET);
                 }

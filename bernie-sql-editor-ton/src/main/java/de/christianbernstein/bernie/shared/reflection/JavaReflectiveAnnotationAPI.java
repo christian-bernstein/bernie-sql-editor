@@ -349,6 +349,11 @@ public class JavaReflectiveAnnotationAPI {
                         // Check for processors
                         if (field.isAnnotationPresent(JRP.class) && Processors.IProcessor.class.isAssignableFrom(field.getType())) {
                             final JRP jrp = field.getAnnotation(JRP.class);
+
+                            if (!jrp.type().isAnnotationPresent(Retention.class) || !jrp.type().getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME)) {
+                                System.err.println("JRA ERROR NOTICE: Having a JRP listening on an annotation which is will be erased at compile-time is probably a bug! (Add or change the annotation-classes retention policy (like: '@Retention(RetentionPolicy.RUNTIME)')). JRP: " + jrp);
+                            }
+
                             try {
                                 field.setAccessible(true);
                                 if (!Modifier.isStatic(Modifier.fieldModifiers())) {

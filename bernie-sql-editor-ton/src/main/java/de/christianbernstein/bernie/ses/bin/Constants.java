@@ -46,9 +46,13 @@ public class Constants {
 
     public final String cdnJRAPhase = "cdn";
 
+    public final String commandClassJRAPhase = "command-class-phase";
+
     public final String constructJRAPhase = "construct-phase";
 
     public final String threadedJRAPhase = "threaded-phase";
 
     public final String defaultDbFactoryID = "def-db-factory";
+
+    public final String mainGloriaInstanceID = "main";
 }

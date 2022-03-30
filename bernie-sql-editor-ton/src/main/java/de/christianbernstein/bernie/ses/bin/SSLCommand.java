@@ -1,38 +1,47 @@
 package de.christianbernstein.bernie.ses.bin;
 
-
-import ch.qos.logback.core.net.ssl.SSL;
 import de.christianbernstein.bernie.modules.net.NetModuleConfigShard;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
+import de.christianbernstein.bernie.ses.annotations.CommandClass;
 import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.Command;
 import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
+
+import static de.christianbernstein.bernie.ses.bin.ConsoleColors.*;
 
 /**
  * @author Christian Bernstein
  */
+@CommandClass
 public class SSLCommand {
 
     @UseTon
     private static ITon ton;
 
-    @Command(literal = "ssl", type = Command.Type.JUNCTION)
-    private void ssl() {}
-
-    @Command(path = "ssl", literal = "enable", type = Command.Type.HANDLER)
-    private void enable() {
-        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ssl", "enabling ssl");
-        SSLCommand.ton.config(NetModuleConfigShard.class, "net_config", NetModuleConfigShard.builder().build()).update(conf -> {
-            conf.setSsl(true);
-            return conf;
-        });
+    @Command(literal = "ssl")
+    private void ssl() {
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ssl", String.format("using SSL: %s", ton.netModule().isUsingSSL() ?
+                ConsoleColors.confined(GREEN, "yes") :
+                ConsoleColors.confined(RED_BRIGHT, "no")
+        ));
     }
 
-    @Command(path = "ssl", literal = "disable", type = Command.Type.HANDLER)
+    @Command(path = "ssl", literal = "enable", aliases = {"e"})
+    private void enable() {
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ssl", "enabling ssl");
+        setSSL(true);
+    }
+
+    @Command(path = "ssl", literal = "disable", aliases = {"d"})
     private void disable() {
         ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ssl", "disabling ssl");
+        setSSL(false);
+    }
+
+    private void setSSL(boolean mode) {
         SSLCommand.ton.config(NetModuleConfigShard.class, "net_config", NetModuleConfigShard.builder().build()).update(conf -> {
-            conf.setSsl(false);
+            conf.setSsl(mode);
             return conf;
         });
+        ConsoleLogger.def().log(ConsoleLogger.LogType.WARN, "ssl", "To make the change get into action, dis- & re-engage the 'net_module'-module");
     }
 }
