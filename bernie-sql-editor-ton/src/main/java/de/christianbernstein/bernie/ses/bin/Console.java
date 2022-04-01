@@ -99,16 +99,14 @@ public class Console {
         });
     }
 
-    @Command(literal = "debug", aliases = {"d", "test"}, type = Command.Type.JUNCTION)
+    @Command(literal = "debug", description = "All debugging methods are categorized under the 'debug'-command. They wont be executable if ton didn't started in debugging mode.", aliases = {"d"}, type = Command.Type.JUNCTION)
     private void debug() {}
 
     @Command(path = "debug", literal = "monitor", aliases = "m")
     private void monitor(@APIStatement Statement statement, @APISession ISession session, @Flow String command) {
         ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ton-zentral-io", String.format("Command '%s' took %sms",
                 command,
-                Utils.durationMonitoredExecution(() -> {
-                    statement.getApi().submit(command, statement.getSender(), IGloria.DEFAULT_INBOUND_HANDLER_IDENTIFIER);
-                }).toMillis()
+                Utils.durationMonitoredExecution(() -> statement.getApi().submit(command, statement.getSender(), IGloria.DEFAULT_INBOUND_HANDLER_IDENTIFIER)).toMillis()
         ));
     }
 

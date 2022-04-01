@@ -17,7 +17,7 @@ public class SSLCommand {
     @UseTon
     private static ITon ton;
 
-    @Command(literal = "ssl")
+    @Command(literal = "ssl", description = "Shows whether the current net module supports SSL connections or not")
     private void ssl() {
         ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "ssl", String.format("using SSL: %s", ton.netModule().isUsingSSL() ?
                 ConsoleColors.confined(GREEN, "yes") :

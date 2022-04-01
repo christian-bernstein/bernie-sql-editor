@@ -46,17 +46,6 @@ public class ProjectModule implements IProjectModule {
 
     private static Optional<ProjectModule> instance = Optional.empty();
 
-    // todo move to discoverer class
-    // @Discoverer(packetID = "ListProjectPacketData", datatype = ListProjectPacketData.class, protocols = Constants.centralProtocolName)
-    // private static final IPacketHandlerBase<ListProjectPacketData> listProjectHandler = (data, endpoint, socket, packet, server) -> {
-    //     instance.ifPresentOrElse(module -> {
-    //         final List<ProjectData> projects = module.getProjectsFromOwner(Shortcut.useSLI(endpoint).getSessionID());
-    //         endpoint.respond(new ListProjectResponsePacketData(projects), packet.getId());
-    //     }, () -> {
-    //         System.err.println("project module instance is empty");
-    //     });
-    // };
-
     private static Optional<ITon> ton = Optional.empty();
 
     private Centralized<H2Repository<ProjectData, UUID>> projectRepository;
@@ -91,7 +80,7 @@ public class ProjectModule implements IProjectModule {
     @Override
     public void createProject(@NonNull ProjectCreationData data) throws ProjectAlreadyExistException {
         final String id = data.getId() == null ? UUID.randomUUID().toString() : data.getId();
-        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, String.format("Try to create a new project with id '%s'", id));
+        ConsoleLogger.def().log(ConsoleLogger.LogType.DEBUG, "project module", String.format("Createing new project with id '%s'", id));
         this.projectRepository.get().save(ProjectData.builder()
                 .title(data.getTitle())
                 .creatorUserID(data.getCreatorUserID())
