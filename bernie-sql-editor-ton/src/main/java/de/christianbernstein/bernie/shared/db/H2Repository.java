@@ -178,9 +178,7 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
                 .setProperty("hibernate.connection.url", "jdbc:h2:%1%2".replace("%1", this.repositoryConfiguration.getDatabaseDir()).replace("%2", this.repositoryConfiguration.getDatabase()))
                 .setProperty("hibernate.connection.username", this.repositoryConfiguration.getUsername())
                 .setProperty("hibernate.connection.password", this.repositoryConfiguration.getPassword())
-
                 .setProperty("hibernate.enable_lazy_load_no_trans", "true")
-
                 .addAnnotatedClass(this.type);
         if (this.repositoryConfiguration.getHbm2DDLMode() != HBM2DDLMode.NOT_SET) {
             this.configuration.setProperty("hibernate.hbm2ddl.auto", this.repositoryConfiguration.getHbm2DDLMode().getHbnPropertyVal());

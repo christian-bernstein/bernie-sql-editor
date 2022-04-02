@@ -12,7 +12,7 @@ Das Erstellen der Accounts stellt ein wichtiges Feature dar, wird also nach dem 
 Wichtige Features sind im MVP nicht enthalten, sollen aber nach Bedarf möglichst zeitnah implementiert werden.
 Zu diesen Features gehört beispielsweise das Erstellen neuer Nutzerkonten.
 ___
-### Todos MVP-Version
+### Todos MVP-Version *(minimum viable product)*
 - [ ] Smaller classes are better ~ Split up the classes into smaller classes max ~100 lines
 - [x] Get some sleep... *(Got too much... now I have headache)*
 - [ ] Add event system/support for the ton framework
@@ -21,3 +21,8 @@ ___
   - [ ] Add some basic events to the framework
     - [ ] SessionStartedEvent *(A DB session was started, this event contains the caller of that action, or null if the caller isn't a referable entity e.g. the framework itself)*
     - [ ] ClientDisconnectionEvent *(A websocket was closed, notify the DBModule, that it can unregister the relation in the session lookup. The session lookup contains the SocketServerLanes and the DB sessions, they are listening on. This is important for broadcasting db actions to all the listening clients)*
+
+___
+### Todos VP-Version *(viable product)*
+- [ ] Preserve sessions to database
+- [ ] Multi-instance server support *(Separate database into own, separate entity. Important if two instances manage a user -> The user's data has to be in sync across all server instances)*
