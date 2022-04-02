@@ -1,6 +1,6 @@
 package de.christianbernstein.bernie.modules.db;
 
-import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
+import de.christianbernstein.bernie.sdk.db.HBM2DDLMode;
 import lombok.Builder;
 import lombok.Data;
 

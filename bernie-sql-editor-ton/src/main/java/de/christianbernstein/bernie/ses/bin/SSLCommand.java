@@ -3,8 +3,8 @@ package de.christianbernstein.bernie.ses.bin;
 import de.christianbernstein.bernie.modules.net.NetModuleConfigShard;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.annotations.CommandClass;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.Command;
-import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
+import de.christianbernstein.bernie.sdk.gloria.GloriaAPI.ExecutorAnnotations.Command;
+import de.christianbernstein.bernie.sdk.misc.ConsoleLogger;
 
 import static de.christianbernstein.bernie.ses.bin.ConsoleColors.*;
 

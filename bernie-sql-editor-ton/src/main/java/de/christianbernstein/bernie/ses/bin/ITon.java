@@ -33,7 +33,7 @@ import de.christianbernstein.bernie.modules.session.SessionModule;
 import de.christianbernstein.bernie.modules.user.IUser;
 import de.christianbernstein.bernie.modules.user.IUserModule;
 import de.christianbernstein.bernie.modules.user.UserModule;
-import de.christianbernstein.bernie.shared.misc.IFluently;
+import de.christianbernstein.bernie.sdk.misc.IFluently;
 import lombok.NonNull;
 
 import java.util.UUID;

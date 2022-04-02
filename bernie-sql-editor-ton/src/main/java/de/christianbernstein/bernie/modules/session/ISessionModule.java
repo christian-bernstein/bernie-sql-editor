@@ -18,10 +18,10 @@ package de.christianbernstein.bernie.modules.session;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.modules.auth.Credentials;
-import de.christianbernstein.bernie.shared.misc.IFluently;
-import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
-import de.christianbernstein.bernie.shared.module.ModuleDefinition;
-import de.christianbernstein.bernie.shared.module.Module;
+import de.christianbernstein.bernie.sdk.misc.IFluently;
+import de.christianbernstein.bernie.sdk.module.IBaseModuleClass;
+import de.christianbernstein.bernie.sdk.module.ModuleDefinition;
+import de.christianbernstein.bernie.sdk.module.Module;
 import lombok.NonNull;
 
 import java.util.UUID;

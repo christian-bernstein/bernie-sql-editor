@@ -16,8 +16,8 @@
 package de.christianbernstein.bernie.modules.project.in;
 
 import de.christianbernstein.bernie.ses.bin.Constants;
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketMeta;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketData;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketMeta;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

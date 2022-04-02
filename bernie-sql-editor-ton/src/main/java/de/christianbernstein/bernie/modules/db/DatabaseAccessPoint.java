@@ -15,7 +15,7 @@
 
 package de.christianbernstein.bernie.modules.db;
 
-import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
+import de.christianbernstein.bernie.sdk.misc.ConsoleLogger;
 import lombok.Data;
 import lombok.Getter;
 import org.hibernate.Session;

@@ -1,7 +1,5 @@
 package de.christianbernstein.bernie.ses.bin;
 
-import lombok.experimental.UtilityClass;
-
 /**
  * @author Christian Bernstein
  */

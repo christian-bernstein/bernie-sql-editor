@@ -3,10 +3,9 @@ package resource;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.TonConfiguration;
 import de.christianbernstein.bernie.ses.bin.TonMode;
-import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
-import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
-import de.christianbernstein.bernie.shared.misc.Resource;
-import resource.models.Student;
+import de.christianbernstein.bernie.sdk.db.H2RepositoryConfiguration;
+import de.christianbernstein.bernie.sdk.db.HBM2DDLMode;
+import de.christianbernstein.bernie.sdk.misc.Resource;
 
 /**
  * @author Christian Bernstein

@@ -21,10 +21,10 @@ import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.modules.flow.in.FlowRequestPacketData;
 import de.christianbernstein.bernie.modules.flow.out.FlowResponsePacketData;
 import de.christianbernstein.bernie.modules.user.IUser;
-import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
-import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
-import de.christianbernstein.bernie.shared.module.IEngine;
-import de.christianbernstein.bernie.shared.module.Module;
+import de.christianbernstein.bernie.sdk.discovery.websocket.Discoverer;
+import de.christianbernstein.bernie.sdk.discovery.websocket.IPacketHandlerBase;
+import de.christianbernstein.bernie.sdk.module.IEngine;
+import de.christianbernstein.bernie.sdk.module.Module;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 

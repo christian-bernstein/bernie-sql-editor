@@ -3,8 +3,8 @@ package de.christianbernstein.bernie.modules.db.out;
 import de.christianbernstein.bernie.modules.db.DBCommandError;
 import de.christianbernstein.bernie.modules.session.Client;
 import de.christianbernstein.bernie.ses.bin.Constants;
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketMeta;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketData;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketMeta;
 import lombok.*;
 
 import java.util.Date;

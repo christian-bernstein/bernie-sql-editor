@@ -17,8 +17,8 @@ import de.christianbernstein.bernie.modules.project.out.CheckProjectExistenceRes
 import de.christianbernstein.bernie.modules.project.out.ListProjectResponsePacketData;
 import de.christianbernstein.bernie.modules.project.out.ProjectCreateResponsePacketData;
 import de.christianbernstein.bernie.modules.project.out.ProjectCreationErrorPacketData;
-import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
-import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
+import de.christianbernstein.bernie.sdk.discovery.websocket.Discoverer;
+import de.christianbernstein.bernie.sdk.discovery.websocket.IPacketHandlerBase;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;

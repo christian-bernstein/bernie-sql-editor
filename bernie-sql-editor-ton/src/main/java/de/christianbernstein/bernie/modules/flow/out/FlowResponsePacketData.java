@@ -17,8 +17,8 @@ package de.christianbernstein.bernie.modules.flow.out;
 
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.modules.flow.FlowExecutionResultType;
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketMeta;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketData;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketMeta;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;

@@ -15,13 +15,13 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
-import de.christianbernstein.bernie.shared.db.H2Repository;
-import de.christianbernstein.bernie.shared.document.Document;
-import de.christianbernstein.bernie.shared.document.IDocument;
-import de.christianbernstein.bernie.shared.misc.Resource;
-import de.christianbernstein.bernie.shared.module.IEngine;
-import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
-import de.christianbernstein.bernie.shared.union.IEventManager;
+import de.christianbernstein.bernie.sdk.db.H2Repository;
+import de.christianbernstein.bernie.sdk.document.Document;
+import de.christianbernstein.bernie.sdk.document.IDocument;
+import de.christianbernstein.bernie.sdk.misc.Resource;
+import de.christianbernstein.bernie.sdk.module.IEngine;
+import de.christianbernstein.bernie.sdk.reflection.JavaReflectiveAnnotationAPI;
+import de.christianbernstein.bernie.sdk.union.IEventManager;
 import lombok.NonNull;
 import org.checkerframework.common.value.qual.IntRange;
 import org.jetbrains.annotations.Nullable;

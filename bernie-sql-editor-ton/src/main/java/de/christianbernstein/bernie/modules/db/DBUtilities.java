@@ -15,7 +15,7 @@
 
 package de.christianbernstein.bernie.modules.db;
 
-import de.christianbernstein.bernie.shared.document.Document;
+import de.christianbernstein.bernie.sdk.document.Document;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 

@@ -3,8 +3,8 @@ package de.christianbernstein.bernie.ses.processors;
 import de.christianbernstein.bernie.ses.annotations.Construct;
 import de.christianbernstein.bernie.ses.annotations.Initializer;
 import de.christianbernstein.bernie.ses.bin.Constants;
-import de.christianbernstein.bernie.shared.misc.Instance;
-import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI.Processors.IAnnotationAtClassProcessor;
+import de.christianbernstein.bernie.sdk.misc.Instance;
+import de.christianbernstein.bernie.sdk.reflection.JavaReflectiveAnnotationAPI.Processors.IAnnotationAtClassProcessor;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI.*;
+import static de.christianbernstein.bernie.sdk.reflection.JavaReflectiveAnnotationAPI.*;
 
 /**
  * @author Christian Bernstein

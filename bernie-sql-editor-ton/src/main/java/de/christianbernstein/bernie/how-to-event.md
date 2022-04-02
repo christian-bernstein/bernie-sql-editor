@@ -5,8 +5,8 @@ Create an event handler class using `static` context
 
 ```java
 import de.christianbernstein.bernie.ses.annotations.RegisterEventClass;
-import de.christianbernstein.bernie.shared.union.Event;
-import de.christianbernstein.bernie.shared.union.EventListener;
+import de.christianbernstein.bernie.sdk.union.Event;
+import de.christianbernstein.bernie.sdk.union.EventListener;
 
 @RegisterEventClass
 class EventListenerClass {
@@ -27,9 +27,9 @@ the class is instantiated more than once.
 ```java
 import de.christianbernstein.bernie.ses.annotations.Construct;
 import de.christianbernstein.bernie.ses.annotations.RegisterEventClass;
-import de.christianbernstein.bernie.shared.misc.Instance;
-import de.christianbernstein.bernie.shared.union.Event;
-import de.christianbernstein.bernie.shared.union.EventListener;
+import de.christianbernstein.bernie.sdk.misc.Instance;
+import de.christianbernstein.bernie.sdk.union.Event;
+import de.christianbernstein.bernie.sdk.union.EventListener;
 
 @Construct
 @RegisterEventClass

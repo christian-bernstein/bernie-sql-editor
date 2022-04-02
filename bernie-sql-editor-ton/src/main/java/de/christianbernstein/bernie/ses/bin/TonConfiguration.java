@@ -1,8 +1,8 @@
 package de.christianbernstein.bernie.ses.bin;
 
 import ch.qos.logback.classic.Level;
-import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
-import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
+import de.christianbernstein.bernie.sdk.db.H2RepositoryConfiguration;
+import de.christianbernstein.bernie.sdk.db.HBM2DDLMode;
 import lombok.*;
 
 import java.util.Arrays;

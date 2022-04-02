@@ -17,8 +17,8 @@ package de.christianbernstein.bernie.modules.auth.out;
 
 import de.christianbernstein.bernie.modules.auth.CredentialsCheckResultType;
 import de.christianbernstein.bernie.modules.user.UserProfileData;
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketMeta;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketData;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketMeta;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

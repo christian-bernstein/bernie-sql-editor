@@ -6,18 +6,18 @@ import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.modules.project.ProjectAlreadyExistException;
 import de.christianbernstein.bernie.modules.project.ProjectCreationData;
 import de.christianbernstein.bernie.modules.project.ProjectData;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI;
+import de.christianbernstein.bernie.sdk.gloria.GloriaAPI;
 import de.christianbernstein.bernie.ses.annotations.CommandClass;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.IGloria;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ISession;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Flow;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.ParamAnnotations.Param;
-import de.christianbernstein.bernie.shared.gloria.GloriaAPI.Statement;
-import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
-import de.christianbernstein.bernie.shared.misc.Resource;
-import de.christianbernstein.bernie.shared.misc.Utils;
-import de.christianbernstein.bernie.shared.module.Lifecycle;
-import de.christianbernstein.bernie.shared.module.Module;
+import de.christianbernstein.bernie.sdk.gloria.GloriaAPI.IGloria;
+import de.christianbernstein.bernie.sdk.gloria.GloriaAPI.ISession;
+import de.christianbernstein.bernie.sdk.gloria.GloriaAPI.ParamAnnotations.Flow;
+import de.christianbernstein.bernie.sdk.gloria.GloriaAPI.ParamAnnotations.Param;
+import de.christianbernstein.bernie.sdk.gloria.GloriaAPI.Statement;
+import de.christianbernstein.bernie.sdk.misc.ConsoleLogger;
+import de.christianbernstein.bernie.sdk.misc.Resource;
+import de.christianbernstein.bernie.sdk.misc.Utils;
+import de.christianbernstein.bernie.sdk.module.Lifecycle;
+import de.christianbernstein.bernie.sdk.module.Module;
 import lombok.NonNull;
 
 import java.io.BufferedReader;
@@ -32,9 +32,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.Command;
-import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicParameterAnnotations.APISession;
-import static de.christianbernstein.bernie.shared.gloria.GloriaAPI.IntrinsicParameterAnnotations.APIStatement;
+import static de.christianbernstein.bernie.sdk.gloria.GloriaAPI.ExecutorAnnotations.Command;
+import static de.christianbernstein.bernie.sdk.gloria.GloriaAPI.IntrinsicParameterAnnotations.APISession;
+import static de.christianbernstein.bernie.sdk.gloria.GloriaAPI.IntrinsicParameterAnnotations.APIStatement;
 
 /**
  * @author Christian Bernstein

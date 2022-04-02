@@ -15,7 +15,7 @@
 
 package de.christianbernstein.bernie.modules.net;
 
-import de.christianbernstein.bernie.shared.discovery.websocket.server.ServerConfiguration;
+import de.christianbernstein.bernie.sdk.discovery.websocket.server.ServerConfiguration;
 import lombok.*;
 
 /**

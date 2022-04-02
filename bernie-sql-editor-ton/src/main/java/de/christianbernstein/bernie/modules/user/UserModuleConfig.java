@@ -15,8 +15,8 @@
 
 package de.christianbernstein.bernie.modules.user;
 
-import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
-import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
+import de.christianbernstein.bernie.sdk.db.H2RepositoryConfiguration;
+import de.christianbernstein.bernie.sdk.db.HBM2DDLMode;
 import lombok.Builder;
 import lombok.Data;
 

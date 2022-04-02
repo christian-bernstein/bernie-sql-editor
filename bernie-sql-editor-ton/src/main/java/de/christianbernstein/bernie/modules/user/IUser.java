@@ -16,7 +16,7 @@
 package de.christianbernstein.bernie.modules.user;
 
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.shared.module.IEngine;
+import de.christianbernstein.bernie.sdk.module.IEngine;
 
 import java.util.function.Function;
 

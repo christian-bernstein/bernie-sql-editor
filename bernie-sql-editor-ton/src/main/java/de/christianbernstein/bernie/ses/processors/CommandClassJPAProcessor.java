@@ -4,7 +4,7 @@ import de.christianbernstein.bernie.ses.bin.Console;
 import de.christianbernstein.bernie.ses.bin.ConsoleCommandRegisterRequest;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.annotations.CommandClass;
-import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
+import de.christianbernstein.bernie.sdk.reflection.JavaReflectiveAnnotationAPI;
 import lombok.experimental.UtilityClass;
 
 /**

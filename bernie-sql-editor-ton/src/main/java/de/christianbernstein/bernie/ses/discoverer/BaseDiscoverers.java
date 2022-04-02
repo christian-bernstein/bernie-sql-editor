@@ -18,8 +18,8 @@ import de.christianbernstein.bernie.modules.user.in.CheckUserAttributeAvailabili
 import de.christianbernstein.bernie.modules.user.in.CreateUserRequestPacketData;
 import de.christianbernstein.bernie.modules.user.out.CheckUserAttributeAvailabilityResponsePacketData;
 import de.christianbernstein.bernie.modules.user.out.CreateUserResponsePacketData;
-import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
-import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
+import de.christianbernstein.bernie.sdk.discovery.websocket.Discoverer;
+import de.christianbernstein.bernie.sdk.discovery.websocket.IPacketHandlerBase;
 import lombok.experimental.UtilityClass;
 
 import java.util.Date;

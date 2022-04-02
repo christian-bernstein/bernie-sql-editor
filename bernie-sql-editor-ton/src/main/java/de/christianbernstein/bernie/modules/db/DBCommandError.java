@@ -1,7 +1,7 @@
 package de.christianbernstein.bernie.modules.db;
 
 import de.christianbernstein.bernie.modules.session.Client;
-import de.christianbernstein.bernie.shared.misc.SerializedException;
+import de.christianbernstein.bernie.sdk.misc.SerializedException;
 import lombok.Builder;
 import lombok.Data;
 

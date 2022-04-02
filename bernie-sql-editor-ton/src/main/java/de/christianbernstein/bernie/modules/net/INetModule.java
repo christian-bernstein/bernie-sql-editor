@@ -17,13 +17,13 @@ package de.christianbernstein.bernie.modules.net;
 
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.shared.discovery.websocket.server.StandaloneSocketServer;
-import de.christianbernstein.bernie.shared.misc.IFluently;
-import de.christianbernstein.bernie.shared.misc.Resource;
-import de.christianbernstein.bernie.shared.module.Dependency;
-import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
-import de.christianbernstein.bernie.shared.module.ModuleDefinition;
-import de.christianbernstein.bernie.shared.module.Module;
+import de.christianbernstein.bernie.sdk.discovery.websocket.server.StandaloneSocketServer;
+import de.christianbernstein.bernie.sdk.misc.IFluently;
+import de.christianbernstein.bernie.sdk.misc.Resource;
+import de.christianbernstein.bernie.sdk.module.Dependency;
+import de.christianbernstein.bernie.sdk.module.IBaseModuleClass;
+import de.christianbernstein.bernie.sdk.module.ModuleDefinition;
+import de.christianbernstein.bernie.sdk.module.Module;
 
 /**
  * @author Christian Bernstein

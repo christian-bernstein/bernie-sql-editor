@@ -23,9 +23,9 @@ import de.christianbernstein.bernie.ses.discoverer.ProjectModuleDiscoverers;
 import de.christianbernstein.bernie.modules.flow.FlowModule;
 import de.christianbernstein.bernie.modules.project.ProjectModule;
 import de.christianbernstein.bernie.modules.session.SessionModule;
-import de.christianbernstein.bernie.shared.discovery.websocket.IProtocolFactory;
-import de.christianbernstein.bernie.shared.discovery.websocket.Protocol;
-import de.christianbernstein.bernie.shared.discovery.websocket.SessionProtocolData;
+import de.christianbernstein.bernie.sdk.discovery.websocket.IProtocolFactory;
+import de.christianbernstein.bernie.sdk.discovery.websocket.Protocol;
+import de.christianbernstein.bernie.sdk.discovery.websocket.SessionProtocolData;
 import lombok.experimental.UtilityClass;
 
 /**

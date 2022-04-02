@@ -15,9 +15,9 @@
 
 package de.christianbernstein.bernie.ses.bin;
 
-import de.christianbernstein.bernie.shared.db.H2RepositoryConfiguration;
-import de.christianbernstein.bernie.shared.db.HBM2DDLMode;
-import de.christianbernstein.bernie.shared.document.Document;
+import de.christianbernstein.bernie.sdk.db.H2RepositoryConfiguration;
+import de.christianbernstein.bernie.sdk.db.HBM2DDLMode;
+import de.christianbernstein.bernie.sdk.document.Document;
 
 import java.util.Arrays;
 import java.util.Optional;

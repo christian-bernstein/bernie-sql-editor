@@ -15,7 +15,7 @@
 
 package de.christianbernstein.bernie.modules.task;
 
-import de.christianbernstein.bernie.shared.event.EventAPI;
+import de.christianbernstein.bernie.sdk.event.EventAPI;
 import lombok.Getter;
 
 /**

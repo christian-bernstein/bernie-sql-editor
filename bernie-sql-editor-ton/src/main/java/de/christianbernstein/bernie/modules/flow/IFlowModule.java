@@ -18,10 +18,10 @@ package de.christianbernstein.bernie.modules.flow;
 import de.christianbernstein.bernie.modules.user.IUser;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.shared.misc.IFluently;
-import de.christianbernstein.bernie.shared.module.Module;
-import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
-import de.christianbernstein.bernie.shared.module.ModuleDefinition;
+import de.christianbernstein.bernie.sdk.misc.IFluently;
+import de.christianbernstein.bernie.sdk.module.Module;
+import de.christianbernstein.bernie.sdk.module.IBaseModuleClass;
+import de.christianbernstein.bernie.sdk.module.ModuleDefinition;
 
 import java.util.Map;
 

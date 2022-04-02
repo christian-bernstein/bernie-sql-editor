@@ -17,10 +17,10 @@ package de.christianbernstein.bernie.modules.project;
 
 import de.christianbernstein.bernie.ses.bin.Centralized;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.shared.db.H2Repository;
-import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
-import de.christianbernstein.bernie.shared.module.Module;
-import de.christianbernstein.bernie.shared.module.IEngine;
+import de.christianbernstein.bernie.sdk.db.H2Repository;
+import de.christianbernstein.bernie.sdk.misc.ConsoleLogger;
+import de.christianbernstein.bernie.sdk.module.Module;
+import de.christianbernstein.bernie.sdk.module.IEngine;
 import lombok.NonNull;
 import org.hibernate.query.Query;
 import org.intellij.lang.annotations.Language;

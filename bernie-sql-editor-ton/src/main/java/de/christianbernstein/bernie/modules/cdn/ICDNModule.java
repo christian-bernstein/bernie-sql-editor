@@ -2,10 +2,10 @@ package de.christianbernstein.bernie.modules.cdn;
 
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.shared.module.Dependency;
-import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
-import de.christianbernstein.bernie.shared.module.Module;
-import de.christianbernstein.bernie.shared.module.ModuleDefinition;
+import de.christianbernstein.bernie.sdk.module.Dependency;
+import de.christianbernstein.bernie.sdk.module.IBaseModuleClass;
+import de.christianbernstein.bernie.sdk.module.Module;
+import de.christianbernstein.bernie.sdk.module.ModuleDefinition;
 import lombok.NonNull;
 
 /**

@@ -5,7 +5,7 @@ import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.modules.cdn.CDN;
 import de.christianbernstein.bernie.modules.cdn.ICDNResolver;
-import de.christianbernstein.bernie.shared.reflection.JavaReflectiveAnnotationAPI;
+import de.christianbernstein.bernie.sdk.reflection.JavaReflectiveAnnotationAPI;
 import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.Constructor;

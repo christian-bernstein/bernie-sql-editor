@@ -17,9 +17,9 @@ package de.christianbernstein.bernie.modules.user;
 
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.shared.db.H2Repository;
-import de.christianbernstein.bernie.shared.module.IEngine;
-import de.christianbernstein.bernie.shared.module.Module;
+import de.christianbernstein.bernie.sdk.db.H2Repository;
+import de.christianbernstein.bernie.sdk.module.IEngine;
+import de.christianbernstein.bernie.sdk.module.Module;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 

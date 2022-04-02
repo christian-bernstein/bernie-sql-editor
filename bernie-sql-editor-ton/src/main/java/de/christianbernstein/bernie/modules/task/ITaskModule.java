@@ -17,9 +17,9 @@ package de.christianbernstein.bernie.modules.task;
 
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.shared.module.Module;
-import de.christianbernstein.bernie.shared.module.IBaseModuleClass;
-import de.christianbernstein.bernie.shared.module.ModuleDefinition;
+import de.christianbernstein.bernie.sdk.module.Module;
+import de.christianbernstein.bernie.sdk.module.IBaseModuleClass;
+import de.christianbernstein.bernie.sdk.module.ModuleDefinition;
 
 /**
  * @author Christian Bernstein

@@ -20,10 +20,10 @@ import de.christianbernstein.bernie.ses.bin.ITon;
 import de.christianbernstein.bernie.modules.auth.Credentials;
 import de.christianbernstein.bernie.modules.session.in.ValidateSessionsPacketData;
 import de.christianbernstein.bernie.modules.session.out.ValidateSessionsResponsePacketData;
-import de.christianbernstein.bernie.shared.module.Module;
-import de.christianbernstein.bernie.shared.discovery.websocket.Discoverer;
-import de.christianbernstein.bernie.shared.discovery.websocket.IPacketHandlerBase;
-import de.christianbernstein.bernie.shared.module.IEngine;
+import de.christianbernstein.bernie.sdk.module.Module;
+import de.christianbernstein.bernie.sdk.discovery.websocket.Discoverer;
+import de.christianbernstein.bernie.sdk.discovery.websocket.IPacketHandlerBase;
+import de.christianbernstein.bernie.sdk.module.IEngine;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,7 +1,7 @@
 package de.christianbernstein.bernie.modules.net.in;
 
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketData;
-import de.christianbernstein.bernie.shared.discovery.websocket.PacketMeta;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketData;
+import de.christianbernstein.bernie.sdk.discovery.websocket.PacketMeta;
 
 /**
  * @author Christian Bernstein

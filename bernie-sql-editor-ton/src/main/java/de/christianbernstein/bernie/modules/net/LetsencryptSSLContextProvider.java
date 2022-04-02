@@ -2,7 +2,6 @@ package de.christianbernstein.bernie.modules.net;
 
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.ITon;
-import de.christianbernstein.bernie.shared.misc.FileLocation;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.KeyManager;

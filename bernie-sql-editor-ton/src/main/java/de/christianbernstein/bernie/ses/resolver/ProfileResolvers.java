@@ -7,7 +7,7 @@ import de.christianbernstein.bernie.modules.cdn.models.ImageData;
 import de.christianbernstein.bernie.modules.cdn.models.ImageDataType;
 import de.christianbernstein.bernie.modules.profile.*;
 import de.christianbernstein.bernie.modules.user.UserData;
-import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
+import de.christianbernstein.bernie.sdk.misc.ConsoleLogger;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;

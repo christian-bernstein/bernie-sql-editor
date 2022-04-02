@@ -1,7 +1,7 @@
 package de.christianbernstein.bernie.modules.net;
 
-import de.christianbernstein.bernie.shared.misc.FileLocation;
-import de.christianbernstein.bernie.shared.misc.FileLocationType;
+import de.christianbernstein.bernie.sdk.misc.FileLocation;
+import de.christianbernstein.bernie.sdk.misc.FileLocationType;
 import lombok.*;
 
 /**

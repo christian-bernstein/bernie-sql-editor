@@ -1,9 +1,9 @@
 package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.modules.net.NetModuleConfigShard;
-import de.christianbernstein.bernie.shared.misc.ConsoleLogger;
-import de.christianbernstein.bernie.shared.misc.ObjectNotationLanguage;
-import de.christianbernstein.bernie.shared.misc.Utils;
+import de.christianbernstein.bernie.sdk.misc.ConsoleLogger;
+import de.christianbernstein.bernie.sdk.misc.ObjectNotationLanguage;
+import de.christianbernstein.bernie.sdk.misc.Utils;
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.Yaml;
