@@ -25,4 +25,4 @@ ___
 ___
 ### Todos VP-Version *(viable product)*
 - [ ] Preserve sessions to database
-- [ ] Multi-instance server support *(Separate database into own, separate entity. Important if two instances manage a user -> The user's data has to be in sync across all server instances)*
+- [ ] Multi-instance server support *(Separate database into own, separate entity. Important if two instances manage a user -> The user's hermes has to be in sync across all server instances)*
