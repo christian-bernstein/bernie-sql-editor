@@ -41,11 +41,12 @@ import java.util.function.UnaryOperator;
  *
  * @author Christian Bernstein
  */
-@SuppressWarnings("all")
+@SuppressWarnings("SqlNoDataSourceInspection")
 public class ProjectModule implements IProjectModule {
 
     private static Optional<ProjectModule> instance = Optional.empty();
 
+    // todo use @UseTon ITon instead
     private static Optional<ITon> ton = Optional.empty();
 
     private Centralized<H2Repository<ProjectData, UUID>> projectRepository;
@@ -80,7 +81,7 @@ public class ProjectModule implements IProjectModule {
     @Override
     public void createProject(@NonNull ProjectCreationData data) throws ProjectAlreadyExistException {
         final String id = data.getId() == null ? UUID.randomUUID().toString() : data.getId();
-        ConsoleLogger.def().log(ConsoleLogger.LogType.DEBUG, "project module", String.format("Createing new project with id '%s'", id));
+        ConsoleLogger.def().log(ConsoleLogger.LogType.DEBUG, "project module", String.format("Creating new project with id '%s'", id));
         this.projectRepository.get().save(ProjectData.builder()
                 .title(data.getTitle())
                 .creatorUserID(data.getCreatorUserID())

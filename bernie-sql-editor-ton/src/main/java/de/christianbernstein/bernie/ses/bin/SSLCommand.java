@@ -1,12 +1,15 @@
 package de.christianbernstein.bernie.ses.bin;
 
 import de.christianbernstein.bernie.modules.net.NetModuleConfigShard;
+import de.christianbernstein.bernie.sdk.misc.ConsoleColors;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.annotations.CommandClass;
 import de.christianbernstein.bernie.sdk.gloria.GloriaAPI.ExecutorAnnotations.Command;
 import de.christianbernstein.bernie.sdk.misc.ConsoleLogger;
 
-import static de.christianbernstein.bernie.ses.bin.ConsoleColors.*;
+import static de.christianbernstein.bernie.sdk.misc.ConsoleColors.GREEN;
+import static de.christianbernstein.bernie.sdk.misc.ConsoleColors.RED_BRIGHT;
+
 
 /**
  * @author Christian Bernstein

@@ -1,5 +1,6 @@
 package de.christianbernstein.bernie.ses.bin;
 
+import de.christianbernstein.bernie.sdk.misc.ConsoleColors;
 import de.christianbernstein.bernie.ses.annotations.AutoExec;
 import de.christianbernstein.bernie.ses.annotations.Threaded;
 import de.christianbernstein.bernie.ses.annotations.UseTon;

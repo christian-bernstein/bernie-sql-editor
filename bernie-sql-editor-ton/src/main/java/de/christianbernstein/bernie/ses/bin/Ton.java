@@ -22,6 +22,7 @@ import de.christianbernstein.bernie.modules.session.Session;
 import de.christianbernstein.bernie.modules.user.IUser;
 import de.christianbernstein.bernie.sdk.db.H2Repository;
 import de.christianbernstein.bernie.sdk.document.Document;
+import de.christianbernstein.bernie.sdk.misc.ConsoleColors;
 import de.christianbernstein.bernie.sdk.misc.ConsoleLogger;
 import de.christianbernstein.bernie.sdk.misc.Resource;
 import de.christianbernstein.bernie.sdk.misc.Utils;
