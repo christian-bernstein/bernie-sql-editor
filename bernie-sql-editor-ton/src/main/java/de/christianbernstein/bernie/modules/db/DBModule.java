@@ -50,6 +50,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -220,6 +224,20 @@ public class DBModule implements IDBModule {
                         result.getEpd().toMillis()
                 ))
                 .build();
+    }
+
+    @Override
+    public File getDatabaseFile(@NonNull String databaseID) {
+        return new File(this.config.baseDirectory() + databaseID + ".mv.db");
+    }
+
+    @Override
+    public long getDatabaseAbsoluteSizeInBytes(@NonNull String databaseID) {
+        try {
+            return Files.size(Paths.get(this.config.baseDirectory() + databaseID + ".mv.db"));
+        } catch (IOException ignored) {
+            return 0;
+        }
     }
 
     // todo make information better

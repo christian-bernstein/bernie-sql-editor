@@ -65,4 +65,13 @@ public class Primitives {
         private final double aDouble;
 
     }
+
+    @Data
+    @PacketMeta(dataID = "LongPacketData")
+    @EqualsAndHashCode(callSuper = true)
+    public static final class LongPacketData extends PacketData {
+
+        private final double aLong;
+
+    }
 }

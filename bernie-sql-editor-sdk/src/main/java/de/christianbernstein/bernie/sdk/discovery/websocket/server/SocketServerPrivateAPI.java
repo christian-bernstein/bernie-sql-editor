@@ -82,9 +82,9 @@ public class SocketServerPrivateAPI extends PrivateAPI {
                 // Deserialize the packet, get data id und raw data
                 final JsonElement tree = this.serialAdapter.deserialize(message, JsonObject.class);
                 final String packetDataID = tree.getAsJsonObject().get("packetID").getAsString();
-                final String jsonPacketData = tree.getAsJsonObject().get("hermes").toString();
+                final String jsonPacketData = tree.getAsJsonObject().get("data").toString();
                 // Construct the packet data from the raw json string and pattern class
-                final JsonElement jsonData = tree.getAsJsonObject().get("hermes");
+                final JsonElement jsonData = tree.getAsJsonObject().get("data");
 
                 String transformed = message;
                 context.session().getProtocolController().getBaseProtocols().forEach(protocol -> {

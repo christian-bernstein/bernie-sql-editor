@@ -1,5 +1,8 @@
 package de.christianbernstein.bernie.ses.discoverer;
 
+import de.christianbernstein.bernie.modules.project.in.*;
+import de.christianbernstein.bernie.modules.project.out.*;
+import de.christianbernstein.bernie.sdk.discovery.websocket.packets.Primitives;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
@@ -9,14 +12,6 @@ import de.christianbernstein.bernie.modules.project.IProjectModule;
 import de.christianbernstein.bernie.modules.project.ProjectAlreadyExistException;
 import de.christianbernstein.bernie.modules.project.ProjectCreationData;
 import de.christianbernstein.bernie.modules.project.ProjectData;
-import de.christianbernstein.bernie.modules.project.in.CheckProjectExistenceRequestPacketData;
-import de.christianbernstein.bernie.modules.project.in.ListProjectPacketData;
-import de.christianbernstein.bernie.modules.project.in.ProjectCreateRequestPacketData;
-import de.christianbernstein.bernie.modules.project.in.ProjectDeleteRequestPacketData;
-import de.christianbernstein.bernie.modules.project.out.CheckProjectExistenceResponsePacketData;
-import de.christianbernstein.bernie.modules.project.out.ListProjectResponsePacketData;
-import de.christianbernstein.bernie.modules.project.out.ProjectCreateResponsePacketData;
-import de.christianbernstein.bernie.modules.project.out.ProjectCreationErrorPacketData;
 import de.christianbernstein.bernie.sdk.discovery.websocket.Discoverer;
 import de.christianbernstein.bernie.sdk.discovery.websocket.IPacketHandlerBase;
 import lombok.experimental.UtilityClass;
@@ -40,6 +35,15 @@ public class ProjectModuleDiscoverers {
         final String ownerUUID = ton.getUserFromSessionID(sli.getSessionID()).getID();
         final List<ProjectData> projects = projectModule.getProjectsFromOwner(ownerUUID);
         endpoint.respond(new ListProjectResponsePacketData(projects), packet.getId());
+    };
+
+    /**
+     * todo check if the user can see the project
+     */
+    @Discoverer(packetID = "ProjectFileSizeRequestPacketData", datatype = ProjectFileSizeRequestPacketData.class, protocols = Constants.centralProtocolName)
+    private static final IPacketHandlerBase<ProjectFileSizeRequestPacketData> projectSizeHandler = (data, endpoint, socket, packet, server) -> {
+        final long size = ton.dbModule().getDatabaseAbsoluteSizeInBytes(data.getProjectID());
+        endpoint.respond(new ProjectFileSizeResponsePacketData(size), packet.getId());
     };
 
     @Discoverer(packetID = "CheckProjectExistenceRequestPacketData", datatype = CheckProjectExistenceRequestPacketData.class, protocols = Constants.centralProtocolName)

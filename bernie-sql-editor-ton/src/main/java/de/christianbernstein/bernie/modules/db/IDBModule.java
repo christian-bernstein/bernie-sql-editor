@@ -32,6 +32,7 @@ import lombok.NonNull;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.io.File;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
@@ -75,4 +76,8 @@ public interface IDBModule extends IBaseModuleClass<ITon>, IFluently<IDBModule> 
     DBCommandError generatePullError(UserData ud, DBQueryResult result, Map<String, Object> appendix);
 
     DBCommandError generatePushError(UserData ud, DBUpdateResult result, Map<String, Object> appendix);
+
+    File getDatabaseFile(@NonNull String databaseID);
+
+    long getDatabaseAbsoluteSizeInBytes(@NonNull String databaseID);
 }
