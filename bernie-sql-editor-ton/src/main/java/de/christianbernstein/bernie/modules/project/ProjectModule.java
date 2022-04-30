@@ -89,6 +89,7 @@ public class ProjectModule implements IProjectModule {
                 .stator(data.isStator())
                 .edits(0)
                 .id(id)
+                .internalTags(data.getInternalTags())
                 .lastEdited(new Date())
                 .build());
     }
@@ -119,7 +120,7 @@ public class ProjectModule implements IProjectModule {
     }
 
     /**
-     * todo .filter will get very resource intens, if the number of tasks in the system rises! -> Change to more efficient native sql solution
+     * todo .filter will get very resource intense, if the number of tasks in the system rises! -> Change to more efficient native sql solution
      */
     @Override
     public List<ProjectTask> getTasksFromProjectID(@NonNull String projectID, int amount, int offset) {
@@ -162,6 +163,7 @@ public class ProjectModule implements IProjectModule {
                     .creatorUserID(ton.get().userModule().getUserOfUsername("root").getID())
                     .stator(true)
                     .description("Automatically generated bridge between SES's internal infrastructure and the SQL-Editor panel. **This is a debug project and should never be generated in production mode.**")
+                    .internalTag("ses-infrastructure")
                     .build());
         } catch (final ProjectAlreadyExistException e) {
             e.printStackTrace();

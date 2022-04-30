@@ -253,7 +253,7 @@ public class DBModule implements IDBModule {
             final long durationMS = result.getEpd().toMillis();
             final DBCommandError error = success ? null : module.generatePullError(ud, result, new HashMap<>());
             final List<Document> set = success ? DBUtilities.resultSetToList(result.getResult()) : new ArrayList<>();
-            final Client client = Client.builder().type(ClientType.USER).id("implement..").username("implement..").build();
+            final Client client = Client.builder().type(ClientType.USER).id(ud.getId()).username(ud.getUsername()).build();
             final String errormessage = "implement..";
             final List<Column> columns = new ArrayList<>();
             final List<Row> rows = new ArrayList<>();
@@ -286,7 +286,7 @@ public class DBModule implements IDBModule {
             final DBUpdateResult result = module.executeUpdate(connection, raw);
             final boolean success = result.isSuccess();
             final DBCommandError error = success ? null : module.generatePushError(ud, result, new HashMap<>());
-            final Client client = Client.builder().type(ClientType.USER).id("implement..").username("implement..").build();
+            final Client client = Client.builder().type(ClientType.USER).id(ud.getId()).username(ud.getUsername()).build();
             final SQLCommandUpdateResponsePacketData responsePacket = SQLCommandUpdateResponsePacketData.builder().timestamp(new Date()).affected(result.getAffectedRows()).client(client).errormessage("").code(result.getCode()).success(success).error(error).sql(raw).databaseID(databaseID).durationMS(result.getEpd().toMillis()).build();
             module.broadcastPushResponsePacket(databaseID, responsePacket);
         }));

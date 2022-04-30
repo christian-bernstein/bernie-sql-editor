@@ -36,8 +36,8 @@ public class ProfileResolvers {
             final String firstname = userData.getFirstname();
             final String lastname = userData.getLastname();
             final Date lastActive = new Date();
-            final ImageData profilePicture = new ImageData(ImageDataType.LINK, "https://i.kym-cdn.com/photos/images/original/002/066/967/b85.gif");
-            final ImageData banner = new ImageData(ImageDataType.LINK, "https://i.kym-cdn.com/photos/images/original/002/066/967/b85.gif");
+            final ImageData profilePicture = new ImageData(ImageDataType.LINK, "https://i.pinimg.com/originals/5d/1b/b3/5d1bb3546868cf3791880fa5720da7a2.gif");
+            final ImageData banner = new ImageData(ImageDataType.LINK, "https://i.pinimg.com/originals/5d/1b/b3/5d1bb3546868cf3791880fa5720da7a2.gif");
             final String biography = context.getBiography();
             final List<ContextualLink> links = new ArrayList<>();
             final UserActiveState activeState = UserActiveState.OFFLINE;
@@ -54,7 +54,10 @@ public class ProfileResolvers {
                     .lastActive(lastActive)
                     .profilePicture(profilePicture)
                     .banner(banner)
-                    .biography(biography)
+
+                    // .biography(biography)
+                    .biography("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s")
+
                     .links(links)
                     .activeState(activeState)
                     .deviceType(deviceType)

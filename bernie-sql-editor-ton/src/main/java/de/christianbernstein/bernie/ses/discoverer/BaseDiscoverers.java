@@ -1,5 +1,7 @@
 package de.christianbernstein.bernie.ses.discoverer;
 
+import de.christianbernstein.bernie.modules.net.in.PingPacketData;
+import de.christianbernstein.bernie.modules.net.out.PongPacketData;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
@@ -36,6 +38,11 @@ public class BaseDiscoverers {
 
     private final IPacketHandlerBase<RequestServerFootprintPacketData> footprintHandler = (data, endpoint, socket, packet, server) -> {
 
+    };
+
+    @Discoverer(packetID = "PingPacketData", datatype = PingPacketData.class, protocols =  Constants.coreProtocolName)
+    private final IPacketHandlerBase<PingPacketData> pingHandler = (data, endpoint, socket, packet, server) -> {
+        packet.respond(new PongPacketData(data.getOutboundTimestamp(), System.currentTimeMillis()), endpoint);
     };
 
     @Discoverer(packetID = "CheckUserAttributeAvailabilityRequestPacketData", datatype = CheckUserAttributeAvailabilityRequestPacketData.class, protocols =  Constants.coreProtocolName)
