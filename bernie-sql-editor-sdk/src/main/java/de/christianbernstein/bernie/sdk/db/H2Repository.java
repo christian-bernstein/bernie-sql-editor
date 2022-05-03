@@ -75,10 +75,16 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
 
     @Override
     public @NotNull T save(@NonNull T entity) {
+        this.saveObject(entity);
+        return entity;
+    }
+
+    @Override
+    public Object saveObject(@NonNull Object object) {
         Transaction transaction;
         try (final Session session = this.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.saveOrUpdate(entity);
+            session.saveOrUpdate(object);
             session.flush();
             transaction.commit();
         } catch (final Exception e) {
@@ -87,7 +93,7 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
             //     transaction.rollback();
             // }
         }
-        return entity;
+        return object;
     }
 
     @Contract("_ -> this")
