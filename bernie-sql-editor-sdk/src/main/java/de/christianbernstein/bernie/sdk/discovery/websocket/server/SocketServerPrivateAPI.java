@@ -125,11 +125,11 @@ public class SocketServerPrivateAPI extends PrivateAPI {
             }
         } else {
             if (!((SessionProtocolData) protocol.attachment()).isBaseProtocol()) {
-                ConsoleLogger.def().log(
-                        ConsoleLogger.LogType.ERROR,
-                        "Socket Server Private-API",
-                        String.format("DataPatternClass is null: '%s' from requested proto '%s' in actual proto '%s'", packetDataID, packet.getProtocol(), Objects.requireNonNull(context.session().getProtocolController().getActiveProtocol()).id())
-                );
+                // ConsoleLogger.def().log(
+                //         ConsoleLogger.LogType.ERROR,
+                //         "Socket Server Private-API",
+                //         String.format("DataPatternClass is null: '%s' from requested proto '%s' in actual proto '%s'", packetDataID, packet.getProtocol(), Objects.requireNonNull(context.session().getProtocolController().getActiveProtocol()).id())
+                // );
             }
         }
     }

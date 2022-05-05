@@ -1,4 +1,4 @@
-package de.christianbernstein.bernie.modules.config.test;
+package de.christianbernstein.bernie.sdk.shared;
 
 /**
  * @author Christian Bernstein

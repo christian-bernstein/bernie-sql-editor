@@ -18,6 +18,8 @@ import de.christianbernstein.bernie.modules.auth.AuthModule;
 import de.christianbernstein.bernie.modules.auth.IAuthModule;
 import de.christianbernstein.bernie.modules.cdn.CDNModule;
 import de.christianbernstein.bernie.modules.cdn.ICDNModule;
+import de.christianbernstein.bernie.modules.config.ConfigModule;
+import de.christianbernstein.bernie.modules.config.IConfigModule;
 import de.christianbernstein.bernie.modules.db.DBModule;
 import de.christianbernstein.bernie.modules.db.IDBModule;
 import de.christianbernstein.bernie.modules.flow.FlowModule;
@@ -87,5 +89,10 @@ public interface ITon extends ITonBase<ITon>, IFluently<ITon> {
      @NonNull
      default IProfileModule profileModule() {
           return this.require(ProfileModule.class, "profile_module");
+     }
+
+     @NonNull
+     default IConfigModule configModule() {
+          return this.require(ConfigModule.class, ConfigModule.configModule.getName());
      }
 }

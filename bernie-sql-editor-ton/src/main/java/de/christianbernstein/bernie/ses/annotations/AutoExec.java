@@ -15,9 +15,7 @@
 
 package de.christianbernstein.bernie.ses.annotations;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.*;
 
 /**
  * todo rename to @Flare
@@ -25,6 +23,10 @@ import java.lang.annotation.RetentionPolicy;
  * @author Christian Bernstein
  */
 @Documented
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AutoExec {
+
+    boolean run() default true;
+
 }

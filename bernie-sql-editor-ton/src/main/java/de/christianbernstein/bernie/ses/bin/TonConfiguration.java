@@ -72,6 +72,7 @@ public class TonConfiguration {
             {Constants.registerEventClassJRAPhase},
             {Constants.commandClassJRAPhase},
             {Constants.moduleJRAPhase},
+            {Constants.configDefinitionJRAPhase},
             {Constants.flowJRAPhase},
             {Constants.cdnJRAPhase},
             {Constants.autoEcexJRAPhase}

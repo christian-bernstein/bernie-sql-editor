@@ -47,7 +47,7 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
 
     public void update(UnaryOperator<T> updater, ID id) {
         this.session(session -> {
-            T elem = this.get(id);
+            T elem = this.load(id);
             session.evict(elem);
             elem = updater.apply(elem);
             session.update(elem);
@@ -113,9 +113,16 @@ public class H2Repository<T, ID extends Serializable> implements IRepository<T, 
     }
 
     @Override
-    public T get(@NotNull ID id) {
+    public T load(@NotNull ID id) {
         try (final Session session = this.getSessionFactory().openSession()) {
             return session.load(this.type, id);
+        }
+    }
+
+    @Override
+    public @Nullable T get(@NonNull ID id) {
+        try (final Session session = this.getSessionFactory().openSession()) {
+            return session.get(this.type, id);
         }
     }
 

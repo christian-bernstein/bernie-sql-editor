@@ -151,7 +151,7 @@ public class UserModule implements IUserModule {
 
     @Override
     public UserData getUserDataOf(String id) {
-        return this.repository.get(id);
+        return this.repository.load(id);
     }
 
     @Override

@@ -8,7 +8,6 @@ import lombok.experimental.Accessors;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Christian Bernstein
@@ -36,7 +35,7 @@ public class ProfileContext implements IProfileContext {
                 .module()
                 .getBiographyRepo()
                 .get()
-                .get(this.meta.targetID());
+                .load(this.meta.targetID());
         if (mapping == null) {
             // todo init the bio
             return "";

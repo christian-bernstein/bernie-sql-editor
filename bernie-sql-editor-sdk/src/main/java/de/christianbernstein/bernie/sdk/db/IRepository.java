@@ -14,6 +14,9 @@ public interface IRepository<T, ID extends Serializable> {
     Object saveObject(@NonNull final Object object);
 
     @Nullable
+    T load(@NonNull final ID id);
+
+    @Nullable
     T get(@NonNull final ID id);
 
     List<T> getAll();

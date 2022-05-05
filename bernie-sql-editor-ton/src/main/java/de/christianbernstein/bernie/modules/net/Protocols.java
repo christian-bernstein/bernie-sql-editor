@@ -16,6 +16,7 @@
 package de.christianbernstein.bernie.modules.net;
 
 import de.christianbernstein.bernie.modules.auth.AuthModule;
+import de.christianbernstein.bernie.modules.config.ConfigModule;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.modules.db.DBModule;
 import de.christianbernstein.bernie.ses.discoverer.BaseDiscoverers;
@@ -64,6 +65,7 @@ public class Protocols {
                     .loadFromClass(FlowModule.class)
                     .loadFromClass(ProjectModule.class)
                     .loadFromClass(ProjectModuleDiscoverers.class)
+                    .loadFromClass(ConfigModule.class)
                     .loadFromClass(DBModule.class))
             .build();
 

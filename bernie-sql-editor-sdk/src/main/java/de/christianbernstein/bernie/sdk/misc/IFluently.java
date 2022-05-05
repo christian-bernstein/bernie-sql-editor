@@ -64,4 +64,16 @@ public interface IFluently<T> {
     default T stdout() {
         return this.me(System.out::println);
     }
+
+    default T stdoutAsJson() {
+        return this.me(t -> {
+            System.out.println(ObjectNotationLanguage.JSON.getSerialAdapter().serialize(t, t.getClass()));
+        });
+    }
+
+    default T stdoutAsYaml() {
+        return this.me(t -> {
+            System.out.println(ObjectNotationLanguage.YAML.getSerialAdapter().serialize(t, t.getClass()));
+        });
+    }
 }

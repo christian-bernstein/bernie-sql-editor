@@ -96,7 +96,7 @@ public class ProjectModule implements IProjectModule {
 
     @Override
     public boolean containsProject(@NonNull UUID id) {
-        return this.projectRepository.get().get(id) != null;
+        return this.projectRepository.get().load(id) != null;
     }
 
     @Override
@@ -146,7 +146,7 @@ public class ProjectModule implements IProjectModule {
 
     @Override
     public ProjectTask getTask(@NonNull String taskID) {
-        return this.projectTaskRepository.get().get(taskID);
+        return this.projectTaskRepository.get().load(taskID);
     }
 
     @Override
