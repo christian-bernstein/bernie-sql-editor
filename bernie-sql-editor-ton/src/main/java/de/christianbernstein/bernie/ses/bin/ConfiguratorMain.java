@@ -31,6 +31,7 @@ public class ConfiguratorMain implements IMain<Ton> {
         pathSuffix = ton.arguments().getOr("path", "");
         folder("{root_dir}ssl");
         folder("{config_dir}");
+        folder("asm");
         file("{root_dir}ton_config.{config_file_ext}", () -> ObjectNotationLanguage.YAML.getSerialAdapter().serialize(ton.configuration(), TonConfiguration.class));
         file("{config_dir}net_config.{config_file_ext}", () -> new Yaml().dump(NetModuleConfigShard.builder().build()));
         return new MainResult(0);

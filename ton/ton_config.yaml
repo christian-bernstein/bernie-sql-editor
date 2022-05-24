@@ -4,7 +4,7 @@ banner:
 - '  ██╗  ██╗███████╗██████╗  ██████╗██╗   ██╗██╗     ███████╗███████╗  {blue}┃{reset}
   A SQL-Editor software using 7149-bernie'
 - '  ██║  ██║██╔════╝██╔══██╗██╔════╝██║   ██║██║     ██╔════╝██╔════╝  {blue}┃{reset}
-  Copyright © 2021 - {date_year} Christian Bernstein & Contributors'
+  Copyright © 2021 - {date_year} Christian Bernstein & contributors'
 - '  ███████║█████╗  ██████╔╝██║     ██║   ██║██║     █████╗  ███████╗  {blue}┃{reset}'
 - '  ██╔══██║██╔══╝  ██╔══██╗██║     ██║   ██║██║     ██╔══╝  ╚════██║  {blue}┃{reset}   Community:
   https://discord.gg/ag7G5HPkcF  '

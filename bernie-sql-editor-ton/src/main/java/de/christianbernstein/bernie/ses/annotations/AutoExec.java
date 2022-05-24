@@ -29,4 +29,5 @@ public @interface AutoExec {
 
     boolean run() default true;
 
+    String mode() default "*";
 }

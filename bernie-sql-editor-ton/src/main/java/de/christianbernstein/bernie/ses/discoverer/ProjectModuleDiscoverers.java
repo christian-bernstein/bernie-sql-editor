@@ -2,7 +2,6 @@ package de.christianbernstein.bernie.ses.discoverer;
 
 import de.christianbernstein.bernie.modules.project.in.*;
 import de.christianbernstein.bernie.modules.project.out.*;
-import de.christianbernstein.bernie.sdk.discovery.websocket.packets.Primitives;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;

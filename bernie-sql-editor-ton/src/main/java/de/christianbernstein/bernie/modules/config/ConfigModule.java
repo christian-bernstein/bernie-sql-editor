@@ -1,18 +1,12 @@
 package de.christianbernstein.bernie.modules.config;
 
-import com.google.common.reflect.TypeToken;
 import de.christianbernstein.bernie.modules.config.in.GetConfigRequestPacketData;
 import de.christianbernstein.bernie.modules.config.in.UpdateConfigRequestPacketData;
 import de.christianbernstein.bernie.modules.config.out.GetConfigResponsePacketData;
 import de.christianbernstein.bernie.modules.net.SocketLaneIdentifyingAttachment;
-import de.christianbernstein.bernie.modules.user.IUserModule;
-import de.christianbernstein.bernie.modules.user.UserData;
-import de.christianbernstein.bernie.modules.user.in.CheckUserAttributeAvailabilityRequestPacketData;
-import de.christianbernstein.bernie.modules.user.out.CheckUserAttributeAvailabilityResponsePacketData;
 import de.christianbernstein.bernie.sdk.db.H2Repository;
 import de.christianbernstein.bernie.sdk.discovery.websocket.Discoverer;
 import de.christianbernstein.bernie.sdk.discovery.websocket.IPacketHandlerBase;
-import de.christianbernstein.bernie.sdk.misc.ObjectNotationLanguage;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.Centralized;
 import de.christianbernstein.bernie.ses.bin.Constants;

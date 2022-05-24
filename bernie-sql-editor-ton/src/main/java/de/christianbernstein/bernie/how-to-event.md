@@ -20,8 +20,8 @@ class EventListenerClass {
 
 Create an event handler class using `dynamic` context.</br>
 **Important:** Creating event handlers in the dynamic context isn't tested yet, 
-it might not work properly of have unwanted side effects! 
-Working with locally stored variables can create problems, if the construct-phase is called twice or 
+it might not work properly and has unwanted side effects! 
+Working with locally stored variables can create problems if the construct-phase is called twice or 
 the class is instantiated more than once.
 
 ```java
@@ -39,7 +39,7 @@ class EventListenerClass {
     private EventListenerClass instance;
 
     @EventListener
-    private static onEvent(Event event) {
+    private onEvent(Event event) {
         // [...]
     }
 }

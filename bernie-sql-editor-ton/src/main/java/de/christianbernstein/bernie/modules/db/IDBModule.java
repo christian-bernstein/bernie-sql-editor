@@ -31,6 +31,8 @@ import de.christianbernstein.bernie.sdk.module.Module;
 import lombok.NonNull;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.sql.Connection;
@@ -80,4 +82,6 @@ public interface IDBModule extends IBaseModuleClass<ITon>, IFluently<IDBModule> 
     File getDatabaseFile(@NonNull String databaseID);
 
     long getDatabaseAbsoluteSizeInBytes(@NonNull String databaseID);
+
+    List<IDocument<?>> pull(UserData ud, String dbId, @Language("H2") String sql);
 }

@@ -19,10 +19,7 @@ import de.christianbernstein.bernie.modules.db.SessionCommandType;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.sdk.discovery.websocket.PacketData;
 import de.christianbernstein.bernie.sdk.discovery.websocket.PacketMeta;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Map;
 
@@ -31,6 +28,7 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
 @NoArgsConstructor
 @PacketMeta(dataID = "SessionCommandPacketData", protocol = Constants.centralProtocolName)
 @AllArgsConstructor

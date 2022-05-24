@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="EntryPointsManager">
-    <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.Command" />
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="de.christianbernstein.bernie.ses.annotations.AutoExec" />
+      <item index="1" class="java.lang.String" itemvalue="de.christianbernstein.bernie.shared.gloria.GloriaAPI.ExecutorAnnotations.Command" />
     </list>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />

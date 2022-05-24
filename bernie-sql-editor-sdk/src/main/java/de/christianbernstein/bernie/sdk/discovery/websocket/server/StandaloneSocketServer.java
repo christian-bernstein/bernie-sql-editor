@@ -30,13 +30,17 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.checkerframework.common.value.qual.IntRange;
 import org.java_websocket.WebSocket;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.exceptions.InvalidDataException;
 import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.handshake.ServerHandshakeBuilder;
 import org.java_websocket.server.WebSocketServer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.channels.SelectionKey;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
@@ -113,6 +117,8 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
 
     @Override
     public void onOpen(@NotNull WebSocket webSocket, ClientHandshake clientHandshake) {
+        System.out.println("onOpen");
+
         this.getEventController().fire(new SocketPreEstablishedEvent(this, webSocket, clientHandshake));
         @NonNull final String id = this.configuration.websocketIDGenerator().apply(this, webSocket);
         final SocketIdentifyingAttachment attachment = new SocketIdentifyingAttachment(id);
@@ -129,6 +135,8 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
 
     @Override
     public void onClose(@NotNull WebSocket webSocket, int i, String s, boolean b) {
+        System.out.println("onClose");
+
         final SocketIdentifyingAttachment attachment = webSocket.getAttachment();
         final SocketServerLane session = this.socketSessionManager.getSession(attachment.sessionToken());
         if (session != null) {
@@ -146,7 +154,7 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
     @Override
     public void onMessage(@NotNull WebSocket webSocket, String message) {
 
-        // ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "Server Lane", String.format("Received message '%s'", message));
+        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "Server Lane", String.format("Received message '%s'", message));
 
         final SocketIdentifyingAttachment attachment = webSocket.getAttachment();
         final SocketServerLane session = this.socketSessionManager.getSession(attachment.sessionToken());
@@ -164,6 +172,24 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
         final SocketIdentifyingAttachment attachment = webSocket.getAttachment();
         final SocketServerLane session = this.socketSessionManager.getSession(attachment.sessionToken());
         this.proteus.external().onError(new OnErrorSocketContext(webSocket, session, this, e));
+    }
+
+    @Override
+    protected boolean onConnect(SelectionKey key) {
+        System.out.println("onConnect");
+        return super.onConnect(key);
+    }
+
+    @Override
+    public void onWebsocketCloseInitiated(WebSocket conn, int code, String reason) {
+        System.out.println("onWebsocketCloseInitiated");
+        super.onWebsocketCloseInitiated(conn, code, reason);
+    }
+
+    @Override
+    public ServerHandshakeBuilder onWebsocketHandshakeReceivedAsServer(WebSocket conn, Draft draft, ClientHandshake request) throws InvalidDataException {
+        System.out.println("onWebsocketHandshakeReceivedAsServer");
+        return super.onWebsocketHandshakeReceivedAsServer(conn, draft, request);
     }
 
     @Override

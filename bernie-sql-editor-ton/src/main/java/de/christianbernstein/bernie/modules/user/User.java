@@ -38,7 +38,7 @@ public class User implements IUser {
 
     @Override
     public UserData getUserData() {
-        System.err.println("get user data of: " + this.userID);
+        // System.err.println("get user data of: " + this.userID);
         // todo why does it use the id to get a user by its username
         return this.engine.api().userModule().getUserDataOf(this.userID);
     }

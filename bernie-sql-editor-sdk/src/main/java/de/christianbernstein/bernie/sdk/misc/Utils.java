@@ -21,6 +21,9 @@ import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarBuilder;
+import me.tongfei.progressbar.ProgressBarStyle;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,11 +39,14 @@ import java.util.List;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -69,6 +75,38 @@ public class Utils {
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().serializeNulls().create();
     @Getter
     private static final Yaml YAML = new Yaml();
+
+    public long measureThroughput(String taskName, Duration duration, Runnable test) {
+        final AtomicInteger i = new AtomicInteger();
+        final AtomicLong ops = new AtomicLong();
+
+        final Thread testRunner = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                test.run();
+                i.incrementAndGet();
+            }
+        });
+        testRunner.start();
+
+        final int sec = (int) duration.toSeconds();
+        try (final ProgressBar bar = new ProgressBarBuilder().setMaxRenderedLength(100).showSpeed().setTaskName(taskName).setStyle(ProgressBarStyle.ASCII).setInitialMax(sec).build()) {
+            IntStream.range(1, sec + 1).forEach(j -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (final InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    final int i1 = i.get() / j;
+                    ops.set(i1);
+                    bar.step().setExtraMessage(String.format(" %d op/s", i1));
+                    if (j == 10) {
+                        testRunner.stop();
+                    }
+                }
+            });
+        }
+        return ops.get();
+    }
 
     /**
      * Normalizes the images color data according to this formula:

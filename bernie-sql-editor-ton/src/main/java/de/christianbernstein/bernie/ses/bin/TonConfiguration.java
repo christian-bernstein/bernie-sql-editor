@@ -53,7 +53,7 @@ public class TonConfiguration {
     private List<String> banner = List.of(
             "",
             "  ██╗  ██╗███████╗██████╗  ██████╗██╗   ██╗██╗     ███████╗███████╗  {blue}┃{reset} A SQL-Editor software using 7149-bernie",
-            "  ██║  ██║██╔════╝██╔══██╗██╔════╝██║   ██║██║     ██╔════╝██╔════╝  {blue}┃{reset} Copyright © 2021 - {date_year} Christian Bernstein & Contributors",
+            "  ██║  ██║██╔════╝██╔══██╗██╔════╝██║   ██║██║     ██╔════╝██╔════╝  {blue}┃{reset} Copyright © 2021 - {date_year} Christian Bernstein & contributors",
             "  ███████║█████╗  ██████╔╝██║     ██║   ██║██║     █████╗  ███████╗  {blue}┃{reset}",
             "  ██╔══██║██╔══╝  ██╔══██╗██║     ██║   ██║██║     ██╔══╝  ╚════██║  {blue}┃{reset}   Community: https://discord.gg/ag7G5HPkcF  ",
             "  ██║  ██║███████╗██║  ██║╚██████╗╚██████╔╝███████╗███████╗███████║  {blue}┃{reset}      Source: https://github.com/christian-bernstein/bernie-sql-editor",

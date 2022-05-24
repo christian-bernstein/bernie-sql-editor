@@ -31,6 +31,7 @@ import java.util.stream.Stream;
  */
 public class TonLauncher {
 
+    @Deprecated(forRemoval = true)
     @SuppressWarnings("all")
     private static Optional<ITon> ton = Optional.empty();
 
@@ -38,7 +39,7 @@ public class TonLauncher {
         while (!Thread.currentThread().isInterrupted()) {
             final String[] arr = new Scanner(System.in).nextLine().split("( )+");
 
-            // Create and start the ton server & enter sync mode, if ton starts in the default mode (no preflight)
+            // Create and start the ton server & enter sync mode if ton starts in default mode (no preflight)
             new Ton(Document.fromArgumentsArray(Stream.concat(Arrays.stream(args), Arrays.stream(arr)).toArray(String[]::new))).$(iTon -> TonLauncher.ton = Optional.of(iTon)).start(TonConfiguration.builder()
                     .internalDatabaseConfiguration(H2RepositoryConfiguration.builder().hbm2DDLMode(HBM2DDLMode.UPDATE).databaseDir("./db/").database("ton").username("root").password("root").build())
                     .mode(TonMode.DEBUG)

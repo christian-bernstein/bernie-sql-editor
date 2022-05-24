@@ -48,6 +48,7 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -59,7 +60,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -242,7 +249,7 @@ public class DBModule implements IDBModule {
 
     // todo make information better
     // todo inform client about the task update
-    private static void doPull(UserData ud, @NotNull IDatabaseAccessPoint db, SessionCommandPacketData data, SocketServerLane endpoint) {
+    public static void doPull(UserData ud, @NotNull IDatabaseAccessPoint db, SessionCommandPacketData data) {
         db.session(session -> session.doWork(connection -> {
             final IDBModule module = DBModule.ton.orElseThrow().dbModule();
             final String databaseID = data.getDbID();
@@ -278,7 +285,7 @@ public class DBModule implements IDBModule {
         }));
     }
 
-    private static void doPush(UserData ud, @NonNull IDatabaseAccessPoint db, SessionCommandPacketData data, SocketServerLane endpoint) {
+    public static void doPush(UserData ud, @NonNull IDatabaseAccessPoint db, SessionCommandPacketData data) {
         db.session(session -> session.doWork(connection -> {
             final IDBModule module = DBModule.ton.orElseThrow().dbModule();
             final String raw = data.getRaw();
@@ -301,8 +308,8 @@ public class DBModule implements IDBModule {
         final UserData ud = instance.userModule().getUserDataOfUsername(Shortcut.useUserSession(endpoint).getCredentials().getUsername());
 
         switch (data.getType()) {
-            case PULL -> DBModule.doPull(ud, db, data, endpoint);
-            case PUSH -> DBModule.doPush(ud, db, data, endpoint);
+            case PULL -> DBModule.doPull(ud, db, data);
+            case PUSH -> DBModule.doPush(ud, db, data);
         }
     };
 
@@ -406,6 +413,21 @@ public class DBModule implements IDBModule {
             this.activeDatabases.remove(dbObj);
         }
         return database.isPresent();
+    }
+
+    // todo handle the errors that are currently suppressed
+    @Override
+    public List<IDocument<?>> pull(UserData ud, String dbId, @Language("H2") String sql) {
+        final List<IDocument<?>> set = new ArrayList<>();
+        this.loadDatabase(dbId, DatabaseAccessPointLoadConfig.builder().build()).session(session -> session.doWork(connection -> {
+            final IDBModule module = DBModule.ton.orElseThrow().dbModule();
+            final DBQueryResult result = module.executeQuery(connection, sql);
+            // System.err.println(result);
+            if (result.isSuccess()) {
+                set.addAll(DBUtilities.resultSetToList(result.getResult()));
+            }
+        }));
+        return set;
     }
 
     @Override

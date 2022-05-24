@@ -4,6 +4,7 @@ import de.christianbernstein.bernie.modules.config.ConfigDeclaration;
 import de.christianbernstein.bernie.modules.config.ConfigGenerator;
 import de.christianbernstein.bernie.modules.config.Element;
 import de.christianbernstein.bernie.modules.config.IConfigGenerator;
+import de.christianbernstein.bernie.modules.user.IUser;
 import de.christianbernstein.bernie.sdk.shared.Theme;
 import lombok.*;
 
@@ -34,7 +35,7 @@ public class AppearanceConfig {
     private Theme theme;
 
     @ConfigGenerator
-    private static final IConfigGenerator<AppearanceConfig> generator = user -> AppearanceConfig.builder()
+    private static final IConfigGenerator<AppearanceConfig> generator = (IUser user) -> AppearanceConfig.builder()
             .id(user.getID())
             .theme(Theme.LIGHT)
             .build();
