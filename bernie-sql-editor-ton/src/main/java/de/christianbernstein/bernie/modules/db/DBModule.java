@@ -15,6 +15,7 @@
 
 package de.christianbernstein.bernie.modules.db;
 
+import de.christianbernstein.bernie.modules.db.in.IntrinsicCommandPacketData;
 import de.christianbernstein.bernie.modules.db.out.SQLCommandUpdateResponsePacketData;
 import de.christianbernstein.bernie.modules.project.IProjectTaskContext;
 import de.christianbernstein.bernie.modules.project.ProjectTask;

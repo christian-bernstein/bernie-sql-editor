@@ -15,6 +15,7 @@
 
 package de.christianbernstein.bernie.modules.db.in;
 
+import de.christianbernstein.bernie.modules.db.AbstractSQLStatementPacketData;
 import de.christianbernstein.bernie.modules.db.SessionCommandType;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.sdk.discovery.websocket.PacketData;
@@ -31,15 +32,5 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @PacketMeta(dataID = "SessionCommandPacketData", protocol = Constants.centralProtocolName)
-@AllArgsConstructor
-public class SessionCommandPacketData extends PacketData {
-
-    private SessionCommandType type;
-
-    private String raw;
-
-    private Map<String, String> attributes;
-
-    private String dbID;
-
+public class SessionCommandPacketData extends AbstractSQLStatementPacketData {
 }

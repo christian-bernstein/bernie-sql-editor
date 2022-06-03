@@ -20,6 +20,7 @@ import de.christianbernstein.bernie.modules.config.ConfigModule;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.modules.db.DBModule;
 import de.christianbernstein.bernie.ses.discoverer.BaseDiscoverers;
+import de.christianbernstein.bernie.ses.discoverer.DatabaseDiscoverers;
 import de.christianbernstein.bernie.ses.discoverer.ProjectModuleDiscoverers;
 import de.christianbernstein.bernie.modules.flow.FlowModule;
 import de.christianbernstein.bernie.modules.project.ProjectModule;
@@ -65,6 +66,7 @@ public class Protocols {
                     .loadFromClass(FlowModule.class)
                     .loadFromClass(ProjectModule.class)
                     .loadFromClass(ProjectModuleDiscoverers.class)
+                    .loadFromClass(DatabaseDiscoverers.class)
                     .loadFromClass(ConfigModule.class)
                     .loadFromClass(DBModule.class))
             .build();

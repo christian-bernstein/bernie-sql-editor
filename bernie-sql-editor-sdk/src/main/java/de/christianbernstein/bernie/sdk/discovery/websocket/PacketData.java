@@ -18,7 +18,10 @@ package de.christianbernstein.bernie.sdk.discovery.websocket;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+/**
+ * todo make PacketData abstract
+ */
 @Data
 @Accessors(fluent = true)
-public class PacketData {
+public abstract class PacketData {
 }
