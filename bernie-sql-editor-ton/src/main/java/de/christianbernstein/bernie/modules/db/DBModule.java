@@ -23,6 +23,7 @@ import de.christianbernstein.bernie.modules.project.ProjectTaskStatus;
 import de.christianbernstein.bernie.modules.session.Client;
 import de.christianbernstein.bernie.modules.session.ClientType;
 import de.christianbernstein.bernie.modules.user.UserData;
+import de.christianbernstein.bernie.sdk.db.H2Repository;
 import de.christianbernstein.bernie.ses.annotations.RegisterEventClass;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;

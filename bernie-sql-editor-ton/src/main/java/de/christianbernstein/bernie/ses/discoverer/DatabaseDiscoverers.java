@@ -64,6 +64,8 @@ public class DatabaseDiscoverers {
                 final List<Column> columns = new ArrayList<>();
                 final List<Row> rows = new ArrayList<>();
 
+                // todo there seems to be a error when a cell is null
+
                 if (set.size() > 0) {
                     final Document row = set.get(0);
                     if (row != null) {

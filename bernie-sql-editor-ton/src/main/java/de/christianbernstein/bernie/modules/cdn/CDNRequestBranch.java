@@ -22,7 +22,7 @@ public class CDNRequestBranch {
     private String accessToken;
 
     /**
-     * used to identify a user, if cdn not for a user, this variable will bu null
+     * used to identify a user, if cdn not for a user, this variable will be null
      */
     @Nullable
     private String targetID;
