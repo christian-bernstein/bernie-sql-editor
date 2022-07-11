@@ -11,6 +11,7 @@
     <modules>
         <module>bernie-sql-editor-ton</module>
         <module>bernie-sql-editor-sdk</module>
+        <module>bernie-bridge</module>
     </modules>
 
     <properties>

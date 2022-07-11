@@ -10,6 +10,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="bernie-sql-editor-sdk" />
         <module name="bernie-sql-editor-ton" />
+        <module name="bernie-bridge" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
