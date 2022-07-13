@@ -4,8 +4,8 @@ import de.christianbernstein.bernie.sdk.discovery.websocket.server.ISocketServer
 import de.christianbernstein.bernie.sdk.tailwind.Bridge;
 import de.christianbernstein.bernie.sdk.discovery.websocket.server.OnStopSocketContext;
 import de.christianbernstein.bernie.sdk.discovery.websocket.server.OnOpenSocketContext;
-import de.christianbernstein.bernie.sdk.discovery.websocket.server.OnMessageSocketContext;
 import de.christianbernstein.bernie.sdk.discovery.websocket.server.OnErrorSocketContext;
+import de.christianbernstein.bernie.sdk.discovery.websocket.server.OnMessageSocketContext;
 
 @SuppressWarnings("unchecked")
 public class ISocketServerPublicAPIImpl implements ISocketServerPublicAPI {
@@ -40,13 +40,13 @@ public class ISocketServerPublicAPIImpl implements ISocketServerPublicAPI {
     this.proteus().internal().sync("on-open", (ctx, gate) -> ctx.yield(gate.sync(param0)));
   }
 
-  @Bridge(value = "on-message", async = false)
-  public void onMessage(OnMessageSocketContext param0) {
-    this.proteus().internal().sync("on-message", (ctx, gate) -> ctx.yield(gate.sync(param0)));
-  }
-
   @Bridge(value = "on-error", async = false)
   public void onError(OnErrorSocketContext param0) {
     this.proteus().internal().sync("on-error", (ctx, gate) -> ctx.yield(gate.sync(param0)));
+  }
+
+  @Bridge(value = "on-message", async = false)
+  public void onMessage(OnMessageSocketContext param0) {
+    this.proteus().internal().sync("on-message", (ctx, gate) -> ctx.yield(gate.sync(param0)));
   }
 }
