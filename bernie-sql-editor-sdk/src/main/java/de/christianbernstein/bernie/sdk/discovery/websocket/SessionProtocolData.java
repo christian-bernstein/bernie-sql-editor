@@ -56,16 +56,21 @@ public class SessionProtocolData {
     // todo add only handler / packet registers
     public SessionProtocolData loadFromClass(@NonNull final Class<?> holder) {
         // Register all the static fields
-        // System.out.println("Load protocol data: " + holder);
+        System.out.println("Load protocol data: " + holder);
         Arrays.stream(holder.getDeclaredFields()).filter(field -> Modifier.isStatic(Modifier.fieldModifiers())).forEach(field -> {
-            // System.out.println("Handle field: " + field);
+            System.out.println("Handle field: " + field);
             if (field.getType().equals(IPacketHandlerBase.class) && field.isAnnotationPresent(Discoverer.class)) {
                 field.setAccessible(true);
                 final Discoverer discoverer = field.getAnnotation(Discoverer.class);
                 if (Arrays.asList(discoverer.protocols()).contains(this.protocolID)) {
                     try {
-                        // System.out.println("Register packet for: " + discoverer);
+                        System.out.println("Register packet for: " + discoverer);
+                        System.out.println("Field: " + field);
+
                         final IPacketHandlerBase<?> handler = (IPacketHandlerBase<?>) field.get(null);
+
+                        System.out.println("Handler: " + handler);
+
                         this.packetRegistry().put(discoverer.packetID(), discoverer.datatype());
                         this.packetHandler().put(discoverer.datatype(), handler);
                     } catch (final IllegalAccessException e) {

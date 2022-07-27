@@ -95,7 +95,7 @@ public class SocketServerPrivateAPI extends PrivateAPI {
                 if (protocol != null) {
                     this.handlePacket(protocol, context, packetDataID, jsonData, transformed);
                 } else {
-                    System.err.println("Protocol is null");
+                    ConsoleLogger.def().log(ConsoleLogger.LogType.ERROR, "(Active-)Protocol is null");
                 }
                 return null;
             })
@@ -120,7 +120,7 @@ public class SocketServerPrivateAPI extends PrivateAPI {
                 if (handler != null) {
                     handler._handle(data, context.session(), context.socket(), packet, context.server());
                 } else {
-                    System.err.println("Packet handler is null, but shouldn't be");
+                    System.err.printf("Packet handler in [%s] is null, but shouldn't be. [%s]%n", protocol.id(), attachment.packetHandler());
                 }
             }
         } else {

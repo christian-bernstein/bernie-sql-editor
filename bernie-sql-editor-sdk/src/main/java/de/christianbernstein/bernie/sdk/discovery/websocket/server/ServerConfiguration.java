@@ -80,6 +80,9 @@ public class ServerConfiguration {
     @Builder.Default
     private final boolean registerDefaultStandardProtocols = true;
 
+    @Builder.Default
+    private final boolean masterLogSwitch = false;
+
     private final Protocol defaultProtocol;
 
     private final Protocol baseProtocol;

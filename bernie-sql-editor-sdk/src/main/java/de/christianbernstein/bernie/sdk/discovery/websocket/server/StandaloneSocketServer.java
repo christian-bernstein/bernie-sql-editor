@@ -154,7 +154,10 @@ public class StandaloneSocketServer extends WebSocketServer implements IFluently
     @Override
     public void onMessage(@NotNull WebSocket webSocket, String message) {
 
-        ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "Server Lane", String.format("Received message '%s'", message));
+        if (this.configuration.masterLogSwitch()) {
+            ConsoleLogger.def().log(ConsoleLogger.LogType.INFO, "Server Lane", String.format("Received message '%s'", message));
+        }
+
 
         final SocketIdentifyingAttachment attachment = webSocket.getAttachment();
         final SocketServerLane session = this.socketSessionManager.getSession(attachment.sessionToken());
