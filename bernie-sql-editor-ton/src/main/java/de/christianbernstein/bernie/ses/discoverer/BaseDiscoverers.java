@@ -2,6 +2,8 @@ package de.christianbernstein.bernie.ses.discoverer;
 
 import de.christianbernstein.bernie.modules.net.in.PingPacketData;
 import de.christianbernstein.bernie.modules.net.out.PongPacketData;
+import de.christianbernstein.bernie.modules.settings.in.SettingsRequestPacketData;
+import de.christianbernstein.bernie.modules.settings.out.SettingsResponsePacketData;
 import de.christianbernstein.bernie.ses.annotations.UseTon;
 import de.christianbernstein.bernie.ses.bin.Constants;
 import de.christianbernstein.bernie.ses.bin.ITon;
@@ -25,6 +27,8 @@ import de.christianbernstein.bernie.sdk.discovery.websocket.IPacketHandlerBase;
 import lombok.experimental.UtilityClass;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -85,5 +89,27 @@ public class BaseDiscoverers {
         final ICDNModule module = ton.cdnModule();
         final CDNResponse response = module.request(request);
         packet.respond(new CDNResponsePacketData(response), endpoint);
+    };
+
+    @Discoverer(packetID = "SettingsRequestPacketData", datatype = SettingsRequestPacketData.class, protocols = Constants.coreProtocolName)
+    private final IPacketHandlerBase<SettingsRequestPacketData> settingsRequestHandler = (data, endpoint, socket, packet, server) -> {
+        final SocketLaneIdentifyingAttachment sli = Shortcut.useSLI(endpoint);
+        final String viewerID = sli != null ? ton.getUserFromSessionID(sli.getSessionID()).getID() : null;
+
+        System.out.println("SettingsRequestPacketData :: " + data);
+
+        switch (data.getCompoundID()) {
+            case "a" -> {
+                packet.respond(new SettingsResponsePacketData(Map.of("value", "Hello world")), endpoint);
+            }
+            case "b" -> {
+                packet.respond(new SettingsResponsePacketData(Map.of(
+                        "age", 19,
+                        "id", UUID.randomUUID().toString(),
+                        "description", "Hello world!"
+                )), endpoint);
+            }
+        }
+
     };
 }
