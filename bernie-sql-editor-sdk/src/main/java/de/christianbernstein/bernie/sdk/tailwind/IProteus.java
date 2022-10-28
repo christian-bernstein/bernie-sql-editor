@@ -24,7 +24,7 @@ import lombok.NonNull;
  * the private-api does all the heavy logic lifting. Proteus is the middleman between the public- and private-api,
  * while the public-api is easy accessible to the developer, it contains no logic.
  * The private-api therefore has all the logic parts, but isn't viable to be used as a public. todo finish up rofl
- *
+ * <p>
  * ""
  * protean, meaning "versatile", "mutable", or "capable of assuming many forms". "Protean" has positive connotations of flexibility, versatility and adaptability.
  * "" - Wikipedia about Proteus in Greek Mythology
