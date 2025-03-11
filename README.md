@@ -23,4 +23,4 @@ writing SQL and interacting with real databases. For me, it was a great opportun
 - [`bernie-sql-editor-ton`](bernie-sql-editor-ton/): Actual implementation of SQL-Editor backend
 
 ## Updates & Issues
-This project is archived. I won't continue adding new features and resolve security vulnerabilities and bugs.
+This project is archived. I won't continue adding new features or resolve security vulnerabilities and bugs.
