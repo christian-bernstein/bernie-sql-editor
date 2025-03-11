@@ -18,6 +18,9 @@ The front and backend were parts of an optional project I made for my high schoo
 The objective was to create an easy-to-use, web-based environment for students at my school to learn and get comfortable 
 writing SQL and interacting with real databases. For me, it was a great opportunity to start diving into web development.
 
+## Library introductions
+- [Discovery: Std. WebSocket Impl.](bernie-sql-editor-sdk/src/main/java/de/christianbernstein/bernie/sdk/discovery/websocket/info_and_examples/intro.md): packet-based WebSocket communication system used throughout the SQL-Editor backend
+
 ## Basic file structure
 **Sub Projects**
 - [`bernie-sql-editor-sdk`](bernie-sql-editor-sdk/): Small (partly standalone) libraries and miscellaneous classes I developed for SQL-Editor
