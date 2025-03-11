@@ -19,7 +19,7 @@ The objective was to create an easy-to-use, web-based environment for students a
 writing SQL and interacting with real databases. For me, it was a great opportunity to start diving into web development.
 
 ## Basic file structure
-- [`bernie-sql-editor-sdk`](bernie-sql-editor-sdk/): Small (partly standalone) libraries and miscellaneous classes that I developed for SQL-Editor
+- [`bernie-sql-editor-sdk`](bernie-sql-editor-sdk/): Small (partly standalone) libraries and miscellaneous classes I developed for SQL-Editor
 - [`bernie-sql-editor-ton`](bernie-sql-editor-ton/): Actual implementation of SQL-Editor backend
 
 ## Updates & Issues
