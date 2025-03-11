@@ -25,6 +25,7 @@ writing SQL and interacting with real databases. For me, it was a great opportun
 
 **Noteworthy directories & files**
 - [Main class](bernie-sql-editor-ton/src/main/java/de/christianbernstein/bernie/ses/bin/TonLauncher.java): Main class that starts the backend
+- [Frontend communication link](bernie-sql-editor-sdk/src/main/java/de/christianbernstein/bernie/sdk/discovery/websocket/server/StandaloneSocketServer.java): Abstract, packet-based communication layer 
 
 ## Updates & Issues
 This project is archived. I won't continue adding new features or resolve security vulnerabilities and bugs.
