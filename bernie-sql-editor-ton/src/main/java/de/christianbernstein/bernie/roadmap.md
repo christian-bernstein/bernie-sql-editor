@@ -1,12 +1,13 @@
 # Roadmap
 
----
+
 ### Motivation
 Das Ton-Backend braucht noch immer einiges an Arbeit. Einige zentrale Funktionen sind Stand 29.01.12022 noch immer nicht implementiert.
 Das soll sich in der nächsten Woche ändern. Das Projekt soll in der MVP-Version (*Minimum viable product*) nächstes Wochenende existieren.
 In der MVP-Version ist ein Vorzeigen des Produkts vollständig möglich, eine Benutzung jedoch noch nicht, da Projekte weder erstellt noch gelöscht werden können.
 Außerdem ist die Template-Funktion nicht implementiert und neue Accounts können noch nicht erstellt werden.
 Das Erstellen der Accounts stellt ein wichtiges Feature dar, wird also nach dem MVP direkt implementiert, jedoch nicht für die Prüfung.
+
 ---
 ### Ausblick
 Wichtige Features sind im MVP nicht enthalten, sollen aber nach Bedarf möglichst zeitnah implementiert werden.

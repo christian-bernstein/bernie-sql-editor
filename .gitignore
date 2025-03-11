@@ -1,4 +1,4 @@
-# Project exclude paths
+# Project excluded paths
 /bernie-sql-editor-ton/target/
 /node_modules/
 /ton/ssl/

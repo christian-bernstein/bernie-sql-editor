@@ -1,5 +1,5 @@
-# How-to - *Events*
-___
+# How-to - Events
+
 
 Create an event handler class using `static` context
 
