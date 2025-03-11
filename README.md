@@ -18,5 +18,8 @@ The front and backend were parts of an optional project I made for my high schoo
 The objective was to create an easy-to-use, web-based environment for students at my school to learn and get comfortable 
 writing SQL and interacting with real databases. For me, it was a great opportunity to start diving into web development.
 
+## Basic file structure
+- `bernie-sql-editor-sdk`: Small (partly standalone) libraries and miscellaneous classes that I developed for SQL-Editor
+
 ## Updates & Issues
 This project is archived. I won't continue adding new features and resolve security vulnerabilities and bugs.
