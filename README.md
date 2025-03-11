@@ -5,7 +5,7 @@
 This repository contains SQL-Editor's backend source. 
 <br>
 > [!CAUTION]
-> **SQL-Editor is not meant for public usage. It contains critical bugs & security vulnerabilities:**
+> **SQL-Editor is not meant for public usage. It contains critical security vulnerabilities:**
 > E.g. passwords are stored in plaintext
 
 <br>
