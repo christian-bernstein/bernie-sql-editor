@@ -19,8 +19,12 @@ The objective was to create an easy-to-use, web-based environment for students a
 writing SQL and interacting with real databases. For me, it was a great opportunity to start diving into web development.
 
 ## Basic file structure
+**Sub Projects**
 - [`bernie-sql-editor-sdk`](bernie-sql-editor-sdk/): Small (partly standalone) libraries and miscellaneous classes I developed for SQL-Editor
 - [`bernie-sql-editor-ton`](bernie-sql-editor-ton/): Actual implementation of SQL-Editor backend
+
+**Noteworthy directories & files**
+- [Main class](bernie-sql-editor-ton/src/main/java/de/christianbernstein/bernie/ses/bin/TonLauncher.java): Main class that starts the backend
 
 ## Updates & Issues
 This project is archived. I won't continue adding new features or resolve security vulnerabilities and bugs.
