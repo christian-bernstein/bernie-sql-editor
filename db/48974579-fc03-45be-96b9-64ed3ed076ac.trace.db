@@ -1,4 +1,0 @@
-2022-05-15 02:15:54 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "INFORMATION_SCHEMA" nicht gefunden
-Table "INFORMATION_SCHEMA" not found; SQL statement:
-select * from information_schema [42102-200]
